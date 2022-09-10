@@ -35,15 +35,15 @@ const incentives = [
 
 export default function Incentive() {
   return (
-    <div className="bg-primary1">
+    <div className="bg-primary3">
       <div className="py-24 mx-auto max-w-7xl sm:px-2 sm:py-32 lg:px-4">
         <div className="max-w-2xl px-4 mx-auto lg:max-w-none">
           <div className="grid items-center grid-cols-1 gap-y-10 gap-x-16 lg:grid-cols-2">
             <div>
-              <h2 className="text-4xl font-bold tracking-tight text-primary2">
+              <h2 className="text-4xl font-bold tracking-tight text-primary1">
                 Shop with confidence.
               </h2>
-              <p className="mt-4 text-primary3">
+              <p className="mt-4 text-primary1/90">
                 Our team of experts, supported by the world&apos;s largest selection of products, is here to help you find the perfect fit for your needs and budget. We believe that every customer deserves a personalized, professional experience with each visit to our store. And we&apos;re dedicated to providing it!
               </p>
             </div>
@@ -55,8 +55,8 @@ export default function Incentive() {
                   <img className="w-16 h-16" src={incentive.imageSrc} alt="" />
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-6 lg:mt-6 lg:ml-0">
-                  <h3 className="text-sm font-medium text-primary2">{incentive.name}</h3>
-                  <p className="mt-2 text-sm text-primary3 ">{incentive.description}</p>
+                  <h3 className="text-sm font-medium text-primary1">{incentive.name}</h3>
+                  <p className="mt-2 text-sm text-primary1/90 ">{incentive.description}</p>
                 </div>
               </div>
             ))}
