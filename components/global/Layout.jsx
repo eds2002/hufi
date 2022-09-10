@@ -4,9 +4,9 @@ import { Footer, Header } from '.'
 const Layout = ({children}) => {
   return (
     <>
-      <Header/>
+      <Header data = {children.props.headerData}/>
         {children}
-      <Footer/>
+      <Footer data = {children.props.footerData}/>
     </>
   )
 }

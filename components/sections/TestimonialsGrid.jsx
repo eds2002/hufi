@@ -49,25 +49,31 @@ const TestimonialsGrid = () => {
     },
   ]
   return (
-    <section className = "bg-primary1 py-24">
-      <div className = "max-w-7xl mx-auto px-4">
+    <section className = "py-24 bg-primary1">
+      <div className = "px-4 mx-auto max-w-7xl">
         <h1 className = "text-3xl font-bold text-primary2">Love shown worldwide</h1>
-        <p className = "text-primary3 mb-10 max-w-md mt-4">Being a company that ships worldwide has allowed us to make
+        <p className = "max-w-md mt-4 mb-10 text-primary3">Being a company that ships worldwide has allowed us to make
         many friends across the world. Take a look at what they have to say about us!
         </p>
       </div>
-      <div className = "w-full  hidden md:grid max-w-7xl px-4 grid-cols-2 md:grid-cols-3 mx-auto  gap-10 place-items-center">
-        {testimonials.map((testimonial)=>(
+
+      {/* DESKTOP GRID */}
+      <div className = "hidden w-full grid-cols-2 gap-10 px-4 mx-auto md:grid max-w-7xl md:grid-cols-3 place-items-center">
+        {testimonials.map((testimonial,index)=>(
           <div className = {`max-h-[300px] w-full  h-full min-w-[100px] min-h-[200px] p-4 rounded-lg 
-          ${testimonial.colorId === 1 && 'bg-primary3 border-2 border-primary2'}
+          ${testimonial.colorId === 1 && 'bg-primary3'}
           ${testimonial.colorId === 2 && 'bg-primary2 text-primary1'}
-          `}>
+          `}
+          key = {index}
+          >
             <p>{testimonial.testimonial}</p>
             <span>{testimonial.name}</span>
           </div>
         ))}
       </div>
-      <div className = "w-full  grid md:hidden max-w-7xl px-4 grid-cols-2 md:grid-cols-3 mx-auto  gap-10 place-items-center">
+
+      {/* MOBILE GRID */}
+      <div className = "grid w-full grid-cols-2 gap-10 px-4 mx-auto md:hidden max-w-7xl md:grid-cols-3 place-items-center">
         {testimonials.map((testimonial,index)=>(
           <>
             {index < 6 && (

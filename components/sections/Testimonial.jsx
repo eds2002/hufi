@@ -3,18 +3,18 @@ export default function Example() {
   return (
     <section>
       <div className="relative">
-        <div className="relative overflow-hidden bg-primary3 py-24 px-8 shadow-2xl ">
+        <div className="relative px-8 py-24 overflow-hidden shadow-2xl bg-primary3 ">
           <div className="absolute inset-0 opacity-10 mix-blend-multiply saturate-0 filter">
             <img
               src="https://images.unsplash.com/photo-1601381718415-a05fb0a261f3?ixid=MXwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8ODl8fHxlbnwwfHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1216&q=80"
               alt=""
-              className="h-full w-full object-cover"
+              className="object-cover w-full h-full"
             />
           </div>
-          <div className="relative  max-w-7xl px-4 mx-auto flex items-center justify-center flex-col">
-            <blockquote className="mt-6 text-primary1 max-w-xl">
-              <p className="text-xl font-medium sm:text-2xl text-center">
-                This app has completely transformed how we interact with customers. We've seen record bookings, higher
+          <div className="relative flex flex-col items-center justify-center px-4 mx-auto max-w-7xl">
+            <blockquote className="max-w-xl mt-6 text-primary1">
+              <p className="text-xl font-medium text-center sm:text-2xl">
+                This app has completely transformed how we interact with customers. We&apos;ve seen record bookings, higher
                 customer satisfaction, and reduced churn.
               </p>
               <footer className="mt-6 text-center">

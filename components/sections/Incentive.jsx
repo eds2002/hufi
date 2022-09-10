@@ -36,23 +36,23 @@ const incentives = [
 export default function Incentive() {
   return (
     <div className="bg-primary1">
-      <div className="mx-auto max-w-7xl py-24 sm:px-2 sm:py-32 lg:px-4">
-        <div className="mx-auto max-w-2xl px-4 lg:max-w-none">
-          <div className="grid grid-cols-1 items-center gap-y-10 gap-x-16 lg:grid-cols-2">
+      <div className="py-24 mx-auto max-w-7xl sm:px-2 sm:py-32 lg:px-4">
+        <div className="max-w-2xl px-4 mx-auto lg:max-w-none">
+          <div className="grid items-center grid-cols-1 gap-y-10 gap-x-16 lg:grid-cols-2">
             <div>
               <h2 className="text-4xl font-bold tracking-tight text-primary2">
                 Shop with confidence.
               </h2>
               <p className="mt-4 text-primary3">
-                Our team of experts, supported by the world's largest selection of products, is here to help you find the perfect fit for your needs and budget. We believe that every customer deserves a personalized, professional experience with each visit to our store. And we’re dedicated to providing it!
+                Our team of experts, supported by the world&apos;s largest selection of products, is here to help you find the perfect fit for your needs and budget. We believe that every customer deserves a personalized, professional experience with each visit to our store. And we&apos;re dedicated to providing it!
               </p>
             </div>
           </div>
-          <div className="mt-16 grid grid-cols-1 gap-y-10 gap-x-8 lg:grid-cols-3">
+          <div className="grid grid-cols-1 mt-16 gap-y-10 gap-x-8 lg:grid-cols-3">
             {incentives.map((incentive) => (
               <div key={incentive.name} className="sm:flex lg:block ">
                 <div className="sm:flex-shrink-0">
-                  <img className="h-16 w-16" src={incentive.imageSrc} alt="" />
+                  <img className="w-16 h-16" src={incentive.imageSrc} alt="" />
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-6 lg:mt-6 lg:ml-0">
                   <h3 className="text-sm font-medium text-primary2">{incentive.name}</h3>
