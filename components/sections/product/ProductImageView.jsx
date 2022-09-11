@@ -24,14 +24,6 @@ const ProductImageView = () => {
             Image 4
           </div>
         </div>
-        <div className = "flex-row hidden w-full h-full gap-3 my-3 md:flex">
-          <div className = "bg-secondary1 h-[200px] max-h-[200px] rounded-md flex-[2]">
-            Image 5
-          </div>
-          <div className = "bg-secondary1 h-[200px] max-h-[200px] rounded-md flex-1 md:my-0">
-            Image 6
-          </div>
-        </div>
       </div>
     </section>
   )

@@ -20,7 +20,7 @@ module.exports = {
         "secondary":"#dbe9f5",
         "secondaryVariant":"#b9cfe1",
         "background":"white",
-        "surface":"white",
+        "surface":"#F3F4FB",
         "error":"#83555a",
         "onPrimary":"black",
         "onSecondary":"black",
