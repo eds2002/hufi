@@ -5,7 +5,7 @@ import { Skeleton } from "@mui/material";
 import Image from "next/image";
 export default function Collections({data}) {
   return (
-    <section className = "h-[100vh] sm:h-[60vh] bg-primary1">
+    <section className = "h-[100vh] sm:h-[60vh] bg-background">
       <div className="grid min-h-full grid-cols-1 grid-rows-2 lg:grid-cols-2 lg:grid-rows-1">
         {data.map((collection)=>(
           <>
@@ -17,10 +17,10 @@ export default function Collections({data}) {
                 layout="fill"
                 priority
               />
-              <div className="relative flex flex-col items-start justify-end w-full p-8 bg-black bg-opacity-40 sm:p-12">
+              <div className="relative flex flex-col items-start justify-end w-full p-8 bg-black bg-opacity-60 sm:p-12">
                 <div className = {`w-full max-w-xs
-                prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary1 prose-h6:text-opacity-90
-                prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-primary1
+                prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90
+                prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white
                 `}>
                   {collection.nodes[0]?.descriptionHtml ? 
                     <div

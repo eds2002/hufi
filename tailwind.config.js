@@ -7,11 +7,26 @@ module.exports = {
   theme: {
     extend: {
       colors:{
-        "primary1":"#FEFAE0",
-        "primary2":"#283618",
-        "primary3":"#606C38",
-        "secondary1":"#DDA15E",
-        "secondary2":"#BC6C25",
+        "primary1":"#FCFCFC",
+        "primary2":"#C1BEB6",
+        "primary3":"#E9E9E9",
+        "secondary1":"#91AFA0",
+        "secondary2":"#628A76",
+        "secondary3":"#2F4937",
+
+        
+        "primary":"#E9F5DB",
+        "primaryVariant":"#CFE1B9",
+        "secondary":"#dbe9f5",
+        "secondaryVariant":"#b9cfe1",
+        "background":"white",
+        "surface":"white",
+        "error":"#83555a",
+        "onPrimary":"black",
+        "onSecondary":"black",
+        "onBackground":"black",
+        "onSurface":"black",
+        "onError":"white",
       }
     },
   },

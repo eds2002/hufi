@@ -106,7 +106,7 @@ export default function Header({data}) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-opacity-25 bg-primary2" />
+            <div className="fixed inset-0 bg-opacity-25 bg-secondaryVariant" />
           </Transition.Child>
 
           <div className="fixed inset-0 z-40 flex">
@@ -119,11 +119,11 @@ export default function Header({data}) {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex flex-col w-full max-w-xs pb-12 overflow-y-auto shadow-xl bg-primary1">
+              <Dialog.Panel className="relative flex flex-col w-full max-w-xs pb-12 overflow-y-auto shadow-xl bg-background">
                 <div className="flex px-4 pt-5 pb-2">
                   <button
                     type="button"
-                    className="inline-flex items-center justify-center p-2 -m-2 text-gray-400 rounded-md"
+                    className="inline-flex items-center justify-center p-2 -m-2 rounded-md text-onBackground"
                     onClick={() => setOpen(false)}
                   >
                     <span className="sr-only">Close menu</span>
@@ -139,7 +139,7 @@ export default function Header({data}) {
                         {category.items.map((subCategory,index)=>(
                           <div key={subCategory.title} className="px-4 pt-10 pb-6 ">
                             <div>
-                              <p id={`mobile-featured-heading-${categoryIdx}`} className="font-medium text-primary2">
+                              <p id={`mobile-featured-heading-${categoryIdx}`} className="font-medium text-onBackground">
                                 {subCategory.title}
                               </p>
                               <ul
@@ -149,7 +149,7 @@ export default function Header({data}) {
                               >
                                 {subCategory.items.map((item) => (
                                   <li key={item.title} className="flex">
-                                    <a href={item.url} className="text-primary3">
+                                    <a href={item.url} className="text-onBackground/80">
                                       {item.title}
                                     </a>
                                   </li>
@@ -163,12 +163,12 @@ export default function Header({data}) {
                   </Tab.Panels>
                 </Tab.Group>
 
-                <div className="px-4 py-6 space-y-6 border-t border-gray-200">
+                <div className="px-4 py-6 space-y-6 border-t border-primaryVariant">
                   {data.menu.items.map((page) => (
                     <>
                       {page.items.length === 0 && (  
                         <div key={page.title} className="flow-root">
-                          <a href={page.url} className="block p-2 -m-2 font-medium text-primary2">
+                          <a href={page.url} className="block p-2 -m-2 font-medium text-onBackground">
                             {page.title}
                           </a>
                         </div>
@@ -177,14 +177,14 @@ export default function Header({data}) {
                   ))}
                 </div>
 
-                <div className="px-4 py-6 space-y-6 border-t border-gray-200">
+                <div className="px-4 py-6 space-y-6 border-t border-primaryVariant">
                   <div className="flow-root">
-                    <a href="#" className="block p-2 -m-2 font-medium text-primary2">
+                    <a href="#" className="block p-2 -m-2 font-medium text-onBackground">
                       Create an account
                     </a>
                   </div>
                   <div className="flow-root">
-                    <a href="#" className="block p-2 -m-2 font-medium text-primary2">
+                    <a href="#" className="block p-2 -m-2 font-medium text-onBackground">
                       Sign in
                     </a>
                   </div>
@@ -200,18 +200,18 @@ export default function Header({data}) {
         <nav aria-label="Top">
           {/* Top navigation */}
           {displayTopNav && (
-            <div className="bg-primary3">
+            <div className="bg-primary">
               <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-white lg:flex-none">
+                <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onPrimary lg:flex-none">
                   Get free delivery on orders over $100
                 </p>
 
-                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <a href="#" className="text-sm font-medium text-white hover:text-gray-100">
+                <div className="relative z-10 hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                  <a href="#" className="text-sm font-medium text-onPrimary hover:text-secondaryVariant">
                     Create an account
                   </a>
-                  <span className="w-px h-6 bg-gray-600" aria-hidden="true" />
-                  <a href="#" className="text-sm font-medium text-white hover:text-gray-100">
+                  <span className="w-px h-6 bg-onPrimary" aria-hidden="true" />
+                  <a href="#" className="text-sm font-medium text-onPrimary hover:text-secondaryVariant">
                     Sign in
                   </a>
                 </div>
@@ -220,9 +220,9 @@ export default function Header({data}) {
           )}
 
           {/* Secondary navigation */}
-          <div className="bg-primary2">
+          <div className="shadow-sm bg-background">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-              <div className="border-b border-gray-200">
+              <div className="">
                 <div className="flex items-center justify-between h-16">
                   {/* Logo (lg+) */}
                   <div className="hidden lg:flex lg:items-center">
@@ -230,7 +230,7 @@ export default function Header({data}) {
                       <span className="sr-only">Hufi</span>
                       <img
                         className="w-auto h-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                        src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
                         alt=""
                       />
                     </a>
@@ -250,13 +250,13 @@ export default function Header({data}) {
                                       <Popover.Button
                                         className={classNames(
                                           open
-                                            ? 'border-secondary1 text-secondary1'
-                                            : 'border-transparent text-primary1 hover:text-secondary1',
+                                            ? 'border-secondaryVariant text-secondaryVariant'
+                                            : 'border-transparent text-onBackground hover:text-secondaryVariant',
                                           'relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition  ease-out'
                                         )}
                                       >
                                         {category.title}
-                                        <span className = "transition hover:text-secondary1 text-primary1"><ChevronDownIcon className = {`w-5 h-5 font-bold ${open ? 'rotate-180 text-secondary1':'rotate-0 text-primary1'} transition `}/></span>
+                                        <span className = "transition hover:text-secondaryVariant text-onBackground"><ChevronDownIcon className = {`w-5 h-5 font-bold ${open ? 'rotate-180':'rotate-0'} transition `}/></span>
                                       </Popover.Button>
                                     </div>
 
@@ -269,18 +269,18 @@ export default function Header({data}) {
                                       leaveFrom="opacity-100"
                                       leaveTo="opacity-0"
                                     >
-                                      <Popover.Panel className="absolute inset-x-0 text-primary3 top-full sm:text-sm">
+                                      <Popover.Panel className="absolute inset-x-0 top-full sm:text-sm">
                                         {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
                                         <div className="absolute inset-0 shadow-xl top-1/2" aria-hidden="true" />
 
-                                        <div className="relative bg-primary1">
+                                        <div className="relative bg-background">
                                           <div className="px-8 mx-auto max-w-7xl">
-                                            <div className="grid items-start grid-cols-4 pt-10 pb-12 gap-y-10 gap-x-8">
+                                            <div className="py-10 columns-4">
                                               {category.items.map((subCategory)=>(
-                                                <div key = {subCategory.title}>
+                                                <div key = {subCategory.title} className = "break-inside-avoid">
                                                   <p
                                                     id={`desktop-featured-heading-${categoryIdx}`}
-                                                    className="font-medium text-primary2"
+                                                    className="text-lg font-medium text-onBackground"
                                                   >
                                                     {subCategory.title}
                                                   </p>
@@ -291,7 +291,7 @@ export default function Header({data}) {
                                                   >
                                                     {subCategory.items.map((item) => (
                                                       <li key={item.title} className="flex">
-                                                        <a href={item.url} className="hover:text-gray-800">
+                                                        <a href={item.url} className="text-onBackground/80 hover:text-secondaryVariant">
                                                           {item.title}
                                                         </a>
                                                       </li>
@@ -318,7 +318,7 @@ export default function Header({data}) {
                               <a
                                 key={page.title}
                                 href={page.href}
-                                className="flex items-center text-sm font-medium transition cursor-pointer text-primary1 hover:text-secondary1"
+                                className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-secondaryVariant"
                               >
                                 {page.title}
                               </a>
@@ -333,7 +333,7 @@ export default function Header({data}) {
                   <div className="flex items-center flex-1 lg:hidden">
                     <button
                       type="button"
-                      className="p-2 -ml-2 rounded-md text-primary1"
+                      className="p-2 -ml-2 rounded-md text-onBackground"
                       onClick={() => setOpen(true)}
                     >
                       <span className="sr-only">Open menu</span>
@@ -343,9 +343,9 @@ export default function Header({data}) {
 
                   {/* Logo (lg-) */}
                   <a href="#" className="lg:hidden">
-                    <span className="sr-only">Your Company</span>
+                    <span className="sr-only">Hufi</span>
                     <img
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                      src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
                       alt=""
                       className="w-auto h-8"
                     />
@@ -355,22 +355,22 @@ export default function Header({data}) {
                     <div className="flex items-center lg:ml-8">
                       <div className="flex space-x-8">
                         <div className="flex">
-                          <a href="#" className="p-2 -m-2 text-primary1 hover:text-secondary1">
+                          <a href="#" className="p-2 -m-2 text-onBackground hover:text-secondaryVariant">
                             <span className="sr-only">Account</span>
                             <UserIcon className="w-6 h-6" aria-hidden="true" />
                           </a>
                         </div>
                       </div>
 
-                      <span className="w-px h-6 mx-4 bg-primary1 lg:mx-6" aria-hidden="true" />
+                      <span className="w-px h-6 mx-4 bg-onBacktext-onBackground lg:mx-6" aria-hidden="true" />
 
                       <div className="flow-root">
                         <a href="#" className="flex items-center p-2 -m-2 group">
                           <ShoppingCartIcon
-                            className="flex-shrink-0 w-6 h-6 text-primary1 group-hover:text-secondary1"
+                            className="flex-shrink-0 w-6 h-6 text-onBackground group-hover:text-secondaryVariant"
                             aria-hidden="true"
                           />
-                          <span className="ml-2 text-sm font-medium text-primary1">0</span>
+                          <span className="ml-2 text-sm font-medium text-onBackground">0</span>
                           <span className="sr-only">items in cart, view bag</span>
                         </a>
                       </div>
