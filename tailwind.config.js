@@ -19,6 +19,8 @@ module.exports = {
         "primaryVariant":"#CFE1B9",
         "secondary":"#dbe9f5",
         "secondaryVariant":"#b9cfe1",
+        "tertiary":"#e5a2a4",
+        "tertiaryVariant":"#dd8387",
         "background":"white",
         "surface":"#F3F4FB",
         "error":"#83555a",

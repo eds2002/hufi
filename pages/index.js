@@ -10,7 +10,6 @@ import {allCollections} from '../graphql/queries/allCollections'
 import { Collections, Hero, HorizontalProducts, Incentive, Testimonial, TestimonialsGrid } from '../components/sections'
 
 export default function Home(props) {
-  console.log(props.collectionData)
   return (
     <>
       <Hero data = {props.heroData}/>

@@ -30,6 +30,7 @@ query Product($handle: String!) {
     }
     variants(first:100){
       nodes{
+        id
         selectedOptions{
           name
           value
@@ -95,6 +96,10 @@ query Product($handle: String!) {
     	value
     	type
   	}
+    shortDesc:metafield(namespace:"product",key:"short_description"){
+      value
+      type
+    }
   }
 }
 `

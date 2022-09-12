@@ -220,7 +220,7 @@ export default function Header({data}) {
           )}
 
           {/* Secondary navigation */}
-          <div className="shadow-sm bg-background">
+          <div className="relative z-20 shadow-sm bg-background">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
               <div className="">
                 <div className="flex items-center justify-between h-16">
