@@ -29,7 +29,7 @@ export async function getStaticProps(){
 
   let collectionArr = []
   const {data:allProdCol, errors:allProdColErr} = await storefront(allCollections,{amount:5, queryArgs:"[title:All Products]" }).then(res=>collectionArr.push(res.data.collections))
-  const {data:homeDecorCol, errors:homeDecorColErr} = await storefront(allCollections,{amount:5, queryArgs:"[title:Home Decoration]"}).then(res=>collectionArr.push(res.data.collections))
+  const {data:homeDecorCol, errors:homeDecorColErr} = await storefront(allCollections,{amount:5, queryArgs:"[title:Hufi Home]"}).then(res=>collectionArr.push(res.data.collections))
 
   return{
     props:{

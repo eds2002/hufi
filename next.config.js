@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images:{
-    domains:["cdn.shopify.com","tailwindui.com"]
+    domains:["cdn.shopify.com","tailwindui.com","cdn-icons-png.flaticon.com"]
   }
 }
 

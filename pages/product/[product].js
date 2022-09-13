@@ -4,14 +4,13 @@ import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 
 
 export default function Product({productData}){
-  console.log(productData)
   return (
     <main>
       <ProductOverview data = {productData}/>
       <ProductShopPromise/>
       <ProductFeatures data = {productData}/>
       {/* <ProductImageView/> */}
-      {/* <ProductFAQ/> */}
+      <ProductFAQ data = {productData}/>
     </main>
   )
 }

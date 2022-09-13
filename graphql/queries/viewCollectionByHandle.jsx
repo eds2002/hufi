@@ -6,19 +6,51 @@ query viewCollection($handle:String!, $amount:Int){
     handle
     title
     updatedAt
+    descriptionHtml
 		image{
       url
-      originalSrc
+      altText
+    }
+    incentives:metafield(namespace:"collection",key:"incentives"){
+      value
+      type
+    }
+    banner:metafield(namespace:"collection",key:"banner_image"){
+      value
+      type
+      reference {
+        ... on MediaImage {
+          image {
+            altText
+            url
+          }
+        }
+      }
+    }
+    collectionText:metafield(namespace:"collection",key:"collection_text"){
+      value
+      type
+    }
+    sortByTags:metafield(namespace:"collection",key:"sortByTags"){
+      value
+      type
     }
     products(sortKey:BEST_SELLING, first:$amount){
       nodes{
+        tags
         id
         title
         handle
+        options{
+          name
+          values
+        }
         variants(first:100){
           nodes{
+            id
             selectedOptions{
               name
+              value
             }
           }
         }
@@ -34,6 +66,10 @@ query viewCollection($handle:String!, $amount:Int){
               originalSrc
             }
           }
+        }
+        shortDesc:metafield(namespace:"product",key:"short_description"){
+          value
+          type
         }
       }
     }

@@ -100,6 +100,10 @@ query Product($handle: String!) {
       value
       type
     }
+    faqs:metafield(namespace:"product",key:"faqs"){
+      value
+      type
+    }
   }
 }
 `

@@ -43,16 +43,16 @@ export default function ProductOverview({data}) {
 
   const addToCart = (e) =>{
     e.preventDefault()
-    // FIND VARIANT ID LOL
     let findId;
-    const test = ['Black', 'Heavy Door', 'Option2']
 
     const query = []
 
+    // TODO, for each selected option the user has requested, store variable into query array
     selectedOption.forEach((option)=>{
       query.push(option.value)
     })
 
+    // TODO, find the id 
     data.product.variants.nodes.map((newArr, arrayIndex) =>{
       if(query.every(object=>newArr.selectedOptions.some(obj=> obj.value === object))){
         findId = arrayIndex
@@ -60,10 +60,6 @@ export default function ProductOverview({data}) {
     })
 
     console.log(data.product.variants.nodes[findId].id)
-
-
-
-
   }
 
   return (
