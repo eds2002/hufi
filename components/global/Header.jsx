@@ -18,6 +18,7 @@ import { Fragment, useState } from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 
 const navigation = {
   categories: [
@@ -93,7 +94,7 @@ export default function Header({data}) {
   const [displayTopNav, setDisplayTopNav] = useState(true)
 
   return (
-    <div className="">
+    <div className="relative z-[30]">
       {/* Mobile menu */}
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
@@ -225,21 +226,23 @@ export default function Header({data}) {
               <div className="">
                 <div className="flex items-center justify-between h-16">
                   {/* Logo (lg+) */}
-                  <div className="hidden lg:flex lg:items-center">
-                    <a href="#">
-                      <span className="sr-only">Hufi</span>
-                      <img
-                        className="w-auto h-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
-                        alt=""
-                      />
-                    </a>
-                  </div>
+                  <Link href = "/">
+                    <div className="hidden cursor-pointer lg:flex lg:items-center">
+                      <a>
+                        <span className="sr-only">Hufi</span>
+                        <img
+                          className="w-auto h-8"
+                          src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
+                          alt=""
+                        />
+                      </a>
+                    </div>
+                  </Link>
 
-                  <div className="hidden h-full lg:flex">
+                  <div className="z-[30]  hidden h-full lg:flex w-full">
                     {/* Mega menus */}
                     <Popover.Group className="ml-8">
-                      <div className="flex justify-center h-full space-x-8">
+                      <div className="flex justify-center h-full space-x-8 ">
                         {data.menu.items.map((category, categoryIdx) => (
                           <> 
                             {category.items != 0 && (
@@ -342,14 +345,16 @@ export default function Header({data}) {
                   </div>
 
                   {/* Logo (lg-) */}
-                  <a href="#" className="lg:hidden">
-                    <span className="sr-only">Hufi</span>
-                    <img
-                      src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
-                      alt=""
-                      className="w-auto h-8"
-                    />
-                  </a>
+                  <Link href = '/'>
+                    <a className="cursor-pointer lg:hidden">
+                      <span className="sr-only">Hufi</span>
+                      <img
+                        src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
+                        alt=""
+                        className="w-auto h-8"
+                      />
+                    </a>
+                  </Link>
 
                   <div className="flex items-center justify-end flex-1">
                     <div className="flex items-center lg:ml-8">

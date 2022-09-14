@@ -3,12 +3,15 @@ import Layout from '../components/global/Layout'
 import '../styles/globals.css'
 import { storefront } from '../utils/storefront'
 import {viewMenu} from '../graphql/queries/viewMenu'
+import { LocaleProvider } from '../context/localeContext'
 
 function MyApp({ Component, pageProps }) {
   return (
-  <Layout {...pageProps}>
-    <Component {...pageProps}/>
-  </Layout>
+  <LocaleProvider>
+    <Layout {...pageProps}>
+      <Component {...pageProps}/>
+    </Layout>
+  </LocaleProvider>
   )
 }
 

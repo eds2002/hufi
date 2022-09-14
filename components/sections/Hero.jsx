@@ -1,21 +1,40 @@
-import React from 'react'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../elements'
+import { useRef } from 'react'
+import Image from 'next/image'
 
 const Hero = ({data}) => {
+  const [handle,setHandle] = useState()
+  console.log(data)
+  const textRef = useRef()
+  useEffect(()=>{
+    const tagHandle = textRef.current.getElementsByTagName("a")[0].innerText
+    setHandle(tagHandle)
+  },[])
   return (
-    <section className="bg-background">
-      <div className = "w-full h-[80vh] max-w-7xl mx-auto px-4 flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center max-w-sm sm:max-w-7xl">
+    <section className="relative bg-background">
+      <div className = "w-full h-[80vh] max-w-7xl mx-auto px-4 flex items-center justify-center relative z-20">
+        <div className="flex flex-col items-center justify-center max-w-sm sm:max-w-7xl" >
           <div className = {`prose  
-              prose-h3:text-4xl prose-h3:font-semibold prose-h3:text-onBackground prose-h3:sm:text-5xl prose-h3:md:text-6xl
-              prose-h6:text-center prose-h3:mt-0 prose-h6:text-onBackground/80 prose-h6:text-xs prose-h6:ring-2 prose-h6:w-24 prose-h6:mx-auto prose-h6:rounded-full prose-h6:ring-primaryVariant
-              prose-h3:text-center
-              `}>
+              prose-h1:text-4xl prose-h1:font-semibold prose-h1:sm:text-5xl prose-h1:md:text-6xl prose-h1:my-0 prose-h1:text-background
+              prose-p:text-center prose-p:lg:text-lg prose-p:sm:text-base prose-p:mt-2 prose-p:text-background/90
+              prose-h1:text-center
+              prose-a:hidden
+              `} ref = {textRef}>
             <div
-              dangerouslySetInnerHTML={{__html: data?.collection?.descriptionHtml}}
+              dangerouslySetInnerHTML={{__html: data?.page?.heroText?.value ?? '<h3>Idk</h3<h6>SomeShit</h3>'}}
             />
           </div>
+          <Link href = {handle ?? '/collections/all-products'}>
             <Button text = "Shop now" CSS = {"w-[50%]"}/>
+          </Link>
+        </div>
+      </div>
+      <div className = "absolute inset-0 z-10 bg-black/40"/>
+      <div className = "absolute inset-0">
+        <div className = "w-full h-full">
+          <img src = {data.page.heroImageBanner.reference.image.url} alt = {data.page.heroImageBanner.reference.image.altText} className = "object-cover w-full h-full"/>
         </div>
       </div>
     </section>

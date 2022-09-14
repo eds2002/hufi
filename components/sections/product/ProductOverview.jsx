@@ -1,11 +1,9 @@
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon } from '@heroicons/react/20/solid'
-import { RadioGroup } from '@headlessui/react'
-import { ComputerDesktopIcon, CurrencyDollarIcon, FingerPrintIcon, GlobeAmericasIcon } from '@heroicons/react/24/outline'
 import { Button } from '../../elements'
-import { resolveBreakpointValues } from '@mui/system/breakpoints'
 import Image from 'next/image'
-import { compose, keys } from '@mui/system'
+import LocaleContext from '../../../context/localeContext'
+import { formatNumber } from '../../../utils/formatNumber'
 
 const product = {
   rating: 3.9,
@@ -18,8 +16,7 @@ function classNames(...classes) {
 }
 
 export default function ProductOverview({data}) {
-  console.log(data)
-
+  const {locale} = useContext(LocaleContext)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
 
 
@@ -71,7 +68,7 @@ export default function ProductOverview({data}) {
               <div className="flex flex-col w-full h-full gap-10 lg:grid lg:grid-cols-12">
 
                 {/* Image gallery */}
-                <div className="col-span-7">
+                <div className="col-span-8">
                   <h2 className="sr-only">Images</h2>
 
                   <div className={`
@@ -91,16 +88,17 @@ export default function ProductOverview({data}) {
                 </div>
 
                 {/* RIGHT SIDE */}
-                <div className = "col-span-5">
+                <div className = "col-span-4">
                   <div className = "sticky top-10">
-                    {/* Product Title */}
-                    <div className="flex items-center justify-between w-full ">
+
+                    {/* Product Title & Pricing */}
+                    <div className="flex items-center justify-between w-full">
                       <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
-                      <p className="text-xl font-medium">
+                      <p className="text-xl ">
                       {data.product?.priceRange?.maxVariantPrice?.amount < data.product.compareAtPriceRange.maxVariantPrice.amount ? 
-                        <span className = "flex gap-x-3">
-                          <span className = "text-onBackground">{data.product.priceRange.maxVariantPrice.amount}</span>
-                          <span className = "font-normal line-through text-tertiaryVariant">{data.product.compareAtPriceRange.maxVariantPrice.amount}</span>
+                        <span className = "flex gap-x-1">
+                          <span className = "text-base font-medium text-onBackground">{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+                          {/* <span className = "text-sm font-normal line-through text-tertiaryVariant">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span> */}
                         </span>
                         :
                         <span>{data.product.priceRange.maxVariantPrice.amount}</span>
@@ -177,7 +175,7 @@ export default function ProductOverview({data}) {
                     {/* Product Description */}
                     <div className="p-4 mt-10 rounded-md bg-surface">
                       <div
-                        className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden"
+                        className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base"
                         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
                       />
                     </div>

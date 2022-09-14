@@ -1,5 +1,6 @@
 const gql = String.raw
 
+
 export const viewProductByHandle = gql`
 query Product($handle: String!) {
   product(handle:$handle) {
@@ -8,6 +9,7 @@ query Product($handle: String!) {
     compareAtPriceRange{
       maxVariantPrice{
         amount
+        currencyCode
       }
     }
     options{

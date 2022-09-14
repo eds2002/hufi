@@ -1,42 +1,59 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import { storefront } from '../utils/storefront'
-import {getCustomMetafield} from '../graphql/queries/getCustomMetafield'
-import {storeInformation} from '../graphql/queries/storeInformation'
 import {viewProducts} from '../graphql/queries/viewProducts'
-import {viewCollectionByHandle} from '../graphql/queries/viewCollectionByHandle'
 import {allCollections} from '../graphql/queries/allCollections'
-import { Collections, Hero, HorizontalProducts, Incentive, Testimonial, TestimonialsGrid } from '../components/sections'
+import { Collections, Hero, HorizontalProducts, Incentive, Signup, Testimonial, TestimonialsGrid } from '../components/sections'
+import { viewIndexMetafields } from '../graphql/queries/viewIndexMetafields'
 
-export default function Home(props) {
+export default function Home({data,collections,productData}) {
+
   return (
     <>
-      <Hero data = {props.heroData}/>
-      <Testimonial/>
-      <HorizontalProducts data = {props.products}/>
-      <Collections data = {props.collectionData}/>
-      <Incentive/>
-      <TestimonialsGrid/>
+      <Hero data = {data}/>
+      <Collections data = {collections[0]}/>
+      {productData != null && (
+        <HorizontalProducts data = {productData}/>
+      )}
+      <Collections data = {collections[1] ?? undefined}/>
+      <Signup/>
+      <Collections data = {collections[2] ?? undefined} style = "row"/>
+
     </>
   )
 }
 
-export async function getStaticProps(){
-  const {data:shopInformation,errors:storeInfoErrors} = await storefront(storeInformation)
-  const {data:heroData, errors:heroBannerError} = await storefront(getCustomMetafield,{namespace:"custom",key:"hero_banners",ownerId:"gid://shopify/Collection/412514451682"})
-  const {data:products, errors:productsError} = await storefront(viewProducts,{amount:3})
 
-  let collectionArr = []
-  const {data:allProdCol, errors:allProdColErr} = await storefront(allCollections,{amount:5, queryArgs:"[title:All Products]" }).then(res=>collectionArr.push(res.data.collections))
-  const {data:homeDecorCol, errors:homeDecorColErr} = await storefront(allCollections,{amount:5, queryArgs:"[title:Hufi Home]"}).then(res=>collectionArr.push(res.data.collections))
+export async function getStaticProps(){
+  const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
+
+  const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
+
+  // TODO, loop through collection sets, query values and rewrite values to collection data
+  for(const [index,set] of collectionsJSON.entries()){
+    const data = []
+    if(index < 3){
+      for(const value of set.collectionTitles){
+        const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[title:${value}]`})
+        data.push(collection)
+      }
+      collectionsJSON[index].collectionTitles = data
+    }
+  }
+
+
+  let prods = null;
+  if(data.page.displayProducts.value){
+    const {data:products, errors:productsError} = await storefront(viewProducts,{amount:3})
+    prods = products
+  }
+
+
 
   return{
     props:{
-      shopInformation:shopInformation || storeInfoErrors,
-      heroData:heroData || heroBannerError,
-      products:products || productsError,
-      collectionData:collectionArr || `${allProdColErr} OR ${homeDecorColErr}`,
+      data:data,
+      collections:collectionsJSON,
+      productData:prods,
     }
   }
 }
