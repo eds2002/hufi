@@ -11,7 +11,7 @@ export default function Collections({data, style}) {
             <div className = "px-4 mx-auto max-w-7xl">
               <h1 className = "mb-6 text-2xl font-medium">{data.heading.title ?? 'Collection Heading'}</h1>
             </div>
-            <div className={`grid gap-6 px-4 mx-auto lg:grid-cols-${style == "row" ? 3 : 2 } max-w-7xl ${style == "row" || data.collectionTitles.length === 2 ? "min-h-[50vh]" : "min-h-[100vh]"} ${style === "row" && ('grid-flow-col auto-cols-[90%] ')} overflow-scroll`}>        
+            <div className={`grid gap-6 px-4 mx-auto ${style == "row" ? 'lg:grid-cols-3' : 'lg:grid-cols-2' } max-w-7xl ${style == "row" || data.collectionTitles.length === 2 ? "min-h-[50vh]" : "min-h-[100vh]"} ${style === "row" && ('grid-flow-col auto-cols-[90%] ')} overflow-scroll`}>        
               {data.collectionTitles.map((collection,index)=>(
                 <div key = {index} className={`relative flex ${index === 0 && data.collectionTitles.length === 3 && style != "row" && 'md:row-span-2'} h-[60vh] md:h-full rounded-md overflow-hidden `}>
                   <Image
