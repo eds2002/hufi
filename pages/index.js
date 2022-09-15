@@ -24,37 +24,42 @@ export default function Home({data,collections,productData}) {
 
 
 export async function getStaticProps(){
-  const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
+  try{
 
-  const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
-
-  // TODO, loop through collection sets, query values and rewrite values to collection data
-  for(const [index,set] of collectionsJSON.entries()){
-    const data = []
-    if(index < 3){
-      for(const value of set.collectionTitles){
-        const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[title:${value}]`})
-        data.push(collection)
+    const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
+  
+    const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
+  
+    // TODO, loop through collection sets, query values and rewrite values to collection data
+    for(const [index,set] of collectionsJSON.entries()){
+      const data = []
+      if(index < 3){
+        for(const value of set.collectionTitles){
+          const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[title:${value}]`})
+          data.push(collection)
+        }
+        collectionsJSON[index].collectionTitles = data
       }
-      collectionsJSON[index].collectionTitles = data
     }
-  }
-
-
-  let prods = null;
-  if(data.page.displayProducts.value){
-    const {data:products, errors:productsError} = await storefront(viewProducts,{amount:3})
-    prods = products
-  }
-
-
-
-  return{
-    props:{
-      data:data,
-      collections:collectionsJSON,
-      productData:prods,
+  
+  
+    let prods = null;
+    if(data.page.displayProducts.value){
+      const {data:products, errors:productsError} = await storefront(viewProducts,{amount:3})
+      prods = products
     }
+  
+  
+  
+    return{
+      props:{
+        data:data,
+        collections:collectionsJSON,
+        productData:prods,
+      }
+    }
+  }catch(e){
+    console.log('ERROR:',e)
   }
 }
 
