@@ -9,15 +9,25 @@ export default function Home({data,collections,productData}) {
 
   return (
     <>
-      <Hero data = {data}/>
-      <Collections data = {collections[0]}/>
-      {productData != null && (
-        <HorizontalProducts data = {productData}/>
+      {!data || !collections || !productData ? (
+        <div>
+          bro something is wrong
+          {console.log(data,collections,productData)}
+        </div>
+      )
+      :
+      (
+        <>
+        <Hero data = {data}/>
+        <Collections data = {collections[0]}/>
+        {productData != null && (
+          <HorizontalProducts data = {productData}/>
+        )}
+        <Collections data = {collections[1] ?? undefined}/>
+        <Signup/>
+        <Collections data = {collections[2] ?? undefined} style = "row"/>
+        </>
       )}
-      <Collections data = {collections[1] ?? undefined}/>
-      <Signup/>
-      <Collections data = {collections[2] ?? undefined} style = "row"/>
-
     </>
   )
 }
@@ -25,9 +35,8 @@ export default function Home({data,collections,productData}) {
 
 export async function getStaticProps(){
   try{
-
     const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
-    console.log(errors)
+    console.log(data)
   
     const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
   
@@ -60,7 +69,6 @@ export async function getStaticProps(){
       }
     }
   }catch(e){
-    console.log('ERROR:',e)
     return{
       props:{
       }
