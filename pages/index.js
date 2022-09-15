@@ -27,6 +27,7 @@ export async function getStaticProps(){
   try{
 
     const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
+    console.log(errors)
   
     const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
   
@@ -60,6 +61,10 @@ export async function getStaticProps(){
     }
   }catch(e){
     console.log('ERROR:',e)
+    return{
+      props:{
+      }
+    }
   }
 }
 
