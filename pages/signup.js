@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { Button, Input } from '../components/elements'
 
-const signup = () => {
+const Signup = () => {
   const [inputs,setInputs] = useState([
     {
       id:1,
@@ -61,7 +61,7 @@ const signup = () => {
             <div className = "flex flex-col items-center justify-center col-span-3">
               <div className = "w-full max-w-sm px-4">
                 <h1 className = "text-3xl font-medium sm:text-3xl lg:text-4xl">Sign up</h1>
-                <p className = "text-base text-left xl:text-lg text-onBackground/80">You're a couple steps away from being a rewards member.</p>
+                <p className = "text-base text-left xl:text-lg text-onBackground/80">You&apos;re a couple steps away from being a rewards member.</p>
                 <form className = "w-full bg-white" onSubmit={(e)=>handleSubmit(e)}>
                   {inputs.map((props,key)=>(
                     <Input onChange={onChange} {...props} key = {key}/>
@@ -83,4 +83,4 @@ const signup = () => {
   )
 }
 
-export default signup
+export default Signup
