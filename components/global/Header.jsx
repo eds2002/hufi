@@ -1,24 +1,11 @@
-/*
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useState } from 'react'
+import { Fragment, useState,useMemo} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useScrollDirection } from 'react-use-scroll-direction'
 import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRef } from 'react'
 
 const navigation = {
   categories: [
@@ -90,11 +77,38 @@ function classNames(...classes) {
 }
 
 export default function Header({data}) {
+  const {isScrollingDown,scrollDirection} = useScrollDirection()
   const [open, setOpen] = useState(false)
   const [displayTopNav, setDisplayTopNav] = useState(true)
+  const [scrolling,setScrolling] = useState()
+  const [scrollPos,setScrollPos] = useState(0)
+
+  const headerRef = useRef()
+
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPos(position)
+  };
+
+  // TODO, get the scroll position
+  useEffect(()=>{
+    window.addEventListener('scroll',handleScroll)
+
+    return()=>{
+      window.removeEventListener('scroll',handleScroll)
+    }
+  },[])
+
+
+  useEffect(()=>{
+    if(scrollDirection != null){
+      console.log(scrollDirection)
+      setScrolling(scrollDirection)
+    }
+  },[scrollDirection])
 
   return (
-    <div className="relative z-[30]">
+    <div className={`sticky top-0 left-0 right-0 z-[30] ${scrolling === "DOWN" && scrollPos > headerRef?.current?.clientHeight ? `-translate-y-[104px]` : '-translate-y-0'} transition duration-500`} ref = {headerRef}>
       {/* Mobile menu */}
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
@@ -135,7 +149,7 @@ export default function Header({data}) {
                 {/* Links */}
                 <Tab.Group as="div" className="mt-2">
                   <Tab.Panels as={Fragment}>
-                    {data.menu.items.map((category, categoryIdx) => (
+                    {data?.menu?.items?.map((category, categoryIdx) => (
                       <>
                         {category.items.map((subCategory,index)=>(
                           <div key={subCategory.title} className="px-4 pt-10 pb-6 ">
@@ -165,7 +179,7 @@ export default function Header({data}) {
                 </Tab.Group>
 
                 <div className="px-4 py-6 space-y-6 border-t border-primaryVariant">
-                  {data.menu.items.map((page) => (
+                  {data?.menu?.items?.map((page) => (
                     <>
                       {page.items.length === 0 && (  
                         <div key={page.title} className="flow-root">
@@ -201,7 +215,7 @@ export default function Header({data}) {
         <nav aria-label="Top">
           {/* Top navigation */}
           {displayTopNav && (
-            <div className="bg-primary">
+            <div className="bg-surface">
               <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onPrimary lg:flex-none">
                   Get free delivery on orders over $100
@@ -243,7 +257,7 @@ export default function Header({data}) {
                     {/* Mega menus */}
                     <Popover.Group className="ml-8">
                       <div className="flex justify-center h-full space-x-8 ">
-                        {data.menu.items.map((category, categoryIdx) => (
+                        {data?.menu?.items?.map((category, categoryIdx) => (
                           <> 
                             {category.items != 0 && (
                               <Popover key={category.name} className="flex">
@@ -315,7 +329,7 @@ export default function Header({data}) {
                         ))}
 
                         {/* For links that do not have sub links */}
-                        {data.menu.items.map((page) => (
+                        {data?.menu?.items?.map((page) => (
                           <>
                             {page.items.length === 0 && (
                               <a

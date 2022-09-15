@@ -14,7 +14,7 @@ const Hero = ({data}) => {
   },[])
   return (
     <section className="relative bg-background">
-      <div className = "w-full h-[80vh] max-w-7xl mx-auto px-4 flex items-center justify-center relative z-20">
+      <div className = "relative z-20 flex items-center justify-center w-full h-screen px-4 mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-center max-w-sm sm:max-w-7xl" >
           <div className = {`prose  
               prose-h1:text-4xl prose-h1:font-semibold prose-h1:sm:text-5xl prose-h1:md:text-6xl prose-h1:my-0 prose-h1:text-background

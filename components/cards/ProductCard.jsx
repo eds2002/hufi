@@ -94,7 +94,7 @@ export default function ProductCard({product}){
               {/* Buttons */}
               <div className = "flex items-center justify-center w-full max-w-xs mt-6 gap-x-3">
                 <Link href = {`/product/${product?.handle}`}>
-                  <Button text = {"Details"} CSS = ' w-auto h-full px-4 bg-white py-1 border-0.5 border-onBackground/40 hover:border-onBackground/80 hover:bg-white h-full'/>
+                  <Button text = {"Details"} CSS = 'bg-transparent border-1 border-black hover:border-white w-auto h-full px-4 bg-white py-1 h-full'/>
                 </Link>
                 <Button text = 'Add to cart' CSS = "w-auto px-4 py-2 text-sm" onClick={()=>handleClick(product)}/>
               </div>

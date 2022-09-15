@@ -18,6 +18,7 @@
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-use-scroll-direction": "^0.1.0",
     "shopify-buy": "^2.16.1"
   },
   "devDependencies": {

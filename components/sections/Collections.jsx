@@ -15,8 +15,8 @@ export default function Collections({data, style}) {
               {data.collectionTitles.map((collection,index)=>(
                 <div key = {index} className={`relative flex ${index === 0 && data.collectionTitles.length === 3 && style != "row" && 'md:row-span-2'} h-[60vh] md:h-full rounded-md overflow-hidden `}>
                   <Image
-                    src={collection.collections.nodes[0]?.image?.originalSrc}
-                    alt={collection.collections.nodes[0]?.image?.altText}
+                    src={collection.collections.nodes[0]?.image.originalSrc}
+                    alt={collection.collections.nodes[0]?.image.altText}
                     className="absolute inset-0 object-cover object-center w-full h-full"
                     layout="fill"
                     priority
