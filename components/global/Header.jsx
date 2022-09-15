@@ -102,7 +102,6 @@ export default function Header({data}) {
 
   useEffect(()=>{
     if(scrollDirection != null){
-      console.log(scrollDirection)
       setScrolling(scrollDirection)
     }
   },[scrollDirection])

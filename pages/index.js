@@ -6,13 +6,12 @@ import { Collections, Hero, HorizontalProducts, Incentive, Signup, Testimonial, 
 import { viewIndexMetafields } from '../graphql/queries/viewIndexMetafields'
 
 export default function Home({data,collections,productData}) {
-
   return (
     <>
       {!data || !collections || !productData ? (
-        <div>
-          bro something is wrong
-          {console.log(data,collections,productData)}
+        <div className = "flex items-center justify-center w-full h-full">
+          <h1>Oops... This is awkward</h1>
+          <h1>Seems like site is under construction right now! Come back later.</h1>
         </div>
       )
       :
@@ -36,19 +35,18 @@ export default function Home({data,collections,productData}) {
 export async function getStaticProps(){
   try{
     const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
-    console.log(data)
   
     const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
   
     // TODO, loop through collection sets, query values and rewrite values to collection data
     for(const [index,set] of collectionsJSON.entries()){
-      const data = []
+      const queryData = []
       if(index < 3){
         for(const value of set.collectionTitles){
-          const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[title:${value}]`})
-          data.push(collection)
+          const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
+          queryData.push(collection)
         }
-        collectionsJSON[index].collectionTitles = data
+        collectionsJSON[index].collectionTitles = queryData
       }
     }
   

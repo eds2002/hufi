@@ -6,7 +6,6 @@ import Image from 'next/image'
 
 const Hero = ({data}) => {
   const [handle,setHandle] = useState()
-  console.log(data)
   const textRef = useRef()
   useEffect(()=>{
     const tagHandle = textRef.current.getElementsByTagName("a")[0].innerText
