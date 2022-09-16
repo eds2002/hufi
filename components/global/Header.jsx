@@ -395,15 +395,6 @@ export default function Header({data}) {
 
                     <div className="flex items-center justify-end flex-1">
                       <div className="flex items-center lg:ml-8">
-                        <div className="flex space-x-8">
-                          <div className="flex">
-                            <a href="#" className="p-2 -m-2 text-onBackground hover:text-secondaryVariant">
-                              <span className="sr-only">Account</span>
-                              <UserIcon className="w-6 h-6" aria-hidden="true" />
-                            </a>
-                          </div>
-                        </div>
-
                         <span className="w-px h-6 mx-4 bg-onBacktext-onBackground lg:mx-6" aria-hidden="true" />
 
                         <div className="flow-root">

@@ -7,7 +7,7 @@ export function LocaleProvider({children}){
   useEffect(()=>{
     let language = window.navigator.userLanguage || window.navigator.language || "en-us";
 
-    setLocale(language)
+    setLocale(language ?? "en-us")
   },[])
   return(
     <LocaleContext.Provider value={{locale}}>

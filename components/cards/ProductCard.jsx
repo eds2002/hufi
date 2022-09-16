@@ -50,15 +50,15 @@ export default function ProductCard({product}){
         {/* Smaller devices md- */}
         <div className = "block cursor-pointer md:hidden" >
           <Link href = {`/product/${product?.handle}`}>
-            <div className = "absolute inset-0 flex flex-col items-center justify-end p-4">
+            <div className = "absolute inset-0 flex flex-col items-center justify-end p-4 bg-surface/15 hover:bg-surface/25">
               {/* Display Text */}
                 <div className = "absolute flex flex-col items-center justify-center transition-all duration-500 pointer-events-none ">
-                  <div className = "flex flex-row items-center justify-center w-full mt-4 text-center text-onPrimary/70">
-                    <p className = "text-base font-medium">{product?.title}</p>
-                    <div className = "w-0.5 rounded-full h-5 mx-3 bg-onPrimary/70"/>
-                    <p className = "text-base font-medium">{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</p>
+                  <div className = "flex flex-col items-center justify-center w-full mt-4 text-center sm:flex-row text-onPrimary">
+                    <p className = "text-xs font-medium sm:text-base">{product?.title}</p>
+                    <div className = "hidden sm:block w-0.5 rounded-full h-5 mx-1 sm:mx-3 bg-onPrimary/70"/>
+                    <p className = "text-xs font-medium sm:text-base">{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</p>
                   </div>
-                  <p className = "text-sm text-onBackground/60">{product.shortDesc?.value}</p>
+                  <p className = "text-xs text-center sm:text-sm text-onBackground/60">{product.shortDesc?.value}</p>
                 </div>
             </div>
           </Link>
