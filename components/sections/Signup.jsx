@@ -11,7 +11,7 @@ const Signup = () => {
           <h1 className = "mt-2 text-4xl font-semibold">Hufi Rewards Member</h1>
           <p className = "max-w-sm mt-2 text-base sm:text-base lg:text-lg text-onPrimary/80">Sign up today for exclusive monthly rewards. Exclusive members also don&apos;t pay for shipping.</p>
           <div className = "max-w-lg ">
-            <Button text = 'Sign up today' CSS = 'px-4 mt-4' />
+            <Button text = 'Sign up today' CSS = 'px-4 mt-4 bg-background py-2 hover:bg-surface' />
           </div>
         </div>
       </div>

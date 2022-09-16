@@ -6,8 +6,14 @@ import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, MagnifyingGlassIc
 import { Transition,Dialog } from '@headlessui/react'
 import { ProductCard } from '../../cards'
 
-const CollectionProducts = ({data}) => {
+const CollectionProducts = ({data,filters}) => {
   const [tags, setTags] = useState([])
+
+  const [filterBy, setFilterBy] = useState(filters || [])
+
+  const removeFilter = (filter) =>{
+    setFilterBy(selectedTags => selectedTags.filter((selectedTag=> selectedTag != filter)))
+  }
 
   useEffect(()=>{
     let productTags = []
@@ -24,42 +30,63 @@ const CollectionProducts = ({data}) => {
   },[])
 
   return (
-    <section className = "pb-24 pt-36 bg-surface">
-      <div className = "w-full px-4 sm:px-10 mx-auto max-w-[1600px]"> 
-      
-      {/* This is set in shopify collection page. */}
-      {data.collectionByHandle.sortByTags.value == true ?
-      <>
-        <div className = "grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 xl:grid-cols-4 ">
-          {data.collectionByHandle.products.nodes.map((product,key)=>(
-            <ProductCard product={product} data = {data.collectionByHandle.products} key = {key}/>
+    <section className = "relative pt-24 pb-10 bg-surface h-[300vh]">
+      {/* COLLECTION NAME NAV */}
+      <nav className = "sticky top-0 z-20 w-full pt-16">
+        <div className = 'z-20 w-full h-full bg-surface'>
+          <div className = "px-4 py-2 mx-auto max-w-7xl">
+            <div className = "grid grid-flow-col auto-cols-max">
+              <p className = "text-xl font-medium ">{data?.collectionByHandle?.title ?? `Title`}{filterBy.length >= 1 && ':'} </p>
+              <span className = "flex items-center ml-4 text-xl font-medium gap-x-3">
+                {filterBy.length > 0 && (
+                  <>
+                    {filterBy.map((filter)=>(
+                      <span key = {filter} className = "px-4 py-0 text-base rounded-full cursor-pointer bg-primaryVariant hover:bg-primaryVariant/60 text-onPrimary/60" onClick = {()=>removeFilter(filter)}>{filter}</span>
+                    ))}
+                  </>
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* FILTERS NAV*/}
+      <nav className = "w-full">
+        <div className = "grid grid-flow-col gap-6 px-4 py-2 mx-auto overflow-hidden auto-cols-max max-w-7xl">
+          {tags.map((tag)=>(
+            <>
+              {!filterBy.includes(tag) && (
+                <p className = "text-sm font-medium transition cursor-pointer sm:text-base hover:text-onSurface/60" onClick = {()=>setFilterBy(oldArr=> [...oldArr,tag])}>{tag}</p>
+              )}
+            </>
           ))}
         </div>
-      </> 
-      :
-      <>
-      {tags.map((tag,key)=>(
-        <div key = {key}>
-          <p className = "text-2xl font-medium text-left md:text-3xl">{tag}</p>
+      </nav>
 
-          {/* DISPLAY PRODUCTS */}
-          <div className = "grid grid-cols-1 gap-10 pt-5 pb-32 sm:grid-cols-2 xl:grid-cols-4 ">
+      {/* DISPLAY PRODUCTS */}
+      <div className = "w-full px-4 mx-auto max-w-7xl"> 
+        <div className = "flex gap-10 mx-auto max-w-7xl">
+          <div className = "grid w-full h-full grid-cols-2 gap-10 pt-5 pb-32 xl:grid-cols-3 ">
             {data.collectionByHandle.products.nodes.map((product)=>(
-              <>
-                {product.tags.includes(tag) && (
+              <> 
+                {filterBy.length === 0 ? 
                   <ProductCard product={product} data = {data.collectionByHandle.products}/>
-                )}
+                  :
+                  <>
+                    {filterBy.includes(product.tags[0]) && (
+                      <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                    )}
+                  </>
+                }
               </>
             ))}
           </div>
         </div>
-      ))}
-      </>
-      }
       </div>
     </section>
-    
   )
 }
+
 
 export default CollectionProducts

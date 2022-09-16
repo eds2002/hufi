@@ -47,7 +47,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
 
   return(
     <Transition appear show={openModal} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={()=>setOpenModal(false)}>
+        <Dialog as="div" className="relative z-40" onClose={()=>setOpenModal(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

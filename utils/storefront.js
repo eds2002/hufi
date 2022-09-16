@@ -1,5 +1,4 @@
 export async function storefront(query,variables={}){
-  console.log(variables)
   const response = await fetch(
     process.env.NEXT_PUBLIC_API_URL,
     {
@@ -14,7 +13,6 @@ export async function storefront(query,variables={}){
 
 
   const data = await response.json()
-  console.log(data.data?.collections?.nodes,variables)
   if(data.errors){
     return {errors:`${data.errors[0].message}` }
   }

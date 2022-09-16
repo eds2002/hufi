@@ -13,7 +13,7 @@ const Hero = ({data}) => {
   },[])
   return (
     <section className="relative bg-background">
-      <div className = "relative z-20 flex items-center justify-center w-full h-screen px-4 mx-auto max-w-7xl">
+      <div className = "relative z-20 flex items-center justify-center w-full h-[50vh] md:h-screen px-4 mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-center max-w-sm sm:max-w-7xl" >
           <div className = {`prose  
               prose-h1:text-4xl prose-h1:font-semibold prose-h1:sm:text-5xl prose-h1:md:text-6xl prose-h1:my-0 prose-h1:text-background
@@ -26,7 +26,7 @@ const Hero = ({data}) => {
             />
           </div>
           <Link href = {handle ?? '/collections/all-products'}>
-            <Button text = "Shop now" CSS = {"w-[50%]"}/>
+            <Button text = "Shop now" CSS = {"w-[50%] bg-secondaryVariant py-2 hover:bg-secondary"}/>
           </Link>
         </div>
       </div>

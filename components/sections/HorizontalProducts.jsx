@@ -10,13 +10,11 @@ export default function HorizontalProducts({data:{products}}) {
         <h1 className = "mb-6 text-2xl font-medium">Trending products</h1>
       </div>
       <div className="w-full px-4 pb-16 mx-auto overflow-scroll max-w-7xl">
-        {/* <div className = "grid grid-flow-col auto-cols-[70%] sm:auto-cols-[60%] md:auto-cols-[45%] lg:auto-cols-[35%] snap-mandatory snap-x gap-10"> */}
-          <div className = "w-full h-full snap-start max-w-[400px] flex gap-10">
-            {products.nodes.map((product,key)=>(
-              <ProductCard product={product} key = {key}/>
-            ))}
-          </div>
-        {/* </div> */}
+        <div className = "grid grid-flow-col auto-cols-[70%] sm:auto-cols-[60%] md:auto-cols-[45%] lg:auto-cols-[35%] snap-mandatory snap-x gap-10">
+          {products.nodes.map((product,key)=>(
+            <ProductCard product={product} key = {key}/>
+          ))}
+        </div>
       </div>
     </div>
   )

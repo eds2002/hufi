@@ -27,8 +27,9 @@ export const viewProducts = gql`
             }
           }
         }
-        metafield(namespace:"product",key:"short_description"){
+        shortDesc:metafield(namespace:"product",key:"short_description"){
           value
+          type
         }
         media(first:2){
           nodes{

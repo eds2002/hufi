@@ -53,7 +53,7 @@ export async function getStaticProps(){
   
     let prods = null;
     if(data.page.displayProducts.value){
-      const {data:products, errors:productsError} = await storefront(viewProducts,{amount:3})
+      const {data:products, errors:productsError} = await storefront(viewProducts,{amount:10})
       prods = products
     }
   
