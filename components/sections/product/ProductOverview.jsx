@@ -104,7 +104,7 @@ export default function ProductOverview({data}) {
                           {/* <span className = "text-sm font-normal line-through text-tertiaryVariant">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span> */}
                         </span>
                         :
-                        <span>{data.product.priceRange.maxVariantPrice.amount}</span>
+                        <span>{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
                       }
                       </p>
                     </div>
@@ -137,50 +137,59 @@ export default function ProductOverview({data}) {
                       </div>
                     </div>
 
-                    {/* Product Information */}
-                    <div className="mt-8 lg:col-span-5">
-                      <form name = "productInformation" >
-                        {data.product.options.map((option,index)=>(
-                          <div key = {index} >
-                            {/* Options title */}
-                            <h3 className = "text-base font-medium" id = {option.name}>
-                              <span>{option.name}: </span>
-                              <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt.name === option.name)].value}</span>
-                            </h3>
-
-                            {/* Options Values */}
-                            <div className = "flex items-center mt-2 mb-5 gap-x-3">
-                              {option.values.map((value,key)=>(
-                                <p className = 
-                                {`
-                                  ${option.name === "Color" ? 
-                                  (`h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`)
-                                  :
-                                  (`px-2 rounded-md ring-2 ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`)
-                                  }
-                                   text-sm
-                                   cursor-pointer
-                                `}
-                                style={{backgroundColor:value}}
-                                onClick = {(e)=>handleVariantChange(option.name,value)}
-                                key = {key}
-                                id = {option.value}
-                                >
-                                  {option.name === "Color" ? '' : value}
-                                </p>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                        <Button text = "Add to cart" onClick = {(e)=>addToCart(e)}/>
-                      </form>
-                    </div>
                     {/* Product Description */}
                     <div className="p-4 mt-10 rounded-md bg-surface">
                       <div
                         className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base"
                         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
                       />
+                    </div>
+
+                    {/* Product Information */}
+                    <div className="mt-8 lg:col-span-5">
+                      <form name = "productInformation" >
+                        {data.product.options.map((option,index)=>(
+                          <div key = {index} >
+                            {/* Options title */}
+                            {/* TODO, avoid rendering products with no options / variants */}
+                            {option.name != "Title" && (
+                              <h3 className = "text-base font-medium" id = {option.name}>
+                                <span>{option.name}: </span>
+                                <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt.name === option.name)].value}</span>
+                              </h3>
+                            )}
+
+                            {/* Options Values */}
+                            <div className = "flex items-center mt-2 mb-5 gap-x-3">
+                              {/* TODO, avoid rendering products with no options / variants */}
+                              {option.name != "Title" && (
+                                <>
+                                  {option.values.map((value,key)=>(
+                                    <p className = 
+                                    {`
+                                      ${option.name === "Color" ? 
+                                      (`h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`)
+                                      :
+                                      (`px-2 rounded-md ring-2 ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`)
+                                      }
+                                      text-sm
+                                      cursor-pointer
+                                    `}
+                                    style={{backgroundColor:value}}
+                                    onClick = {(e)=>handleVariantChange(option.name,value)}
+                                    key = {key}
+                                    id = {option.value}
+                                    >
+                                      {option.name === "Color" ? '' : value}
+                                    </p>
+                                  ))}
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                        <Button text = "Add to cart" onClick = {(e)=>addToCart(e)}/>
+                      </form>
                     </div>
 
                     <DetailsComponent data = {data.product.details}/>
