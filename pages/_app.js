@@ -4,20 +4,23 @@ import '../styles/globals.css'
 import { storefront } from '../utils/storefront'
 import {viewMenu} from '../graphql/queries/viewMenu'
 import { LocaleProvider } from '../context/localeContext'
+import CartContext, { CartProvider } from '../context/cartContext'
 
 function MyApp({ Component, pageProps }) {
   return (
-  <LocaleProvider>
-    <Layout {...pageProps}>
-      <Component {...pageProps}/>
-    </Layout>
-  </LocaleProvider>
+  <CartProvider>
+    <LocaleProvider>
+      <Layout {...pageProps}>
+        <Component {...pageProps}/>
+      </Layout>
+    </LocaleProvider>
+  </CartProvider>
   )
 }
 
 export default MyApp
 
-MyApp.getInitialProps = async () =>{
+MyApp.getInitialProps = async ({req,res}) =>{
   let pageProps = {}
   try{
     const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})

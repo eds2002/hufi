@@ -39,8 +39,8 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "relative flex flex-col overflow-hidden transition rounded-lg aspect-square group">
-        <div className = "relative w-full h-full overflow-hidden rounded-md cursor-pointer">
+      <div className = "relative flex flex-col transition rounded-lg aspect-square group">
+        <div className = "relative w-full h-full rounded-md cursor-pointer">
           <div className = "absolute inset-0 ">
             <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
           </div>
@@ -48,17 +48,14 @@ export default function ProductCard({product}){
         </div>
 
         {/* Smaller devices md- */}
-        <div className = "block cursor-pointer md:hidden" >
+        <div className = "overflow-hidden bg-white cursor-pointer md:hidden text-ellipsis" >
           <Link href = {`/product/${product?.handle}`}>
-            <div className = "absolute inset-0 flex flex-col items-center justify-end p-4 bg-surface/15 hover:bg-surface/25">
+            <div className = "relative z-20 flex flex-col items-center justify-end p-4">
               {/* Display Text */}
-                <div className = "absolute flex flex-col items-center justify-center transition-all duration-500 pointer-events-none ">
-                  <div className = "flex flex-col items-center justify-center w-full mt-4 text-center sm:flex-row text-onPrimary">
-                    <p className = "text-xs font-medium sm:text-base">{product?.title}</p>
-                    <div className = "hidden sm:block w-0.5 rounded-full h-5 mx-1 sm:mx-3 bg-onPrimary/70"/>
-                    <p className = "text-xs font-medium sm:text-base">{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</p>
-                  </div>
-                  <p className = "text-xs text-center sm:text-sm text-onBackground/60">{product.shortDesc?.value}</p>
+                <div className = "grid w-full h-full grid-rows-3 transition-all duration-500 pointer-events-none place-items-start">
+                  <p className = "grid-flow-col overflow-hidden font-medium text-left sm:text-base whitespace-nowrap text-ellipsis">{product?.title}</p>
+                  <p className = "text-xs font-medium sm:text-base">{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</p>
+                  <p className = "text-xs text-left sm:text-sm text-onBackground/60 whitespace-nowrap text-ellipsis">{product.shortDesc?.value}</p>
                 </div>
             </div>
           </Link>

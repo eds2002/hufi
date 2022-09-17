@@ -3,10 +3,20 @@ import { viewCollectionByHandle } from '../../graphql/queries/viewCollectionByHa
 import { CollectionBanner, CollectionProducts } from '../../components/sections/collection';
 
 const CollectionPage = ({collectionData, urlFilters}) => {
+  ("y0",collectionData)
   return (
     <>
-      <CollectionBanner data = {collectionData}/>
-      <CollectionProducts data = {collectionData} filters = {urlFilters}/>
+      {collectionData.collectionByHandle ?
+      <>
+        <CollectionBanner data = {collectionData}/>
+        <CollectionProducts data = {collectionData} filters = {urlFilters}/>
+      </>
+      :
+        <div>
+          <p>This collection doesnt exists</p>
+          <p>::::OTHER COLLECTIONS</p>
+        </div>
+      }
     </>
   )
 }

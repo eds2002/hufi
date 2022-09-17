@@ -21,6 +21,7 @@ export const viewProducts = gql`
         }
         variants(first:100){
           nodes{
+            id
             selectedOptions{
               name
               value

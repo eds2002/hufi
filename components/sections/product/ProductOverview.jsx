@@ -4,6 +4,8 @@ import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
 import { formatNumber } from '../../../utils/formatNumber'
+import { addToShopifyCart } from '../../../utils/addToShopifyCart'
+import CartContext from '../../../context/cartContext'
 
 const product = {
   rating: 3.9,
@@ -17,6 +19,7 @@ function classNames(...classes) {
 
 export default function ProductOverview({data}) {
   const {locale} = useContext(LocaleContext)
+  const {cartData,setCartData} = useContext(CartContext)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
 
 
@@ -38,7 +41,7 @@ export default function ProductOverview({data}) {
 
   }
 
-  const addToCart = (e) =>{
+  const addToCart = async (e) =>{
     e.preventDefault()
     let findId;
 
@@ -55,8 +58,8 @@ export default function ProductOverview({data}) {
         findId = arrayIndex
       }
     })
-
-    console.log(data.product.variants.nodes[findId].id)
+    const responseCartData = await addToShopifyCart(cartData,data.product.variants.nodes[findId].id)
+    setCartData(responseCartData)
   }
 
   return (
@@ -89,7 +92,7 @@ export default function ProductOverview({data}) {
 
                 {/* RIGHT SIDE */}
                 <div className = "col-span-4">
-                  <div className = "sticky top-10">
+                  <div className = "sticky top-[104px]">
 
                     {/* Product Title & Pricing */}
                     <div className="flex items-center justify-between w-full">

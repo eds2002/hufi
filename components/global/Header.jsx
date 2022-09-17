@@ -1,77 +1,19 @@
-import { Fragment, useState,useMemo} from 'react'
+import { Fragment, useState,useMemo, useContext} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useScrollDirection } from 'react-use-scroll-direction'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { useRef } from 'react'
 import Image from 'next/image'
+import { Button } from '../elements'
+import CartContext from '../../context/cartContext'
+import LocaleContext from '../../context/localeContext'
+import {formatNumber} from '../../utils/formatNumber'
+import {removeProduct} from '../../utils/removeProduct'
+import { updateCart } from '../../utils/updateCart'
 
-const navigation = {
-  categories: [
-    {
-      name: 'Women',
-      featured: [
-        { name: 'Sleep', href: '#' },
-        { name: 'Swimwear', href: '#' },
-        { name: 'Underwear', href: '#' },
-      ],
-      collection: [
-        { name: 'Everything', href: '#' },
-        { name: 'Core', href: '#' },
-        { name: 'New Arrivals', href: '#' },
-        { name: 'Sale', href: '#' },
-      ],
-      categories: [
-        { name: 'Basic Tees', href: '#' },
-        { name: 'Artwork Tees', href: '#' },
-        { name: 'Bottoms', href: '#' },
-        { name: 'Underwear', href: '#' },
-        { name: 'Accessories', href: '#' },
-      ],
-      brands: [
-        { name: 'Full Nelson', href: '#' },
-        { name: 'My Way', href: '#' },
-        { name: 'Re-Arranged', href: '#' },
-        { name: 'Counterfeit', href: '#' },
-        { name: 'Significant Other', href: '#' },
-      ],
-    },
-    {
-      name: 'Men',
-      featured: [
-        { name: 'Casual', href: '#' },
-        { name: 'Boxers', href: '#' },
-        { name: 'Outdoor', href: '#' },
-      ],
-      collection: [
-        { name: 'Everything', href: '#' },
-        { name: 'Core', href: '#' },
-        { name: 'New Arrivals', href: '#' },
-        { name: 'Sale', href: '#' },
-      ],
-      categories: [
-        { name: 'Artwork Tees', href: '#' },
-        { name: 'Pants', href: '#' },
-        { name: 'Accessories', href: '#' },
-        { name: 'Boxers', href: '#' },
-        { name: 'Basic Tees', href: '#' },
-      ],
-      brands: [
-        { name: 'Significant Other', href: '#' },
-        { name: 'My Way', href: '#' },
-        { name: 'Counterfeit', href: '#' },
-        { name: 'Re-Arranged', href: '#' },
-        { name: 'Full Nelson', href: '#' },
-      ],
-    },
-  ],
-  pages: [
-    { name: 'Company', href: '#' },
-    { name: 'Stores', href: '#' },
-  ],
-}
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -83,6 +25,7 @@ export default function Header({data}) {
   const [displayTopNav, setDisplayTopNav] = useState(true)
   const [scrolling,setScrolling] = useState()
   const [scrollPos,setScrollPos] = useState(0)
+  const {openCart,setOpenCart,cartData} = useContext(CartContext)
 
   const headerRef = useRef()
 
@@ -234,7 +177,7 @@ export default function Header({data}) {
                 <div className="">
                   <div className="relative flex items-center justify-between h-16">
 
-                    <div className="z-[30]  hidden h-full lg:flex w-full flex-1 ">
+                    <div className="flex-1 hidden w-full h-full lg:flex">
                       {/* Mega menus */}
                       <Popover.Group className="ml-8">
                         <div className="flex justify-center h-full space-x-8 ">
@@ -395,17 +338,13 @@ export default function Header({data}) {
 
                     <div className="flex items-center justify-end flex-1">
                       <div className="flex items-center lg:ml-8">
-                        <span className="w-px h-6 mx-4 bg-onBacktext-onBackground lg:mx-6" aria-hidden="true" />
-
                         <div className="flow-root">
-                          <a href="#" className="flex items-center p-2 -m-2 group">
-                            <ShoppingCartIcon
-                              className="flex-shrink-0 w-6 h-6 text-onBackground group-hover:text-secondaryVariant"
-                              aria-hidden="true"
-                            />
-                            <span className="ml-2 text-sm font-medium text-onBackground">0</span>
+                            <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer`}
+                            onClick = {()=>setOpenCart(!openCart)}
+                            >
+                              <span className="text-sm font-medium ">{cartData?.lines?.edges?.length || 0}</span>
+                            </div>
                             <span className="sr-only">items in cart, view bag</span>
-                          </a>
                         </div>
                       </div>
                     </div>
@@ -415,7 +354,182 @@ export default function Header({data}) {
             </div>
           </nav>
         </header>
+        <CartDrawer openCart = {openCart} setOpenCart = {setOpenCart}/>
       </div>
     </>
+  )
+}
+
+function CartDrawer({openCart, setOpenCart}){
+  const {cartData} = useContext(CartContext)
+  const {locale} = useContext(LocaleContext)
+  const totalItems = cartData?.lines?.edges?.length ?? 0
+  const [progressWidth, setProgressWidth] = useState(100)
+
+
+
+  useEffect(()=>{
+    setProgressWidth((cartData?.cost?.subtotalAmount?.amount || 0)/75*100)
+  },[cartData?.cost?.subtotalAmount?.amount])
+  return(
+    <Transition.Root show={openCart} as={Fragment}>
+      <Dialog as="div" className="relative z-40" onClose={setOpenCart}>
+        <Transition.Child
+          as={Fragment}
+          enter="transition-opacity ease-linear duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity ease-linear duration-300"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-opacity-25 bg-secondaryVariant" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 z-40 flex">
+          <Transition.Child
+            as={Fragment}
+            enter="transition ease-in-out duration-300 transform"
+            enterFrom="translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in-out duration-300 transform"
+            leaveFrom="translate-x-0"
+            leaveTo="translate-x-full"
+          >
+            <Dialog.Panel className="relative flex flex-col justify-between w-full max-w-xs ml-auto overflow-scroll overflow-y-auto shadow-xl bg-background">
+
+            
+              {/* CART HEADER */}
+              {cartData?.lines.edges.length == 0 ?
+                <>
+                  <div className="flex justify-between px-4 pt-5 pb-2">
+                    <span className = "text-xl font-medium">Cart <span className = "text-xl text-gray-400">{totalItems}</span></span>
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center p-2 -m-2 rounded-md text-onBackground"
+                      onClick={() => setOpenCart(false)}
+                    >
+                      <span className="sr-only">Close menu</span>
+                      <XMarkIcon className="w-6 h-6" aria-hidden="true" />
+                    </button>
+                  </div>
+                  <div className = "w-full h-full bg-red-500">
+                    
+                  </div>
+                </>
+              :
+              <>
+                <div className="flex justify-between px-4 pt-5 pb-2">
+                  <span className = "text-xl font-medium">Cart <span className = "text-xl text-gray-400">{totalItems}</span></span>
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center p-2 -m-2 rounded-md text-onBackground"
+                    onClick={() => setOpenCart(false)}
+                  >
+                    <span className="sr-only">Close menu</span>
+                    <XMarkIcon className="w-6 h-6" aria-hidden="true" />
+                  </button>
+                </div>
+
+                {/* PRODUCTS CONTAINER */}
+                <div className = "w-full h-full overflow-scroll ">
+                  {cartData?.lines.edges.map((product)=>(
+                      <CartProduct data = {product} key = {product.id}/>
+                  ))}
+                </div>
+
+                {/* BOTTOM INFORMATION */}
+                <div className = "w-full px-4 py-6 pb-16 overflow-hidden border-b border-onPrimary/15 bg-surface">
+                  {/* SLIDER FOR FREE SHIPPING */}
+                  <div className = "relative left-0 right-0 w-full">
+                    <p className = "w-full pb-1 text-sm text-center text-neutral-500">
+                      {cartData?.cost.subtotalAmount.amount >= 75 ? 
+                        `Qualified for free shipping.`
+                      :
+                      <>
+                        You are <b>{formatNumber(75 - cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</b> away from <b>free shipping.</b>
+                      </>
+                      }
+                    </p>
+                    <div className = "absolute w-full h-2 overflow-hidden transition-all duration-500 rounded-full bg-neutral-400">
+                      {cartData?.cost.subtotalAmount.amount >= 75 ? 
+                      <div style = {{width:"100%"}} className = "absolute h-2 overflow-hidden rounded-full bg-primaryVariant"/>
+                      :
+                      <div style = {{width:progressWidth+ "%"}} className = "absolute h-2 overflow-hidden transition duration-500 rounded-full bg-primaryVariant"/>
+                      }
+                    </div>
+                  </div>
+
+                  {/* Subtotal information */}
+                  <div className = "w-full py-6">
+                    <p className = "flex items-center justify-between">
+                      <span className = "text-base font-medium">Subtotal</span>
+                      <span className = "text-base font-medium">{formatNumber(cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</span>
+                    </p>
+                    <p className = "flex items-center justify-between text-onBackground/50">
+                      <span className = "text-sm font-medium">Shipping</span>
+                      <span className = "text-sm font-medium">{cartData?.cost.subtotalAmount.amount>=75 ? 'Free Shipping' :'Calculated at checkout'}</span>
+                    </p>
+                  </div>
+                  <div className = "flex flex-col items-center justify-center">
+                    <Button text = "Checkout" className = "w-full bg-secondaryVariant hover:bg-secondary"/>
+                    <span className = "mt-2 text-xs text-neutral-400">Members get free shipping on any order.</span>
+                  </div>
+                </div>
+              </>
+              }
+            </Dialog.Panel>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition.Root>
+  )
+}
+
+function CartProduct({data}){
+  const {locale} = useContext(LocaleContext)
+  const {cartData,setCartData} = useContext(CartContext)
+
+  const handleDelete = async (data)=>{
+    const newCart = await removeProduct(data,cartData)
+    setCartData(newCart)
+  }
+
+  const handleQty = async (amount,product)=>{
+    const newCart = await updateCart(cartData,amount,product)
+    setCartData(newCart)
+  }
+
+  return(
+    <div className = "flex w-full max-w-xs gap-6 px-4 py-6 border-b border-onPrimary/15">
+      {/* IMAGE */}
+      <div className = "relative w-20 h-20 bg-gray-400 rounded-md flex-0 overflow"> 
+        <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover'/>
+        <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-primary text-onPrimary/70">{data.node.quantity}</span>
+      </div>
+      <div className = "flex-1 w-full h-full">
+        <div className = "grid h-full grid-rows-3">
+          {/* TITLE & PRICE */}
+          <p className = "flex items-center justify-between w-full">
+            <span className = "font-medium">{data.node.merchandise.product.title}</span>
+            <span className = "font-medium">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
+          </p>
+          {/* SELECTED VARIANTS */}
+          <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{(data.node.merchandise.title).replace("/","-")}</p>
+
+          {/* INPUTS */}
+          <div className = "flex items-center justify-between">
+            <div className = "flex items-center justify-center">
+              <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity-1,data)}><MinusIcon className = "w-4 h-4"/></button>
+              <p className = "flex items-center justify-center w-10">{data.node.quantity}</p>
+              <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity+1,data)}><PlusIcon className = "w-4 h-4"/></button>
+            </div>
+            <TrashIcon className = "w-5 h-5 transition cursor-pointer hover:text-tertiaryVariant"
+              onClick = {()=>handleDelete(data)}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

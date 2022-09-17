@@ -1,9 +1,14 @@
 import { Transition, Dialog } from "@headlessui/react"
-import { Fragment } from "react"
+import { Fragment, useContext } from "react"
 import Link from "next/link"
 import { Button } from "../elements"
 import { addToShopifyCart } from "../../utils/addToShopifyCart"
+import LocaleContext from "../../context/localeContext"
+import { formatNumber } from "../../utils/formatNumber"
+import CartContext from "../../context/cartContext"
 export default function AddToCartModal({data,setOpenModal, openModal, selectedOption, setSelectedOption}){
+  const {locale} = useContext(LocaleContext)
+  const {cartData, setCartData} = useContext(CartContext)
   if(data?.variants.length == 0){
     setOpenModal(false)
   }
@@ -21,7 +26,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
 
   }
 
-  const addToCart = (e) =>{
+  const findProductId = async (e) =>{
     e.preventDefault()
     let findId;
 
@@ -40,7 +45,11 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
       }
     })
 
-    addToShopifyCart(findId)
+    const newCart = await addToShopifyCart(cartData,data.variants.nodes[findId].id)
+    if(newCart){
+      setCartData(newCart)
+      setOpenModal(false)
+    }
   }
 
 
@@ -75,7 +84,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                   <div className = "flex items-center justify-start">
                     <p className = "text-xl font-medium">{data?.title}</p>
                     <div className = "w-0.5 h-5 mx-3 bg-onBackground rounded-full"/>
-                    <p className = "text-xl font-medium">{data?.priceRange.maxVariantPrice.amount}</p>
+                    <p className = "text-xl font-medium">{formatNumber(data?.priceRange.maxVariantPrice.amount,data?.priceRange.maxVariantPrice.currenyCode, locale)}</p>
                   </div>
                   <Link href = {`/product/${data?.handle}`}>
                     <a className = "text-sm font-medium underline text-onBackground/60 hover:text-onBackground/80">Learn more</a>
@@ -116,7 +125,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                         </div>
                       </div>
                     ))}
-                    <Button text = "Add to cart" onClick = {(e)=>addToCart(e)}/>
+                    <Button text = "Add to cart" onClick = {(e)=>findProductId(e)}/>
                   </form>
                 </Dialog.Panel>
               </Transition.Child>
