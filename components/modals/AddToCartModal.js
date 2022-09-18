@@ -8,7 +8,7 @@ import { formatNumber } from "../../utils/formatNumber"
 import CartContext from "../../context/cartContext"
 export default function AddToCartModal({data,setOpenModal, openModal, selectedOption, setSelectedOption}){
   const {locale} = useContext(LocaleContext)
-  const {cartData, setCartData} = useContext(CartContext)
+  const {cartData, setCartData,setViewedCart} = useContext(CartContext)
   if(data?.variants.length == 0){
     setOpenModal(false)
   }
@@ -47,6 +47,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
 
     const newCart = await addToShopifyCart(cartData,data.variants.nodes[findId].id)
     if(newCart){
+      setViewedCart(false)
       setCartData(newCart)
       setOpenModal(false)
     }

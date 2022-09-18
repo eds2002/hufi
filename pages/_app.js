@@ -5,11 +5,19 @@ import { storefront } from '../utils/storefront'
 import {viewMenu} from '../graphql/queries/viewMenu'
 import { LocaleProvider } from '../context/localeContext'
 import CartContext, { CartProvider } from '../context/cartContext'
+import NextNProgress from "nextjs-progressbar";
 
 function MyApp({ Component, pageProps }) {
   return (
   <CartProvider>
     <LocaleProvider>
+      <NextNProgress
+        color="#7fa353"
+        startPosition={0.3}
+        stopDelayMs={200}
+        height={3}
+        showOnShallow={true}
+      />
       <Layout {...pageProps}>
         <Component {...pageProps}/>
       </Layout>

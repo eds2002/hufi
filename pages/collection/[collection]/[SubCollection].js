@@ -1,9 +1,8 @@
-import { storefront } from '../../utils/storefront';
-import { viewCollectionByHandle } from '../../graphql/queries/viewCollectionByHandle';
-import { CollectionBanner, CollectionProducts } from '../../components/sections/collection';
+import { storefront } from '../../../utils/storefront';
+import { viewCollectionByHandle } from '../../../graphql/queries/viewCollectionByHandle';
+import { CollectionBanner, CollectionProducts } from '../../../components/sections/collection';
 
-const CollectionPage = ({collectionData, urlFilters}) => {
-  ("y0",collectionData)
+const SubCollectionPage = ({collectionData, urlFilters}) => {
   return (
     <>
       {collectionData.collectionByHandle ?
@@ -24,7 +23,7 @@ const CollectionPage = ({collectionData, urlFilters}) => {
 export async function getServerSideProps(context) {
   const { req, query, res, asPath, pathname } = context;
   const filtersArr = await query?.filterBy?.split(",")
-  const {data:collection,errors} = await storefront(viewCollectionByHandle, {handle:query.collection, amount:50})
+  const {data:collection,errors} = await storefront(viewCollectionByHandle, {handle:query.SubCollection, amount:50})
   return{
     props:{
       collectionData:collection || errors,
@@ -33,4 +32,4 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default CollectionPage
+export default SubCollectionPage

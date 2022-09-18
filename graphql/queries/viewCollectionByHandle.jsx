@@ -27,6 +27,12 @@ query viewCollection($handle:String!, $amount:Int){
         }
       }
     }
+
+    subCollections:metafield(namespace:"collection",key:"sub_collections"){
+      value
+      type
+    }
+
     collectionText:metafield(namespace:"collection",key:"collection_text"){
       value
       type

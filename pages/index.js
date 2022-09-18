@@ -4,6 +4,7 @@ import {viewProducts} from '../graphql/queries/viewProducts'
 import {allCollections} from '../graphql/queries/allCollections'
 import { Collections, Hero, HorizontalProducts, Incentive, Signup, Testimonial, TestimonialsGrid } from '../components/sections'
 import { viewIndexMetafields } from '../graphql/queries/viewIndexMetafields'
+import CollectionSubCol from '../components/sections/collection/CollectionSubCol'
 
 export default function Home({data,collections,productData}) {
   return (
@@ -18,13 +19,7 @@ export default function Home({data,collections,productData}) {
       (
         <>
         <Hero data = {data}/>
-        <Collections data = {collections[0]}/>
-        {productData != null && (
-          <HorizontalProducts data = {productData}/>
-        )}
-        <Collections data = {collections[1] ?? undefined}/>
-        <Signup/>
-        <Collections data = {collections[2] ?? undefined} style = "row"/>
+        <CollectionSubCol data = {collections}/>
         </>
       )}
     </>

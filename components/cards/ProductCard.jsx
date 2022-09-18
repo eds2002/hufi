@@ -80,7 +80,7 @@ function ProductTextDisplay({product}){
 
 function ActionsContainer({product, setSelectedProduct, setSelectedOption, selectedOption, setOpenModal}){
   // const [selectedOption, setSelectedOption] = useState(product?.options?.map((option)=>{return({name:option.name,value:option.values[0]})}))  
-  const {cartData, setCartData} = useContext(CartContext)
+  const {cartData, setCartData, viewedCart, setViewedCart} = useContext(CartContext)
 
   
   const handleClick = async (product) =>{
@@ -90,6 +90,7 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
     // add to checkout.
     if(product.variants.nodes.length === 1){
       const newCart = await addToShopifyCart(cartData, product.variants.nodes[0].id)
+      setViewedCart(false)
       setCartData(newCart)
       return
     }

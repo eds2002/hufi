@@ -10,6 +10,8 @@ query viewAllCollections($amount:Int, $queryArgs:String!){
       descriptionHtml
       image{
         originalSrc
+        url
+        altText
       }
     }
   }

@@ -19,13 +19,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+
+
 export default function Header({data}) {
   const {isScrollingDown,scrollDirection} = useScrollDirection()
   const [open, setOpen] = useState(false)
   const [displayTopNav, setDisplayTopNav] = useState(true)
   const [scrolling,setScrolling] = useState()
   const [scrollPos,setScrollPos] = useState(0)
-  const {openCart,setOpenCart,cartData} = useContext(CartContext)
+  const {openCart,setOpenCart,cartData,viewedCart,setViewedCart} = useContext(CartContext)
 
   const headerRef = useRef()
 
@@ -338,12 +340,13 @@ export default function Header({data}) {
 
                     <div className="flex items-center justify-end flex-1">
                       <div className="flex items-center lg:ml-8">
-                        <div className="flow-root">
-                            <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer`}
+                        <div className="relative flow-root rounded-full ">
+                            <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer relative z-10`}
                             onClick = {()=>setOpenCart(!openCart)}
                             >
                               <span className="text-sm font-medium ">{cartData?.lines?.edges?.length || 0}</span>
                             </div>
+                            <div className = {`absolute inset-0 bg-tertiary rounded-full opacity-0 ${(cartData?.lines?.edges?.length != 0 && !viewedCart) && ('animate-ping opacity-100') }`}/>
                             <span className="sr-only">items in cart, view bag</span>
                         </div>
                       </div>
@@ -361,16 +364,19 @@ export default function Header({data}) {
 }
 
 function CartDrawer({openCart, setOpenCart}){
-  const {cartData} = useContext(CartContext)
+  const {cartData,setViewedCart} = useContext(CartContext)
   const {locale} = useContext(LocaleContext)
   const totalItems = cartData?.lines?.edges?.length ?? 0
   const [progressWidth, setProgressWidth] = useState(100)
 
-
-
   useEffect(()=>{
     setProgressWidth((cartData?.cost?.subtotalAmount?.amount || 0)/75*100)
   },[cartData?.cost?.subtotalAmount?.amount])
+  useEffect(()=>{
+    if(openCart){
+      setViewedCart(true)
+    }
+  },[openCart])
   return(
     <Transition.Root show={openCart} as={Fragment}>
       <Dialog as="div" className="relative z-40" onClose={setOpenCart}>
@@ -413,8 +419,16 @@ function CartDrawer({openCart, setOpenCart}){
                       <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                     </button>
                   </div>
-                  <div className = "w-full h-full bg-red-500">
-                    
+                  <div className = "flex items-center justify-center w-full h-full">
+                    <div className = "flex flex-col items-center justify-center">
+                      <h1 className = "text-xl font-medium">Your cart is empty.</h1>
+                      <h3 className = "text-base text-onBackground/60">Start shopping the latest.</h3>
+                      <div className = "w-full mt-4">
+                        <Link href =  "/collections/all-products">
+                          <Button text = 'Shop' className = "w-full bg-secondaryVariant hover:bg-secondary" />
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </>
               :

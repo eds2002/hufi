@@ -19,7 +19,7 @@ function classNames(...classes) {
 
 export default function ProductOverview({data}) {
   const {locale} = useContext(LocaleContext)
-  const {cartData,setCartData} = useContext(CartContext)
+  const {cartData,setCartData,viewedCart, setViewedCart} = useContext(CartContext)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
 
 
@@ -59,6 +59,7 @@ export default function ProductOverview({data}) {
       }
     })
     const responseCartData = await addToShopifyCart(cartData,data.product.variants.nodes[findId].id)
+    setViewedCart(false)
     setCartData(responseCartData)
   }
 
