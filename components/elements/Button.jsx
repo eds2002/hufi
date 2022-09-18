@@ -3,7 +3,7 @@ import React from 'react'
 const Button = ({CSS, text,onClick}) => {
   return (
     <button className = {`
-    hover:shadow-md flex w-full items-center justify-center rounded-md border border-transparent transition
+    hover:shadow-md flex w-full items-center justify-center rounded-md  transition
     ${CSS ? CSS : 'bg-secondaryVariant text-base  text-onSecondary hover:bg-secondary py-2'}    
     `}
     onClick = {onClick}

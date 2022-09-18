@@ -32,7 +32,7 @@ const CollectionProducts = ({data,filters}) => {
   return (
     <section className = "relative pt-24 pb-10 bg-surface h-[300vh]">
       {/* COLLECTION NAME NAV */}
-      <nav className = "sticky top-0 z-20 w-full pt-16">
+      <nav className = "sticky top-0 z-[22] w-full pt-16">
         <div className = 'z-20 w-full h-full bg-surface'>
           <div className = "px-4 mx-auto max-w-7xl">
             <div className = "grid grid-flow-col py-3 overflow-scroll auto-cols-max">
@@ -67,7 +67,7 @@ const CollectionProducts = ({data,filters}) => {
       {/* DISPLAY PRODUCTS */}
       <div className = "w-full px-4 mx-auto max-w-7xl"> 
         <div className = "flex gap-10 mx-auto max-w-7xl">
-          <div className = "grid w-full h-full grid-cols-2 gap-3 pt-5 pb-32 sm:gap-10 xl:grid-cols-3 ">
+          <div className = "grid w-full h-full grid-cols-2 gap-3 pt-5 pb-32 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3 ">
             {data.collectionByHandle.products.nodes.map((product)=>(
               <> 
                 {filterBy.length === 0 ? 

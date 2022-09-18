@@ -1,7 +1,7 @@
 import { Fragment, useState,useMemo, useContext} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { useScrollDirection } from 'react-use-scroll-direction'
 import Link from 'next/link'
 import { useEffect } from 'react'
@@ -13,6 +13,7 @@ import LocaleContext from '../../context/localeContext'
 import {formatNumber} from '../../utils/formatNumber'
 import {removeProduct} from '../../utils/removeProduct'
 import { updateCart } from '../../utils/updateCart'
+import { slugify } from '../../utils/slugify'
 
 
 function classNames(...classes) {
@@ -112,57 +113,55 @@ export default function Header({data}) {
                     <Tab.Panels as={Fragment}>
                       {data?.menu?.items?.map((category, categoryIdx) => (
                         <>
-                          {category.items.map((subCategory,index)=>(
-                            <div key={subCategory.title} className="px-4 pt-10 pb-6 ">
-                              <div>
-                                <p id={`mobile-featured-heading-${categoryIdx}`} className="font-medium text-onBackground">
-                                  {subCategory.title}
-                                </p>
-                                <ul
-                                  role="list"
-                                  aria-labelledby={`mobile-featured-heading-${categoryIdx}`}
-                                  className="mt-6 space-y-6"
-                                >
-                                  {subCategory.items.map((item) => (
-                                    <li key={item.title} className="flex">
-                                      <a href={item.url} className="text-onBackground/80">
-                                        {item.title}
-                                      </a>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            </div>
-                          ))}
+                          {category.items != 0 && (
+                          <>
+                            <MobileLinks category = {category}/>
+                          </>
+                          )}
                         </>
                       ))}
                     </Tab.Panels>
                   </Tab.Group>
 
-                  <div className="px-4 py-6 space-y-6 border-t border-primaryVariant">
+                  <div className="px-4 py-6 space-y-6 border-t border-onBackground/15">
                     {data?.menu?.items?.map((page) => (
                       <>
                         {page.items.length === 0 && (  
-                          <div key={page.title} className="flow-root">
-                            <a href={page.url} className="block p-2 -m-2 font-medium text-onBackground">
-                              {page.title}
-                            </a>
-                          </div>
+                          <Link href = {`/page/${page.title}`}>
+                            <div key={page.title} className="flow-root">
+                              <a className = "flex items-center justify-between w-full text-xl font-medium cursor-pointer text-onBackground hover:text-onBackground/70">
+                                {page.title}
+                              </a>
+                            </div>
+                          </Link>
                         )}
                       </>
                     ))}
                   </div>
 
-                  <div className="px-4 py-6 space-y-6 border-t border-primaryVariant">
-                    <div className="flow-root">
-                      <a href="#" className="block p-2 -m-2 font-medium text-onBackground">
-                        Create an account
-                      </a>
+                  <div className="absolute bottom-0 px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
+                    <div>
+                      <p className = "text-base font-medium text-onBackground/60">
+                        Hufi Rewards members always receive <b>free shipping</b> and occasional <b>discounts.</b><br/>
+                        <Link href = "/member-rewards">
+                          <a className = "mt-2 font-medium text-tertiaryVariant hover:text-tertiary">
+                            Explore my benefits
+                          </a>
+                        </Link>
+                      </p>
+                      
                     </div>
-                    <div className="flow-root">
-                      <a href="#" className="block p-2 -m-2 font-medium text-onBackground">
-                        Sign in
-                      </a>
+                    <div className="flex gap-x-3">
+                      <div>
+                        <Link href = "/signin">
+                          <Button text = 'Join today' CSS = {'px-4 py-1 bg-secondaryVariant hover:bg-secondary border border-transparent'}/>
+                        </Link>
+                      </div>
+                      <div>
+                        <Link href = "/signup">
+                            <Button text = 'Sign In'  CSS = {'px-4 py-1 ring-black border border-black hover:border-black/40 '}/>
+                        </Link>
+                      </div>
                     </div>
                   </div>
 
@@ -174,102 +173,67 @@ export default function Header({data}) {
         <header className="relative">
           <nav aria-label="Top">
             {/* Secondary navigation */}
-            <div className={`sticky top-0 z-20 shadow-sm bg-background overflow-hidden`}>
-              <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className={`top-0 z-20 shadow-sm bg-background overflow-hidden`}>
+              <div className="px-4 mx-auto max-w-7xl">
                 <div className="">
-                  <div className="relative flex items-center justify-between h-16">
+                  <div className="flex items-center justify-between h-16">
 
                     <div className="flex-1 hidden w-full h-full lg:flex">
                       {/* Mega menus */}
-                      <Popover.Group className="ml-8">
-                        <div className="flex justify-center h-full space-x-8 ">
+                        <div className="flex items-center justify-center h-full space-x-8 " >
                           {data?.menu?.items?.map((category, categoryIdx) => (
                             <> 
                               {category.items != 0 && (
-                                <Popover key={category.name} className="flex">
-                                  {({ open }) => (
-                                    <>
-                                      <div className="relative flex">
-                                        <Popover.Button
-                                          className={classNames(
-                                            open
-                                              ? 'border-secondaryVariant text-secondaryVariant'
-                                              : 'border-transparent text-onBackground hover:text-secondaryVariant',
-                                            'relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition  ease-out'
-                                          )}
-                                        >
-                                          {category.title}
-                                          <span className = "transition hover:text-secondaryVariant text-onBackground"><ChevronDownIcon className = {`w-5 h-5 font-bold ${open ? 'rotate-180':'rotate-0'} transition `}/></span>
-                                        </Popover.Button>
-                                      </div>
-
-                                      <Transition
-                                        as={Fragment}
-                                        enter="transition ease-out duration-200"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="transition ease-in duration-150"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                      >
-                                        <Popover.Panel className="absolute inset-x-0 top-full sm:text-sm">
-                                          {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
-                                          <div className="absolute inset-0 shadow-xl top-1/2" aria-hidden="true" />
-
-                                          <div className="relative bg-background">
-                                            <div className="px-8 mx-auto max-w-7xl">
-                                              <div className="py-10 columns-4">
-                                                {category.items.map((subCategory)=>(
-                                                  <div key = {subCategory.title} className = "break-inside-avoid">
-                                                    <p
-                                                      id={`desktop-featured-heading-${categoryIdx}`}
-                                                      className="text-lg font-medium text-onBackground"
-                                                    >
-                                                      {subCategory.title}
-                                                    </p>
-                                                    <ul
-                                                      role="list"
-                                                      aria-labelledby={`desktop-featured-heading-${categoryIdx}`}
-                                                      className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
-                                                    >
-                                                      {subCategory.items.map((item) => (
-                                                        <li key={item.title} className="flex">
-                                                          <a href={item.url} className="text-onBackground/80 hover:text-secondaryVariant">
-                                                            {item.title}
-                                                          </a>
-                                                        </li>
-                                                      ))}
-                                                    </ul>
-                                                  </div>
+                                <div className = "h-full group">
+                                  <Link href = {`/collection/${slugify(category?.title)}`}>
+                                    <div className="relative flex items-center justify-center h-full text-sm font-medium cursor-pointer hover:text-onBackground/70">
+                                        {category.title}
+                                        <span className = "transition group-hover:rotate-180"><ChevronDownIcon className = {`w-5 h-5 font-bold transition `}/></span>
+                                        <div className = "absolute bottom-0 left-0 right-0 w-full h-0.5 bg-onBackground rounded-full group-hover:block hidden"/>
+                                    </div>
+                                  </Link>
+                                  <div className="absolute left-0 right-0 transition opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto top-full sm:text-sm" style={{marginLeft:0}}>
+                                    {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
+                                    <div className="absolute inset-0 shadow-xl top-1/2" aria-hidden="true" />
+                                    <div className="relative bg-background">
+                                      <div className="px-4 mx-auto max-w-7xl">
+                                        <div className="py-10 columns-5">
+                                          {category.items.map((subCategory)=>(
+                                            <div key = {subCategory.title} className = "mb-6 break-inside-avoid">
+                                              <Link href = {`/collection/${slugify(category?.title)}/${slugify(subCategory?.title)}`}>
+                                                <p
+                                                  id={`desktop-featured-heading-${categoryIdx}`}
+                                                  className="text-lg font-medium cursor-pointer hover:text-onBackground/70"
+                                                >
+                                                  {subCategory?.title}
+                                                </p>
+                                              </Link>
+                                              <ul
+                                                role="list"
+                                                aria-labelledby={`desktop-featured-heading-${categoryIdx}`}
+                                                className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
+                                              >
+                                                {subCategory.items.map((item) => (
+                                                  <Link href = {`collection/${slugify(category?.title)}/${slugify(subCategory?.title)}/${slugify(item?.title)}}`} key={item.title}>
+                                                    <li className="flex">
+                                                      <a className="cursor-pointer text-onBackground/80 hover:text-onBackground/50">
+                                                        {item.title}
+                                                      </a>
+                                                    </li>
+                                                  </Link>
                                                 ))}
-                                              </div>
+                                              </ul>
                                             </div>
-                                          </div>
-                                        </Popover.Panel>
-                                      </Transition>
-                                    </>
-                                  )}
-                                </Popover>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               )}
                             </>
-                          ))}
-
-                          {/* For links that do not have sub links */}
-                          {data?.menu?.items?.map((page) => (
-                            <>
-                              {page.items.length === 0 && (
-                                <a
-                                  key={page.title}
-                                  href={page.href}
-                                  className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-secondaryVariant"
-                                >
-                                  {page.title}
-                                </a>
-                              )}
-                            </>
-                          ))}
+                            ))}
                         </div>
-                      </Popover.Group>
                     </div>
 
                     {/* Logo (lg+) */}
@@ -338,7 +302,24 @@ export default function Header({data}) {
                       </div>
                     </Link>
 
+                    {/* DESKTOP SUPPORT LINKS */}
                     <div className="flex items-center justify-end flex-1">
+                      {/* For links that do not have sub links */}
+                      <div className = "hidden lg:flex gap-x-10">
+                        {data?.menu?.items?.map((page) => (
+                          <>
+                            {page.items.length === 0 && (
+                              <a
+                                key={page.title}
+                                href={page.href}
+                                className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-secondaryVariant"
+                              >
+                                {page.title}
+                              </a>
+                            )}
+                          </>
+                        ))}
+                      </div>
                       <div className="flex items-center lg:ml-8">
                         <div className="relative flow-root rounded-full ">
                             <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer relative z-10`}
@@ -361,6 +342,89 @@ export default function Header({data}) {
       </div>
     </>
   )
+}
+
+function MobileLinks({category}){
+  const [open,setOpen] = useState(false)
+  const [openSecondary, setOpenSecondary] = useState(false)
+  return(
+    <>
+      <p className = "flex items-center justify-between w-full px-4 py-3 text-xl font-medium cursor-pointer text-onBackground hover:text-onBackground/70"
+      onClick = {()=>setOpen(!open)}
+      >
+      {category.title}
+      <ChevronRightIcon className = "w-5 h-5 font-medium"/>
+      </p>
+      {open && (
+        <>
+          <div className = "absolute inset-0 w-full overflow-scroll bg-background">
+            {/* HEADER */}
+            <div className="flex px-4 pt-5 pb-2 mt-2 text-onBackground/50">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center -m-2 rounded-md "
+                onClick={() => setOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <ChevronLeftIcon className="w-6 h-6" aria-hidden="true" />
+                <span>{category.title}</span>
+              </button>
+            </div>
+
+            {/* COLLECTION NAME LINK */}
+            <Link href = {`/collection/${slugify(category.title)}`}>
+              <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium">{category.title}</h1>
+            </Link>
+
+            {/* COLLECTION SUBCOLLECTIONS */}
+            {category.items.map((subCategory,index)=>(
+              <div key={subCategory.title} className="px-4">
+                <div>
+                  {/* SUBCOLLECTION TITLES */}
+                  <p className="flex justify-between py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/50" onClick = {()=>setOpenSecondary(!openSecondary)}>
+                    {subCategory.title}
+                    <ChevronRightIcon className = "w-5 h-5"/>
+                  </p>
+                  {openSecondary && (
+                    <div className = "absolute inset-0 bg-background">
+                      {/* SUBCOLLECTION HEADER */}
+                      <div className="flex px-4 pt-5 pb-2 mt-2 text-onBackground/50">
+                        <button
+                          type="button"
+                          className="inline-flex items-center justify-center -m-2 rounded-md"
+                          onClick={() => setOpenSecondary(false)}
+                        >
+                          <span className="sr-only">Close menu</span>
+                          <ChevronLeftIcon className="w-6 h-6" aria-hidden="true" />
+                          <span>{subCategory.title}</span>
+                        </button>
+                      </div>
+
+                      {/* SUBCOLLECTION TITLE */}
+                      <Link href = {`/collection/${slugify(category.title)}/${slugify(subCategory.title)}`}>
+                        <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium">{subCategory.title}</h1>
+                      </Link>
+
+                      {/* SUBCOLLECTION PRODUCTS */}
+                      {subCategory.items.map((item) => (
+                        <Link href = "" key = {item.title}>
+                          <p className="px-4 py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/40">
+                            {item.title}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </>
+
+  )
+
 }
 
 function CartDrawer({openCart, setOpenCart}){

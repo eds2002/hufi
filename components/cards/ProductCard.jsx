@@ -26,8 +26,8 @@ export default function ProductCard({product}){
   return(
     <>
       <div className = "relative flex flex-col transition rounded-lg aspect-square group">
-        <div className = "relative w-full h-full rounded-md cursor-pointer">
-          <div className = "absolute inset-0 ">
+        <div className = "relative w-full h-full rounded-md cursor-pointer bg-background">
+          <div className = "absolute inset-0 m-14">
             <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
           </div>
           <div className = "absolute inset-0 bg-surface/25"/>
