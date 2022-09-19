@@ -29,6 +29,7 @@ export default function Header({data}) {
   const [scrolling,setScrolling] = useState()
   const [scrollPos,setScrollPos] = useState(0)
   const {openCart,setOpenCart,cartData,viewedCart,setViewedCart} = useContext(CartContext)
+  {console.log(cartData)}
 
   const headerRef = useRef()
 
@@ -63,7 +64,7 @@ export default function Header({data}) {
           <div className="relative z-10 hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
             <span className="w-px h-6 bg-onPrimary" aria-hidden="true" />
             <Link href = "/signup">
-              <a className="text-sm font-medium text-onPrimary hover:text-secondaryVariant">
+              <a className="text-sm font-medium text-onPrimary hover:text-onBackground/70">
                 Sign in
               </a>
             </Link>
@@ -241,22 +242,22 @@ export default function Header({data}) {
                       <div className="relative justify-center flex-1 hidden cursor-pointer lg:flex lg:items-center bg-orange-50">
                         <a className = "bg-purple-500 ">
                           <span className="sr-only">Hufi</span>
-                            <div className = {`${scrollPos > 150 ? 'opacity-100' : 'opacity-0'} transition duration-300 absolute inset-0 flex items-center justify-center w-full h-full`}>
+                            <div className = {`${scrollPos > 150 ? 'opacity-100' : 'opacity-0 '} transition duration-300 absolute inset-0 flex items-center justify-center w-full h-full`}>
                               <Image
                                 className={`w-full h-full absolute inset-0 bg-white`}
-                                src="/hufi2.svg"
+                                src="/hufiLogo.svg"
                                 alt=""
-                                width={25}
-                                height={25}
+                                width={125}
+                                height={125}
                               />
                             </div>
-                            <div className = {`${scrollPos > 150 ? 'opacity-0' : 'opacity-100'} transition duration-300 absolute inset-0 flex items-center justify-center w-full h-full`}>
+                            <div className = {`${scrollPos > 150 ? 'opacity-0' : 'opacity-100 scale-75'} transition duration-300 absolute inset-0 flex items-center justify-center w-full h-full`}>
                               <Image
                                 className={`w-auto h-8 absolute inset-0`}
-                                src="/hufi.svg"
+                                src="/hufiLogo.svg"
                                 alt=""
-                                width={70}
-                                height={70}
+                                width={125}
+                                height={125}
                               />
                             </div>
                         </a>
@@ -309,13 +310,13 @@ export default function Header({data}) {
                         {data?.menu?.items?.map((page) => (
                           <>
                             {page.items.length === 0 && (
-                              <a
-                                key={page.title}
-                                href={page.href}
-                                className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-secondaryVariant"
-                              >
-                                {page.title}
-                              </a>
+                              <Link href = {`/pages/${page.title}`} key={page.title}>
+                                <a
+                                  className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-onBackground/70"
+                                >
+                                  {page.title}
+                                </a>
+                              </Link>
                             )}
                           </>
                         ))}
@@ -550,7 +551,10 @@ function CartDrawer({openCart, setOpenCart}){
                     </p>
                   </div>
                   <div className = "flex flex-col items-center justify-center">
-                    <Button text = "Checkout" className = "w-full bg-secondaryVariant hover:bg-secondary"/>
+                    <Link href = {cartData?.checkoutUrl}>
+                      <Button text = "Checkout" className = "w-full bg-secondaryVariant hover:bg-secondary"/>
+                    </Link>
+                      
                     <span className = "mt-2 text-xs text-neutral-400">Members get free shipping on any order.</span>
                   </div>
                 </div>

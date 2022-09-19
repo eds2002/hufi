@@ -11,6 +11,7 @@ mutation updateLine($cartId:ID!, $lineId:ID!, $amount: Int!){
   ) {
     cart {
       id
+      checkoutUrl
       lines(first: 10) {
         edges {
           node {

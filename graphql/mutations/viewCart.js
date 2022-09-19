@@ -5,6 +5,7 @@ query getShopifyCart($id:ID!) {
   cart(
     id: $id
   ) {
+    checkoutUrl
     id
     createdAt
     updatedAt

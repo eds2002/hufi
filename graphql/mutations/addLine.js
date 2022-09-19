@@ -5,6 +5,7 @@ mutation cartLinesAdd($cartId: ID!, $quantity:Int,$variantId:ID!) {
   cartLinesAdd(cartId: $cartId, lines: [{quantity:$quantity,merchandiseId:$variantId}]) {
     cart {
       id
+      checkoutUrl
       lines(first: 10) {
         edges {
           node {

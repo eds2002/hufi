@@ -5,6 +5,7 @@ mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
   cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
     cart {
       id
+      checkoutUrl
       lines(first: 10) {
         edges {
           node {

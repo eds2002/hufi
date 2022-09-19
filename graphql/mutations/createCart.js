@@ -5,6 +5,7 @@ mutation cartCreate {
   cartCreate {
     cart {
       id
+      checkoutUrl
       createdAt
       updatedAt
     }
