@@ -25,32 +25,37 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "relative flex flex-col transition rounded-lg aspect-square group">
+      <div className = "relative flex flex-col w-full h-full p-4 transition rounded-lg shadow-sm aspect-square group bg-background">
+        <Link href = {`/product/${product?.handle}`}>
+          <>
+            <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">
+              <span>{product?.title}</span>
+            </p>
+            <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">
+              <span>{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+            </p>
+            <p className = "block pb-4 mt-2 text-sm text-left sm:text-sm md:hidden text-onBackground/60">{product.shortDesc?.value}</p>
+          </>
+        </Link>
         <div className = "relative w-full h-full rounded-md cursor-pointer bg-background">
-          <div className = "absolute inset-0 m-14">
-            <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
-          </div>
-          <div className = "absolute inset-0 bg-surface/25"/>
-        </div>
-
-        {/* Smaller devices md- */}
-        <div className = "overflow-hidden bg-white cursor-pointer md:hidden text-ellipsis" >
           <Link href = {`/product/${product?.handle}`}>
-            <div className = "relative z-20 flex flex-col items-center justify-end p-4">
-              {/* Display Text */}
-                <div className = "grid w-full h-full grid-rows-3 transition-all duration-500 pointer-events-none place-items-start">
-                  <p className = "grid-flow-col overflow-hidden font-medium text-left sm:text-base whitespace-nowrap text-ellipsis">{product?.title}</p>
-                  <p className = "text-xs font-medium sm:text-base">{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</p>
-                  <p className = "text-xs text-left sm:text-sm text-onBackground/60 whitespace-nowrap text-ellipsis">{product.shortDesc?.value}</p>
-                </div>
+            <div className = "absolute inset-0 ">
+              <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
             </div>
           </Link>
+          <div className = "absolute inset-0 pointer-events-none bg-white/20"/>
+        </div>
+        <div>
+          <div className = "block cursor-pointer md:hidden bg-background" >
+            <div className = "flex flex-col items-center justify-end w-full" id = "container" onClick = {(e)=>handleContainerClick(e,product.handle)}>
+              <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} enable = {true}/>
+            </div>
+          </div>
         </div>
 
-        
         {/* Larger devices md+ */}
         <div className = "hidden cursor-pointer md:block" >
-          <div className = "absolute inset-0 flex flex-col items-center justify-end p-4" id = "container" onClick = {(e)=>handleContainerClick(e,product.handle)}>
+          <div className = "flex flex-col items-center justify-end p-4 " id = "container" onClick = {(e)=>handleContainerClick(e,product.handle)}>
             <ProductTextDisplay product={product}/>
             <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption}/>
           </div>
@@ -78,7 +83,7 @@ function ProductTextDisplay({product}){
   )
 }
 
-function ActionsContainer({product, setSelectedProduct, setSelectedOption, selectedOption, setOpenModal}){
+function ActionsContainer({product, setSelectedProduct, setSelectedOption, selectedOption, setOpenModal,enable}){
   // const [selectedOption, setSelectedOption] = useState(product?.options?.map((option)=>{return({name:option.name,value:option.values[0]})}))  
   const {cartData, setCartData, viewedCart, setViewedCart} = useContext(CartContext)
 
@@ -112,26 +117,24 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
 
 
   return(
-    <div className = "flex-col items-center justify-center hidden w-full transition duration-500 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex">
+    <div className = {`flex-col items-center justify-center  w-full transition duration-500 md:opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex`}>
       {/* Variants */}
-      <div className = "flex items-center justify-center w-auto mt-2">
+      <div className = "flex items-center justify-center w-full mt-2 ">
 
         {/* TODO, if any of the variants does not have an option for Color
             display a text saying the amount of variants available
           */}
-        {!product.options.some(opt=>opt.name === "Color") && (
-          <>
-            {product.options[0].name != "Title" && (
-              <p className = "text-sm text-onBackground/60">{product.options.length} variant{product.options.length > 1 && 's'} available.</p>
-            )}
-          </>
+        {product.options[0].name != "Title" && (
+          <p className = "text-sm text-onBackground/60">{product.options.length} variant{product.options.length > 1 && 's'} available.</p>
         )}
+
+
 
         {/* TODO, display the color options in a rounded
             display
           */}
         {product?.options.map((option,key)=>(
-          <div className = "flex items-end justify-end " key = {key}>
+          <div className = "items-end justify-end hidden " key = {key}>
             {option.values.map((value)=>(
               <p className =
               {`
@@ -150,11 +153,11 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
       </div>
 
       {/* Buttons */}
-      <div className = "flex items-center justify-center w-full max-w-xs mt-3 gap-x-3">
+      <div className = "flex flex-col-reverse items-center justify-center w-full gap-3 mt-3 md:flex-row">
         <Link href = {`/product/${product?.handle}`}>
-          <Button text = {"Details"} CSS = 'w-auto px-4 text-sm bg-surface py-2'/>
+          <Button text = {"Details"} CSS = 'md:w-auto px-4 text-sm bg-surface py-2'/>
         </Link>
-        <Button text = 'Add to cart' CSS = "w-auto px-4 text-sm bg-secondaryVariant hover:bg-secondary py-2" onClick={()=>handleClick(product)}/>
+        <Button text = 'Add to cart' CSS = "md:w-auto w-full px-4 text-sm bg-secondaryVariant hover:bg-secondary py-2" onClick={()=>handleClick(product)}/>
       </div>
     </div>
   )

@@ -53,6 +53,7 @@ query viewCollection($handle:String!, $amount:Int){
         }
         variants(first:100){
           nodes{
+            quantityAvailable
             id
             selectedOptions{
               name

@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
@@ -21,24 +21,23 @@ export default function ProductOverview({data}) {
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,viewedCart, setViewedCart} = useContext(CartContext)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
+  const [soldOutItems,setSoldOutItems] = useState([])
 
 
   // TODO, change old array to new array with a value the user has selected
   const handleVariantChange = (option,selectedValue) =>{
-    // const newArr = selectedOption
-    // newArr[newArr.findIndex((ref)=>ref.name === option)].value = selectedValue
-    // setSelectedOption(prevArr => (prevArr[prevArr.findIndex((ref)=>ref.name === option)].value = selectedValue))
-    setSelectedOption(prevArr => {
-      const newArr = prevArr.map(obj =>{
-        if(obj.name === option){
-          return {...obj, value:selectedValue}
-        }
-
-        return obj
+    if(!soldOutItems.includes(selectedValue)){
+      setSelectedOption(prevArr => {
+        const newArr = prevArr.map(obj =>{
+          if(obj.name === option){
+            return {...obj, value:selectedValue}
+          }
+  
+          return obj
+        })
+        return newArr
       })
-      return newArr
-    })
-
+    }
   }
 
   const addToCart = async (e) =>{
@@ -62,6 +61,15 @@ export default function ProductOverview({data}) {
     setViewedCart(false)
     setCartData(responseCartData)
   }
+
+  useEffect(()=>{
+    const soldOutVariants = data.product.variants.nodes.filter((currentArr)=>{
+      if(currentArr.quantityAvailable === 0){
+        return currentArr.selectedOptions[0]
+      }
+    })
+    setSoldOutItems(soldOutVariants.map((variant)=>variant.selectedOptions[0].value))
+  },[])
 
   return (
     <>
@@ -139,7 +147,7 @@ export default function ProductOverview({data}) {
                     </div>
 
                     {/* Product Description */}
-                    <div className="p-4 mt-10 rounded-md bg-surface">
+                    <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
                       <div
                         className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base"
                         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
@@ -161,28 +169,29 @@ export default function ProductOverview({data}) {
                             )}
 
                             {/* Options Values */}
-                            <div className = "flex items-center mt-2 mb-5 gap-x-3">
+                            <div className = "flex flex-wrap items-center gap-3 mt-2 mb-5">
                               {/* TODO, avoid rendering products with no options / variants */}
                               {option.name != "Title" && (
                                 <>
                                   {option.values.map((value,key)=>(
-                                    <p className = 
-                                    {`
-                                      ${option.name === "Color" ? 
-                                      (`h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`)
-                                      :
-                                      (`px-2 rounded-md ring-2 ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`)
-                                      }
-                                      text-sm
-                                      cursor-pointer
-                                    `}
-                                    style={{backgroundColor:value}}
-                                    onClick = {(e)=>handleVariantChange(option.name,value)}
-                                    key = {key}
-                                    id = {option.value}
-                                    >
-                                      {option.name === "Color" ? '' : value}
-                                    </p>
+                                    <>
+                                      <p className = 
+                                      {`
+                                        ${option.name === "Color" ? 
+                                        (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
+                                        :
+                                        (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-2 py-1 ring-2`)
+                                        }
+                                        text-sm
+                                      `}
+                                      style={{backgroundColor:soldOutItems.includes(value) ? "gray" : value}}
+                                      onClick = {(e)=>handleVariantChange(option.name,value)}
+                                      key = {key}
+                                      id = {option.value}
+                                      >
+                                        {option.name === "Color" ? '' : value}
+                                      </p>
+                                    </>
                                   ))}
                                 </>
                               )}

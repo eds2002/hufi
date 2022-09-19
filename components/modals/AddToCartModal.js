@@ -1,5 +1,5 @@
 import { Transition, Dialog } from "@headlessui/react"
-import { Fragment, useContext } from "react"
+import { Fragment, useContext,useEffect,useState } from "react"
 import Link from "next/link"
 import { Button } from "../elements"
 import { addToShopifyCart } from "../../utils/addToShopifyCart"
@@ -9,21 +9,23 @@ import CartContext from "../../context/cartContext"
 export default function AddToCartModal({data,setOpenModal, openModal, selectedOption, setSelectedOption}){
   const {locale} = useContext(LocaleContext)
   const {cartData, setCartData,setViewedCart} = useContext(CartContext)
-  if(data?.variants.length == 0){
-    setOpenModal(false)
-  }
+  const [soldOutItems,setSoldOutItems] = useState([])
+  // if(data?.variants.length == 0){
+  //   setOpenModal(false)
+  // }
   const handleVariantChange = (option,selectedValue) =>{
-    setSelectedOption(prevArr => {
-      const newArr = prevArr.map(obj =>{
-        if(obj.name === option){
-          return {...obj, value:selectedValue}
-        }
-
-        return obj
+    if(!soldOutItems?.includes(selectedValue)){
+      setSelectedOption(prevArr => {
+        const newArr = prevArr.map(obj =>{
+          if(obj.name === option){
+            return {...obj, value:selectedValue}
+          }
+  
+          return obj
+        })
+        return newArr
       })
-      return newArr
-    })
-
+    }
   }
 
   const findProductId = async (e) =>{
@@ -52,6 +54,17 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
       setOpenModal(false)
     }
   }
+
+
+  useEffect(()=>{
+    console.log(data)
+    const soldOutVariants = data?.variants.nodes.filter((currentArr)=>{
+      if(currentArr.quantityAvailable === 0){
+        return currentArr.selectedOptions[0]
+      }
+    })
+    setSoldOutItems(soldOutVariants?.map((variant)=>variant.selectedOptions[0].value))
+  },[data])
 
 
 
@@ -103,25 +116,26 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                         </h3>
 
                         {/* Options Values */}
-                        <div className = "flex items-center mt-2 mb-5 gap-x-3">
+                        <div className = "flex items-center gap-3 mt-2 mb-5 flex-nowrap">
                           {option.values.map((value,key)=>(
-                            <p className = 
-                            {`
-                              ${option.name === "Color" ? 
-                              (`h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`)
-                              :
-                              (`px-2 py-2 rounded-sm ring-1 ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-200'}`)
-                              }
+                            <>
+                              <p className = 
+                              {`
+                                ${option.name === "Color" ? 
+                                (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
+                                :
+                                (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-2 py-1 ring-2 cursor-pointer`)
+                                }
                                 text-sm
-                                cursor-pointer
-                            `}
-                            style={{backgroundColor:value}}
-                            onClick = {(e)=>handleVariantChange(option.name,value)}
-                            key = {key}
-                            id = {option.value}
-                            >
-                              {option.name === "Color" ? '' : value}
-                            </p>
+                              `}
+                              style={{backgroundColor:soldOutItems?.includes(value) ? "gray" : value}}
+                              onClick = {(e)=>handleVariantChange(option.name,value)}
+                              key = {key}
+                              id = {option.value}
+                              >
+                                {option.name === "Color" ? '' : value}
+                              </p>
+                            </>
                           ))}
                         </div>
                       </div>

@@ -29,7 +29,6 @@ export default function Header({data}) {
   const [scrolling,setScrolling] = useState()
   const [scrollPos,setScrollPos] = useState(0)
   const {openCart,setOpenCart,cartData,viewedCart,setViewedCart} = useContext(CartContext)
-  {console.log(cartData)}
 
   const headerRef = useRef()
 
@@ -284,19 +283,19 @@ export default function Header({data}) {
                             <div className = {`${scrollPos > 150 ? 'opacity-100' : 'opacity-0'} transition duration-500 absolute inset-0 flex items-center justify-center w-full h-full`}>
                               <Image
                                 className={`w-full h-full absolute inset-0`}
-                                src="/hufi2.svg"
+                                src="/hufiLogo.svg"
                                 alt=""
-                                width={25}
-                                height={25}
+                                width={125}
+                                height={125}
                               />
                             </div>
-                            <div className = {`${scrollPos > 150 ? 'opacity-0' : 'opacity-100'} transition duration-500 absolute inset-0 flex items-center justify-center w-full h-full`}>
+                            <div className = {`${scrollPos > 150 ? 'opacity-0' : 'opacity-100 scale-75'} transition duration-500 absolute inset-0 flex items-center justify-center w-full h-full`}>
                               <Image
                                 className={`w-auto h-8 absolute inset-0`}
-                                src="/hufi.svg"
+                                src="/hufiLogo.svg"
                                 alt=""
-                                width={70}
-                                height={70}
+                                width={125}
+                                height={125}
                               />
                             </div>
                         </a>

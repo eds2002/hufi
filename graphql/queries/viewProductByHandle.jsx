@@ -6,6 +6,7 @@ query Product($handle: String!) {
   product(handle:$handle) {
     id
     title
+    totalInventory
     compareAtPriceRange{
       maxVariantPrice{
         amount
@@ -32,6 +33,7 @@ query Product($handle: String!) {
     }
     variants(first:100){
       nodes{
+        quantityAvailable
         id
         selectedOptions{
           name

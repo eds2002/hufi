@@ -4,6 +4,7 @@ import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 
 
 export default function Product({productData}){
+  console.log(productData)
   return (
     <main>
       <ProductOverview data = {productData}/>
@@ -19,6 +20,6 @@ export async function getServerSideProps(context) {
   const { req, query, res, asPath, pathname } = context;
   const {data:product,errors} = await storefront(viewProductByHandle, {handle:query.product})
   return{
-    props:{productData:product || errors,}
+    props:{productData:product || errors}
   }
 }
