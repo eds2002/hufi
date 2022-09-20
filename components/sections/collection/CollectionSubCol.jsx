@@ -13,7 +13,7 @@ const CollectionSubCol = ({data}) => {
         {data.map((collectionSet,index)=>(
           <>
             {index === data.length-1 && (<Signup/>)}
-            <div className = "py-24 ">
+            <div className = "py-16 ">
               <h1 className = "mb-6 text-2xl font-medium">{collectionSet.heading.title ?? 'Collection Heading'}</h1>
               <div className = {`
                 ${collectionSet.style.type === "Default" && ('grid w-full grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-3 h-screen')}
