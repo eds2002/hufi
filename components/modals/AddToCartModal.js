@@ -116,7 +116,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                         </h3>
 
                         {/* Options Values */}
-                        <div className = "flex items-center gap-3 mt-2 mb-5 flex-nowrap">
+                        <div className = "flex flex-wrap items-center gap-3 mt-2 mb-5">
                           {option.values.map((value,key)=>(
                             <>
                               <p className = 

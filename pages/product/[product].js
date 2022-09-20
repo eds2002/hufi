@@ -1,4 +1,4 @@
-import { ProductFAQ, ProductFeatures, ProductImageView, ProductOverview, ProductShopPromise } from "../../components/sections/product";
+import { ProductFAQ, ProductFeatures, ProductImageView, ProductIncentive, ProductOverview, ProductShopPromise } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 
@@ -8,9 +8,10 @@ export default function Product({productData}){
   return (
     <main>
       <ProductOverview data = {productData}/>
-      <ProductShopPromise/>
-      <ProductFeatures data = {productData}/>
+      {/* <ProductShopPromise/>
+      <ProductFeatures data = {productData}/> */}
       {/* <ProductImageView/> */}
+      <ProductIncentive/>
       <ProductFAQ data = {productData}/>
     </main>
   )

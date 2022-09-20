@@ -584,19 +584,19 @@ function CartProduct({data}){
   return(
     <div className = "flex w-full max-w-xs gap-6 px-4 py-6 border-b border-onPrimary/15">
       {/* IMAGE */}
-      <div className = "relative w-20 h-20 bg-gray-400 rounded-md flex-0 overflow"> 
-        <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover'/>
+      <div className = "relative w-20 h-20 bg-gray-400 rounded-md flex-0 "> 
+        <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
         <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-primary text-onPrimary/70">{data.node.quantity}</span>
       </div>
       <div className = "flex-1 w-full h-full">
-        <div className = "grid h-full grid-rows-3">
+        <div className = "grid grid-rows-1 gap-1">
           {/* TITLE & PRICE */}
           <p className = "flex items-center justify-between w-full">
             <span className = "font-medium">{data.node.merchandise.product.title}</span>
             <span className = "font-medium">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
           </p>
           {/* SELECTED VARIANTS */}
-          <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{(data.node.merchandise.title).replace("/","-")}</p>
+          <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{data.node.merchandise.title === "Default Title" ? data.node.merchandise.product.title : (data.node.merchandise.title).replace("/","-")}</p>
 
           {/* INPUTS */}
           <div className = "flex items-center justify-between">

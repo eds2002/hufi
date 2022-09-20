@@ -67,7 +67,7 @@ const CollectionProducts = ({data,filters}) => {
       {/* DISPLAY PRODUCTS */}
       <div className = "w-full px-4 mx-auto max-w-7xl"> 
         <div className = "flex gap-10 mx-auto max-w-7xl">
-          <div className = "grid w-full h-full grid-cols-2 gap-10 pt-5 pb-32 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3 ">
+          <div className = "grid w-full h-full grid-cols-1 gap-10 pt-5 pb-32 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3 ">
             {data.collectionByHandle.products.nodes.map((product)=>(
               <> 
                 {filterBy.length === 0 ? 
