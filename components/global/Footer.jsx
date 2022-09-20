@@ -15,14 +15,14 @@ export default function Footer({data}) {
               <p className = 'text-base font-medium text-onBackground'>{menu.title}</p>
               <ul className = "mt-2">
               {menu.items.map((subMenu)=>(
-                <Link href = {`/${slugify(menu.title)}/${slugify(subMenu.title)}`} key = {subMenu.title}>
+                <Link href = {`/${slugify(menu.title)}/${slugify(subMenu.title === "help@hufisupport.com" ? '' : subMenu.title)}`} key = {subMenu.title}>
                   <li className = 'items-start my-1 text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/20'>{subMenu.title}</li>
                 </Link>
               ))}
               </ul>
             </nav>
           ))}
-          <form className = "flex-col items-start justify-center hidden w-full h-full max-w-xs text-sm md:text-base md:flex" onClick = {(e)=>e.preventDefault()}>
+          <form className = "flex-col items-start justify-start hidden w-full h-full max-w-xs text-sm md:text-base md:flex" onClick = {(e)=>e.preventDefault()}>
             <h5 className = "text-base font-medium">Interested in our future</h5>
             <p className = "text-sm text-onBackground/60"> Subscribe to learn more about future products and future discounts.</p>
             <div className = "flex mt-4 rounded-md ">
