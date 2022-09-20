@@ -1,30 +1,55 @@
+import Image from 'next/image'
 import React from 'react'
 
-const ProductImageView = () => {
+const ProductImageView = ({data}) => {
+  console.log(data)
   return (
-    <section className = "py-24 bg-primary1">
-      <div className = "px-4 mx-auto max-w-7xl">
-        <div className = "flex flex-col items-center justify-center">
-          <h1 className = "text-3xl font-bold text-center text-primary2">Information for nerds.</h1>
-          <p className = "max-w-sm mt-4 mb-12 text-base text-center lg:text-lg text-primary3">Just kidding, let&apos;s clear up some confusions you may have.</p>
-        </div>
-        <div className = "flex-row w-full h-full gap-3 my-3 md:flex">
-          <div className = "bg-secondary1 h-[200px] max-h-[200px] rounded-md flex-[2] my-4 md:my-0">
-            Image 1
+    <section className = "w-full py-24 sm:py-0">
+      {(data?.product?.mediaOne?.reference?.image?.url && data?.product?.mediaOneText?.value) && (
+        <div className = "flex flex-col w-full h-full md:flex-row">
+          <div className = "md:flex-1 h-[30vh] md:h-[50vh] bg-red-500 relative">
+            <Image src = {data?.product?.mediaOne.reference.image.url} layout='fill' objectFit='cover'/>
           </div>
-          <div className = "bg-secondary1 h-[200px] max-h-[200px] rounded-md flex-1">
-            Image 2
-          </div>
-        </div>
-        <div className = "flex-row w-full h-full gap-3 my-3 md:flex">
-          <div className = "bg-secondary1 h-[200px] max-h-[200px] rounded-md flex-1 my-4 md:my-0">
-            Image 3
-          </div>
-          <div className = "bg-secondary1 h-[200px] max-h-[200px] rounded-md flex-1">
-            Image 4
+          <div className = "flex items-center justify-center md:justify-start py-14 md:flex-1">
+            <div className = "max-w-sm px-4 ml-0 text-center md:ml-10 md:text-left">
+              <div
+                className="prose-h1:md:text-4xl prose-h1:text-xl prose-h1:font-medium prose-p:mt-4 prose-p:text-base prose-p:text-onBackground/70 prose-p:lg:text-lg"
+                dangerouslySetInnerHTML={{ __html: data?.product?.mediaOneText?.value }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
+      {(data?.product?.mediaTwo?.reference?.image?.url && data?.product?.mediaTwoText?.value) && (
+        <div className = "flex flex-col md:flex-row-reverse ">
+          <div className = "md:flex-1 h-[30vh] md:h-[50vh] relative">
+            <Image src = {data?.product?.mediaTwo.reference.image.url} layout='fill' objectFit='cover'/>
+          </div>
+          <div className = "flex items-center justify-center md:justify-end py-14 md:flex-1">
+            <div className = "max-w-sm px-4 text-center md:mr-10 md:text-left">
+              <div
+                className="prose-h1:md:text-4xl prose-h1:text-xl prose-h1:font-medium prose-p:mt-4 prose-p:text-base prose-p:text-onBackground/70 prose-p:lg:text-lg"
+                dangerouslySetInnerHTML={{ __html: data?.product?.mediaTwoText?.value }}
+              />
+            </div>
+          </div>
+        </div>
+      )}  
+      {(data?.product?.mediaThree?.reference?.image?.url && data?.product?.mediaThreeText?.value) && (  
+        <div className = "flex flex-col md:flex-row">
+          <div className = "md:flex-1 h-[30vh] md:h-[50vh] bg-red-500 relative">
+            <Image src = {data?.product?.mediaThree.reference.image.url} layout='fill' objectFit='cover'/>
+          </div>
+          <div className = "flex items-center justify-center md:justify-start py-14 md:flex-1">
+            <div className = "max-w-sm px-4 text-center md:ml-10 md:text-left">
+              <div
+                className="prose-h1:text-5xl prose-h1:font-medium prose-p:mt-4 prose-p:text-base prose-p:text-onBackground/70 prose-p:lg:text-lg"
+                dangerouslySetInnerHTML={{ __html: data?.product?.mediaThreeText?.value }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

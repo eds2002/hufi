@@ -118,8 +118,12 @@ export default function ProductOverview({data}) {
                       </p>
                     </div>
 
+                    <div className = "mt-1">
+                      <p className = "text-lg text-onBackground/60">{data.product.shortDesc.value}</p>
+                    </div>
+
                     {/* Reviews */}
-                    <div className="mt-4">
+                    {/* <div className="mt-4">
                       <h2 className="sr-only">Reviews</h2>
                       <div className="flex items-center">
                         <p className="text-sm text-gray-700">
@@ -144,15 +148,7 @@ export default function ProductOverview({data}) {
                           </p>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Product Description */}
-                    <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
-                      <div
-                        className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base"
-                        dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
-                      />
-                    </div>
+                    </div> */}
 
                     {/* Product Information */}
                     <div className="mt-8 lg:col-span-5">
@@ -180,11 +176,11 @@ export default function ProductOverview({data}) {
                                         ${option.name === "Color" ? 
                                         (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
                                         :
-                                        (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-2 py-1 ring-2`)
+                                        (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-2 py-1 ring-2 cursor-pointer`)
                                         }
                                         text-sm
                                       `}
-                                      style={{backgroundColor:soldOutItems.includes(value) ? "gray" : value}}
+                                      style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : value}}
                                       onClick = {(e)=>handleVariantChange(option.name,value)}
                                       key = {key}
                                       id = {option.value}
@@ -200,6 +196,15 @@ export default function ProductOverview({data}) {
                         ))}
                         <Button text = "Add to cart" onClick = {(e)=>addToCart(e)}/>
                       </form>
+                    </div>
+
+
+                    {/* PRODUCT DESCRIPTION */}
+                    <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
+                      <div
+                        className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base"
+                        dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
+                      />
                     </div>
 
                     <DetailsComponent data = {data.product.details}/>

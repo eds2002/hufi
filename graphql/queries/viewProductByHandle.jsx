@@ -41,11 +41,11 @@ query Product($handle: String!) {
         }
 			}
     }
-    imageThreeText:metafield(namespace:"product",key:"showcase_text_3"){
+    mediaThreeText:metafield(namespace:"product",key:"showcase_text_3"){
       value
       type
     }
-    imageThree:metafield(namespace:"product",key:"showcase_image_3"){
+    mediaThree:metafield(namespace:"product",key:"showcase_image_3"){
       value
       type
       reference {
@@ -55,13 +55,18 @@ query Product($handle: String!) {
             url
           }
         }
+        ... on Video{
+					sources{
+            url
+          }
+        }
       }
     }
-    imageTwoText:metafield(namespace:"product",key:"showcase_text_2"){
+    mediaTwoText:metafield(namespace:"product",key:"showcase_text_2"){
       value
       type
     }
-    imageTwo:metafield(namespace:"product",key:"showcase_image_2"){
+    mediaTwo:metafield(namespace:"product",key:"showcase_image_2"){
       value
       type
       reference {
@@ -71,21 +76,31 @@ query Product($handle: String!) {
             url
           }
         }
+        ... on Video{
+					sources{
+            url
+          }
+        }
       }
     }
     
     
-    imageOneText:metafield(namespace:"product",key:"showcase_text_1"){
+    mediaOneText:metafield(namespace:"product",key:"showcase_text_1"){
       value
       type
     }
-    imageOne:metafield(namespace:"product",key:"showcase_image_1"){
+    mediaOne:metafield(namespace:"product",key:"showcase_image_1"){
       value
       type
       reference {
         ... on MediaImage {
           image {
             altText
+            url
+          }
+        }
+        ... on Video{
+					sources{
             url
           }
         }
@@ -106,6 +121,10 @@ query Product($handle: String!) {
     }
     faqs:metafield(namespace:"product",key:"faqs"){
       value
+      type
+    }
+    useCases:metafield(namespace:"product",key:"use_cases"){
+      value 
       type
     }
   }

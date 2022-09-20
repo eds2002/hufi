@@ -128,7 +128,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                                 }
                                 text-sm
                               `}
-                              style={{backgroundColor:soldOutItems?.includes(value) ? "gray" : value}}
+                              style={{backgroundColor:soldOutItems?.includes(value) ? "lightgray" : value}}
                               onClick = {(e)=>handleVariantChange(option.name,value)}
                               key = {key}
                               id = {option.value}
