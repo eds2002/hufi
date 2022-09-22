@@ -5,7 +5,6 @@ import {Signup} from '../../components/sections'
 
 
 export default function Product({productData}){
-  console.log(productData)
   return (
     <main>
       <ProductOverview data = {productData}/>

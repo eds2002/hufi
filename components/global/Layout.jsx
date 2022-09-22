@@ -32,7 +32,7 @@ const Layout = ({children}) => {
   },[])
   return (
     <>
-      <Header data = {children.props.headerData}/>
+      <Header data = {children.props.headerData} user = {children.props.userData}/>
         {children}
       <Footer data = {children.props.footerData}/>
     </>

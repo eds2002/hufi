@@ -5,7 +5,6 @@ import { slugify } from "../../utils/slugify"
 import { Input } from "../elements"
 
 export default function Footer({data}) {
-  console.log(data)
   return (
     <footer className="bg-primary1">
       <div className="px-4 py-12 mx-auto overflow-hidden max-w-7xl sm:px-6 lg:px-8">

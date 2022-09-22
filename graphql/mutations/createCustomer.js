@@ -1,6 +1,6 @@
 const gql = String.raw
 
-const createCustomer = gql`
+export const createCustomer = gql`
   mutation customerCreate($input: CustomerCreateInput!) {
     customerCreate(input: $input) {
       customer {

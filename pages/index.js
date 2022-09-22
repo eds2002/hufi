@@ -19,6 +19,7 @@ export default function Home({data,collections,productData}) {
       (
         <>
         <Hero data = {data}/>
+        <HorizontalProducts data = {productData}/>
         <CollectionSubCol data = {collections}/>
         </>
       )}

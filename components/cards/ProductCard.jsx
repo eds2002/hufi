@@ -25,7 +25,7 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "relative flex flex-col w-full h-full p-4 transition rounded-lg shadow-sm aspect-square group bg-background">
+      <div className = "relative flex flex-col w-full h-full p-4 transition rounded-lg shadow-sm aspect-[16/9] group bg-background">
         <Link href = {`/product/${product?.handle}`}>
           <>
             <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">

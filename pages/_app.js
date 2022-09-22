@@ -6,6 +6,8 @@ import {viewMenu} from '../graphql/queries/viewMenu'
 import { LocaleProvider } from '../context/localeContext'
 import CartContext, { CartProvider } from '../context/cartContext'
 import NextNProgress from "nextjs-progressbar";
+import Cookies from 'cookies'
+import { getCustomer } from '../graphql/queries/getCustomer'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -28,13 +30,15 @@ function MyApp({ Component, pageProps }) {
 
 export default MyApp
 
-MyApp.getInitialProps = async ({req,res}) =>{
+MyApp.getInitialProps = async (context) =>{
   let pageProps = {}
   try{
     const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
     const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+    const {data:userInformation} = await storefront(getCustomer,{token:context?.ctx?.req?.cookies?.userAccess || ""})
     pageProps["headerData"] = headerData
     pageProps["footerData"] = footerData
+    pageProps["userData"] = userInformation
   }catch(e) {
     console.log(e)
   }

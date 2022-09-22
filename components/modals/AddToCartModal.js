@@ -57,7 +57,6 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
 
 
   useEffect(()=>{
-    console.log(data)
     const soldOutVariants = data?.variants.nodes.filter((currentArr)=>{
       if(currentArr.quantityAvailable === 0){
         return currentArr.selectedOptions[0]

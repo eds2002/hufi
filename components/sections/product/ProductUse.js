@@ -3,7 +3,6 @@ import React from 'react'
 
 const ProductUse = ({data}) => {
   const dataJSON = data?.value ? JSON.parse(data.value) : undefined
-  console.log(dataJSON)
   return (
     <>
       {dataJSON && (

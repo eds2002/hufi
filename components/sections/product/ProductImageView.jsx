@@ -2,7 +2,6 @@ import Image from 'next/image'
 import React from 'react'
 
 const ProductImageView = ({data}) => {
-  console.log(data)
   return (
     <section className = "w-full py-24 sm:py-0">
       {(data?.product?.mediaOne?.reference?.image?.url && data?.product?.mediaOneText?.value) && (

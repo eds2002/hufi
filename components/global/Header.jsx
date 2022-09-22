@@ -1,6 +1,6 @@
 import { Fragment, useState,useMemo, useContext} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
-import { Bars3Icon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ArrowRightOnRectangleIcon, Bars3Icon, Cog6ToothIcon, CubeIcon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { useScrollDirection } from 'react-use-scroll-direction'
 import Link from 'next/link'
@@ -22,7 +22,7 @@ function classNames(...classes) {
 
 
 
-export default function Header({data}) {
+export default function Header({data,user}) {
   const {isScrollingDown,scrollDirection} = useScrollDirection()
   const [open, setOpen] = useState(false)
   const [displayTopNav, setDisplayTopNav] = useState(true)
@@ -54,7 +54,7 @@ export default function Header({data}) {
 
   return (
     <>
-      <div className=" bg-surface">
+      <div className="relative z-10 bg-surface">
         <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onPrimary lg:flex-none">
             Free worldwide shipping on orders over $75.
@@ -62,11 +62,19 @@ export default function Header({data}) {
 
           <div className="relative z-10 hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
             <span className="w-px h-6 bg-onPrimary" aria-hidden="true" />
-            <Link href = "/signup">
+            {user?.customer ? 
+            <Link href = "/profile">
+              <a className="text-sm font-medium text-onPrimary hover:text-onBackground/70">
+                Hi, {user.customer.firstName}
+              </a>
+            </Link>
+            :
+            <Link href = "/login">
               <a className="text-sm font-medium text-onPrimary hover:text-onBackground/70">
                 Sign in
               </a>
             </Link>
+            }
           </div>
         </div>
       </div>
@@ -139,6 +147,32 @@ export default function Header({data}) {
                     ))}
                   </div>
 
+                  {user?.customer ? 
+                  <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <Link href = "/profile">
+                          <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Profile <UserCircleIcon className = "w-5 h-5"/></a>
+                        </Link>
+                      </div>
+                      <div>
+                        <Link href = "/profile?tab=orders">
+                        <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Orders <CubeIcon className = "w-5 h-5"/></a>
+                        </Link>
+                      </div>
+                      <div>
+                        <Link href = "/profile?tab=settings">
+                        <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Settings <Cog6ToothIcon className = "w-5 h-5"/></a>
+                        </Link>
+                      </div>
+                      <div className = "mt-10">
+                        <Link href = "/api/logout">
+                          <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                  :
                   <div className="absolute bottom-0 px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
                     <div>
                       <p className = "text-base font-medium text-onBackground/60">
@@ -164,6 +198,7 @@ export default function Header({data}) {
                       </div>
                     </div>
                   </div>
+                  }
 
                 </Dialog.Panel>
               </Transition.Child>
