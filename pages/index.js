@@ -5,14 +5,24 @@ import {allCollections} from '../graphql/queries/allCollections'
 import { Collections, Hero, HorizontalProducts, Incentive, Signup, Testimonial, TestimonialsGrid } from '../components/sections'
 import { viewIndexMetafields } from '../graphql/queries/viewIndexMetafields'
 import CollectionSubCol from '../components/sections/collection/CollectionSubCol'
+import img from '../assets/abstractBlocks.svg'
+import Image from 'next/image'
 
 export default function Home({data,collections,productData}) {
   return (
     <>
       {!data || !collections || !productData ? (
-        <div className = "flex items-center justify-center w-full h-full">
-          <h1>Oops... This is awkward</h1>
-          <h1>Seems like site is under construction right now! Come back later.</h1>
+        <div className = "fixed inset-0 z-[999999999999999999999] bg-background w-full h-full">
+          <div className = "flex flex-col items-center justify-center w-full h-full pb-16">
+            <div className = "w-screen h-[50vh] relative">
+              <Image src = {img} layout = 'fill' objectFit = 'contain'/>
+            </div>
+            <div>
+              <h1 className = "max-w-md text-2xl font-medium">Hm, it seems like we&apos;re undergoing construction right now.</h1>
+              <p className = "max-w-md mt-4 text-base text-onBackground/70 text-light">We apologize for this mistake, we are so embarassed.</p>
+              <p className = "max-w-md text-base text-onBackground/70 text-light">Come back soon to shop all the all new trending products.</p>
+            </div>
+          </div>
         </div>
       )
       :

@@ -35,7 +35,7 @@ MyApp.getInitialProps = async (context) =>{
   try{
     const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
     const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
-    const {data:userInformation} = await storefront(getCustomer,{token:context?.ctx?.req?.cookies?.userAccess || ""})
+    const {data:userInformation} = await storefront(getCustomer,{token:context?.ctx?.req?.cookies?.userAccess || "randomletters"})
     pageProps["headerData"] = headerData
     pageProps["footerData"] = footerData
     pageProps["userData"] = userInformation

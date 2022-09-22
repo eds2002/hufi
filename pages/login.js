@@ -3,8 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { Button, Input } from '../components/elements'
 import Link from 'next/link'
 import loginBackground from '../assets/login.svg'
+import { storefront } from '../utils/storefront'
+import { createUserAccessToken } from '../graphql/mutations/createUserAccessToken'
+import { useRouter } from 'next/router'
+import { getCookie } from 'cookies-next'
 
 const Login = () => {
+  const router = useRouter()
   const [inputs,setInputs] = useState([
     {
       id:1,
@@ -21,30 +26,32 @@ const Login = () => {
       type:"password",
     },
   ])
-  const values = []
 
-  const onChange = (e) =>{
-    values[e.target.name] = e.target.value
+  const [values, setValues] = useState({})
+
+  const onChange =  (e) =>{
+    setValues({...values, [e.target.name]: e.target.value})
   }
   
-  const handleSubmit = (e) =>{
+  const handleSubmit = async (e) =>{
     e.preventDefault()
-    if(values.password != values.confirmPassword){
-      setInputs(current=> current.map(obj=>{
-        if(obj.id === 3){
-          return {...obj, error:'Passwords do not match, try again.'}
-        }
-        return obj
-      }))
-      return
-    }
-    setInputs(current=> current.map(obj=>{
-      if(obj.id === 3){
-        return {...obj, error:undefined}
-      }
-      return obj
-    }))
+    const {data, errors} = await storefront(createUserAccessToken,{input:{email:values.email,password:values.password}})
+    if(data?.customerAccessTokenCreate?.customerAccessToken?.accessToken){
+      const response = await fetch('/api/storeToken',{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+        },
+        body:JSON.stringify({token:data.customerAccessTokenCreate.customerAccessToken.accessToken,expires:data.customerAccessTokenCreate.customerAccessToken.expiresAt})
+      })
 
+      const {code} = await response.json()
+      if(code == 302){
+        router.push('/')
+      }
+    }else{
+      alert('Sorry, issue logging in.')
+    }
   }
 
   return (
@@ -78,6 +85,24 @@ const Login = () => {
       </div>
     </section>
   )
+}
+
+
+
+export async function getServerSideProps({req,res}){
+  const cookie = getCookie('userAccess',{req,res})
+  if(cookie){
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }else{
+    return{
+      props:{}
+    }
+  }
 }
 
 export default Login

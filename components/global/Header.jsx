@@ -54,7 +54,7 @@ export default function Header({data,user}) {
 
   return (
     <>
-      <div className="relative z-10 bg-surface">
+      <div className="relative z-40 bg-surface">
         <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onPrimary lg:flex-none">
             Free worldwide shipping on orders over $75.
@@ -63,11 +63,33 @@ export default function Header({data,user}) {
           <div className="relative z-10 hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
             <span className="w-px h-6 bg-onPrimary" aria-hidden="true" />
             {user?.customer ? 
-            <Link href = "/profile">
-              <a className="text-sm font-medium text-onPrimary hover:text-onBackground/70">
-                Hi, {user.customer.firstName}
-              </a>
-            </Link>
+              <div className="relative group">
+                <p className = "text-sm font-medium cursor-pointer text-onPrimary hover:text-onBackground/70">Hi, {user.customer.firstName}</p>
+                <div className = "absolute right-0 z-40 max-w-xl py-4 rounded-lg shadow-xl bg-surface">
+                  <div className="flex flex-col items-start justify-start gap-3 w-44">
+                    <Link href = "/profile">
+                      <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
+                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Profile <UserCircleIcon className = "w-5 h-5"/></a>
+                      </div>
+                    </Link>
+                    <Link href = "/profile?tab=orders">
+                      <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
+                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Orders <CubeIcon className = "w-5 h-5"/></a>
+                      </div>
+                    </Link>
+                    <Link href = "/profile?tab=settings">
+                      <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
+                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Settings <Cog6ToothIcon className = "w-5 h-5"/></a>
+                      </div>
+                    </Link>
+                    <Link href = "/api/logout">
+                      <div className = "w-full pl-4 pr-10 mt-10 rounded-md hover:bg-background">
+                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground ">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              </div>
             :
             <Link href = "/login">
               <a className="text-sm font-medium text-onPrimary hover:text-onBackground/70">
@@ -78,7 +100,7 @@ export default function Header({data,user}) {
           </div>
         </div>
       </div>
-      <div className={`sticky top-0 z-[30] transition duration-500`} ref = {headerRef}>
+      <div className={`sticky top-0 z-30 transition duration-500`} ref = {headerRef}>
         {/* Mobile menu */}
         <Transition.Root show={open} as={Fragment}>
           <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
@@ -173,17 +195,14 @@ export default function Header({data,user}) {
                     </div>
                   </div>
                   :
-                  <div className="absolute bottom-0 px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
-                    <div>
-                      <p className = "text-base font-medium text-onBackground/60">
-                        Hufi Rewards members always receive <b>free shipping</b> and occasional <b>discounts.</b><br/>
-                        <Link href = "/member-rewards">
-                          <a className = "mt-2 font-medium text-tertiaryVariant hover:text-tertiary">
-                            Explore my benefits
-                          </a>
-                        </Link>
-                      </p>
-                      
+                  <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
+                    <div className = "w-full">
+                      <Link href = "/hufi-rewards-member">
+                        <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Hufi Rewards Member</a>
+                      </Link>
+                      <Link href = "/login">
+                        <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Login</a>
+                      </Link>
                     </div>
                     <div className="flex gap-x-3">
                       <div>
@@ -205,7 +224,7 @@ export default function Header({data,user}) {
             </div>
           </Dialog>
         </Transition.Root>
-        <header className="relative">
+        <header className="relative z-20">
           <nav aria-label="Top">
             {/* Secondary navigation */}
             <div className={`top-0 z-20 shadow-sm bg-background overflow-hidden`}>
@@ -381,7 +400,7 @@ export default function Header({data,user}) {
 
 function MobileLinks({category}){
   const [open,setOpen] = useState(false)
-  const [openSecondary, setOpenSecondary] = useState(false)
+  const [openSecondary, setOpenSecondary] = useState()
   return(
     <>
       <p className = "flex items-center justify-between w-full px-4 py-3 text-xl font-medium cursor-pointer text-onBackground hover:text-onBackground/70"
@@ -416,18 +435,18 @@ function MobileLinks({category}){
               <div key={subCategory.title} className="px-4">
                 <div>
                   {/* SUBCOLLECTION TITLES */}
-                  <p className="flex justify-between py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/50" onClick = {()=>setOpenSecondary(!openSecondary)}>
+                  <p className="flex justify-between py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/50" onClick = {()=>setOpenSecondary(subCategory.title)}>
                     {subCategory.title}
                     <ChevronRightIcon className = "w-5 h-5"/>
                   </p>
-                  {openSecondary && (
+                  {subCategory.title === openSecondary && (
                     <div className = "absolute inset-0 bg-background">
                       {/* SUBCOLLECTION HEADER */}
                       <div className="flex px-4 pt-5 pb-2 mt-2 text-onBackground/50">
                         <button
                           type="button"
                           className="inline-flex items-center justify-center -m-2 rounded-md"
-                          onClick={() => setOpenSecondary(false)}
+                          onClick={() => setOpenSecondary(null)}
                         >
                           <span className="sr-only">Close menu</span>
                           <ChevronLeftIcon className="w-6 h-6" aria-hidden="true" />
@@ -457,7 +476,41 @@ function MobileLinks({category}){
         </>
       )}
     </>
+  )
+}
 
+function SubCategory({openSecondary,setOpenSecondary,subCategory}){
+  return(
+    <>
+      <div className = "absolute inset-0 bg-background">
+        {/* SUBCOLLECTION HEADER */}
+        <div className="flex px-4 pt-5 pb-2 mt-2 text-onBackground/50">
+          <button
+            type="button"
+            className="inline-flex items-center justify-center -m-2 rounded-md"
+            onClick={() => setOpenSecondary(false)}
+          >
+            <span className="sr-only">Close menu</span>
+            <ChevronLeftIcon className="w-6 h-6" aria-hidden="true" />
+            <span>{subCategory.title}</span>
+          </button>
+        </div>
+
+        {/* SUBCOLLECTION TITLE */}
+        <Link href = {`/collection/${slugify(category.title)}/${slugify(subCategory.title)}`}>
+          <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium">{subCategory.title}</h1>
+        </Link>
+
+        {/* SUBCOLLECTION PRODUCTS */}
+        {subCategory.items.map((item) => (
+          <Link href = "" key = {item.title}>
+            <p className="px-4 py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/40">
+              {item.title}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </>
   )
 
 }

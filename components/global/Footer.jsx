@@ -9,7 +9,7 @@ export default function Footer({data}) {
     <footer className="bg-primary1">
       <div className="px-4 py-12 mx-auto overflow-hidden max-w-7xl sm:px-6 lg:px-8">
         <div className = "grid grid-cols-1 gap-3 lg:grid-cols-4 md:grid-cols-3">
-          {data.menu.items.map((menu)=>(
+          {data?.menu?.items.map((menu)=>(
             <nav className = "mb-10" key = {menu.title}>
               <p className = 'text-base font-medium text-onBackground'>{menu.title}</p>
               <ul className = "mt-2">

@@ -5,10 +5,10 @@ import Link from 'next/link'
 import signupBackground from '../assets/signup.svg'
 import { storefront } from '../utils/storefront'
 import { createCustomer } from '../graphql/mutations/createCustomer'
-import { CheckBadgeIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
 import { createUserAccessToken } from '../graphql/mutations/createUserAccessToken'
-import { activateUser } from '../graphql/mutations/activateUser'
+import { getCookie } from 'cookies-next'
+
 
 const Signup = () => {
   const router = useRouter()
@@ -46,7 +46,7 @@ const Signup = () => {
     },
     {
       id:5,
-      name:"confirm-password",
+      name:"confirmPassword",
       required:true,
       placeholder:"Confirm",
       type:"password",
@@ -165,6 +165,22 @@ const Signup = () => {
       </div>
     </section>
   )
+}
+
+export async function getServerSideProps({req,res}){
+  const cookie = getCookie('userAccess',{req,res})
+  if(cookie){
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }else{
+    return{
+      props:{}
+    }
+  }
 }
 
 export default Signup

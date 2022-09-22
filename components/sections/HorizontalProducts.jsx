@@ -5,7 +5,7 @@ import {slugify} from '../../utils/slugify'
 import { ProductCard } from '../cards'
 export default function HorizontalProducts({data:{products}}) {
   return (
-    <div className="py-24 bg-surface">
+    <div className="py-10 bg-surface">
       <div className = "px-4 mx-auto max-w-7xl">
         <h1 className = "mb-6 text-2xl font-medium">Trending products</h1>
       </div>
