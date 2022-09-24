@@ -4,6 +4,7 @@ import '../styles/globals.css'
 import { storefront } from '../utils/storefront'
 import {viewMenu} from '../graphql/queries/viewMenu'
 import { LocaleProvider } from '../context/localeContext'
+import { UserProvider } from '../context/userContext'
 import CartContext, { CartProvider } from '../context/cartContext'
 import NextNProgress from "nextjs-progressbar";
 import Cookies from 'cookies'
@@ -11,20 +12,22 @@ import { getCustomer } from '../graphql/queries/getCustomer'
 
 function MyApp({ Component, pageProps }) {
   return (
-  <CartProvider>
-    <LocaleProvider>
-      <NextNProgress
-        color="#7fa353"
-        startPosition={0.3}
-        stopDelayMs={200}
-        height={3}
-        showOnShallow={true}
-      />
-      <Layout {...pageProps}>
-        <Component {...pageProps}/>
-      </Layout>
-    </LocaleProvider>
-  </CartProvider>
+  <UserProvider props = {pageProps}>
+    <CartProvider>
+      <LocaleProvider>
+        <NextNProgress
+          color="#7fa353"
+          startPosition={0.3}
+          stopDelayMs={200}
+          height={3}
+          showOnShallow={true}
+        />
+        <Layout {...pageProps}>
+          <Component {...pageProps}/>
+        </Layout>
+      </LocaleProvider>
+    </CartProvider>
+  </UserProvider>
   )
 }
 
@@ -39,6 +42,7 @@ MyApp.getInitialProps = async (context) =>{
     pageProps["headerData"] = headerData
     pageProps["footerData"] = footerData
     pageProps["userData"] = userInformation
+    pageProps["userAccess"] = context?.ctx?.req?.cookies?.userAccess
   }catch(e) {
     console.log(e)
   }

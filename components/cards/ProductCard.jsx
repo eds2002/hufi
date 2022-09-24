@@ -154,10 +154,10 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
 
       {/* Buttons */}
       <div className = "flex flex-col-reverse items-center justify-center w-full gap-3 mt-3 md:flex-row">
+        <Button text = 'Add to cart' CSS = "md:w-auto w-full px-4 text-sm bg-secondaryVariant hover:bg-secondary py-2" onClick={()=>handleClick(product)}/>
         <Link href = {`/product/${product?.handle}`}>
           <Button text = {"Details"} CSS = 'md:w-auto px-4 text-sm bg-surface py-2'/>
         </Link>
-        <Button text = 'Add to cart' CSS = "md:w-auto w-full px-4 text-sm bg-secondaryVariant hover:bg-secondary py-2" onClick={()=>handleClick(product)}/>
       </div>
     </div>
   )

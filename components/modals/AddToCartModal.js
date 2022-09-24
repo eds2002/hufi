@@ -62,6 +62,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
         return currentArr.selectedOptions[0]
       }
     })
+    console.log(data)
     setSoldOutItems(soldOutVariants?.map((variant)=>variant.selectedOptions[0].value))
   },[data])
 

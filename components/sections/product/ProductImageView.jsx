@@ -6,7 +6,7 @@ const ProductImageView = ({data}) => {
     <section className = "w-full py-24 sm:py-0">
       {(data?.product?.mediaOne?.reference?.image?.url && data?.product?.mediaOneText?.value) && (
         <div className = "flex flex-col w-full h-full md:flex-row">
-          <div className = "md:flex-1 h-[30vh] md:h-[50vh] bg-red-500 relative">
+          <div className = "md:flex-1 h-[30vh] md:h-[50vh] relative">
             <Image src = {data?.product?.mediaOne.reference.image.url} layout='fill' objectFit='cover'/>
           </div>
           <div className = "flex items-center justify-center md:justify-start py-14 md:flex-1">
@@ -36,7 +36,7 @@ const ProductImageView = ({data}) => {
       )}  
       {(data?.product?.mediaThree?.reference?.image?.url && data?.product?.mediaThreeText?.value) && (  
         <div className = "flex flex-col md:flex-row">
-          <div className = "md:flex-1 h-[30vh] md:h-[50vh] bg-red-500 relative">
+          <div className = "md:flex-1 h-[30vh] md:h-[50vh]  relative">
             <Image src = {data?.product?.mediaThree.reference.image.url} layout='fill' objectFit='cover'/>
           </div>
           <div className = "flex items-center justify-center md:justify-start py-14 md:flex-1">

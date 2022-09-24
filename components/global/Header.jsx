@@ -14,6 +14,11 @@ import {formatNumber} from '../../utils/formatNumber'
 import {removeProduct} from '../../utils/removeProduct'
 import { updateCart } from '../../utils/updateCart'
 import { slugify } from '../../utils/slugify'
+import UserContext from '../../context/userContext'
+import { storefront } from '../../utils/storefront'
+import { cartBuyerIdentity } from '../../graphql/mutations/cartBuyerIdentity'
+import { createCheckout } from '../../graphql/mutations/createCheckout'
+import { applyCheckoutDiscount } from '../../graphql/mutations/applyCheckoutDiscount'
 
 
 function classNames(...classes) {
@@ -65,7 +70,7 @@ export default function Header({data,user}) {
             {user?.customer ? 
               <div className="relative group">
                 <p className = "text-sm font-medium cursor-pointer text-onPrimary hover:text-onBackground/70">Hi, {user.customer.firstName}</p>
-                <div className = "absolute right-0 z-40 max-w-xl py-4 rounded-lg shadow-xl bg-surface">
+                <div className = "absolute right-0 z-40 max-w-xl py-4 rounded-lg shadow-xl opacity-0 pointer-events-none bg-surface group-hover:opacity-100 group-hover:pointer-events-auto">
                   <div className="flex flex-col items-start justify-start gap-3 w-44">
                     <Link href = "/profile">
                       <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
@@ -83,7 +88,7 @@ export default function Header({data,user}) {
                       </div>
                     </Link>
                     <Link href = "/api/logout">
-                      <div className = "w-full pl-4 pr-10 mt-10 rounded-md hover:bg-background">
+                      <div className = "w-full pl-4 pr-10 mt-5 rounded-md hover:bg-background">
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground ">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
                       </div>
                     </Link>
@@ -157,7 +162,9 @@ export default function Header({data,user}) {
                     {data?.menu?.items?.map((page) => (
                       <>
                         {page.items.length === 0 && (  
-                          <Link href = {`/page/${page.title}`}>
+                          <Link href = {`
+                          ${page.title == 'About' ? '/company/about-us' : page.title == 'Contact' ? '/support' : ''}
+                          `}>
                             <div key={page.title} className="flow-root">
                               <a className = "flex items-center justify-between w-full text-xl font-medium cursor-pointer text-onBackground hover:text-onBackground/70">
                                 {page.title}
@@ -167,6 +174,9 @@ export default function Header({data,user}) {
                         )}
                       </>
                     ))}
+                    <Link href = "/hufi-rewards-member">
+                      <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Hufi Rewards Member</a>
+                    </Link>
                   </div>
 
                   {user?.customer ? 
@@ -197,24 +207,12 @@ export default function Header({data,user}) {
                   :
                   <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
                     <div className = "w-full">
-                      <Link href = "/hufi-rewards-member">
-                        <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Hufi Rewards Member</a>
-                      </Link>
                       <Link href = "/login">
                         <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Login</a>
                       </Link>
-                    </div>
-                    <div className="flex gap-x-3">
-                      <div>
-                        <Link href = "/signin">
-                          <Button text = 'Join today' CSS = {'px-4 py-1 bg-secondaryVariant hover:bg-secondary border border-transparent'}/>
-                        </Link>
-                      </div>
-                      <div>
-                        <Link href = "/signup">
-                            <Button text = 'Sign In'  CSS = {'px-4 py-1 ring-black border border-black hover:border-black/40 '}/>
-                        </Link>
-                      </div>
+                      <Link href = "/register">
+                        <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Sign up</a>
+                      </Link>
                     </div>
                   </div>
                   }
@@ -363,7 +361,9 @@ export default function Header({data,user}) {
                         {data?.menu?.items?.map((page) => (
                           <>
                             {page.items.length === 0 && (
-                              <Link href = {`/pages/${page.title}`} key={page.title}>
+                              <Link href = {`
+                                ${page.title == 'About' ? '/company/about-us' : page.title == 'Contact' ? '/support' : ''}
+                              `} key={page.title}>
                                 <a
                                   className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-onBackground/70"
                                 >
@@ -479,47 +479,15 @@ function MobileLinks({category}){
   )
 }
 
-function SubCategory({openSecondary,setOpenSecondary,subCategory}){
-  return(
-    <>
-      <div className = "absolute inset-0 bg-background">
-        {/* SUBCOLLECTION HEADER */}
-        <div className="flex px-4 pt-5 pb-2 mt-2 text-onBackground/50">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center -m-2 rounded-md"
-            onClick={() => setOpenSecondary(false)}
-          >
-            <span className="sr-only">Close menu</span>
-            <ChevronLeftIcon className="w-6 h-6" aria-hidden="true" />
-            <span>{subCategory.title}</span>
-          </button>
-        </div>
-
-        {/* SUBCOLLECTION TITLE */}
-        <Link href = {`/collection/${slugify(category.title)}/${slugify(subCategory.title)}`}>
-          <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium">{subCategory.title}</h1>
-        </Link>
-
-        {/* SUBCOLLECTION PRODUCTS */}
-        {subCategory.items.map((item) => (
-          <Link href = "" key = {item.title}>
-            <p className="px-4 py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/40">
-              {item.title}
-            </p>
-          </Link>
-        ))}
-      </div>
-    </>
-  )
-
-}
 
 function CartDrawer({openCart, setOpenCart}){
-  const {cartData,setViewedCart} = useContext(CartContext)
+  const {cartData,setViewedCart,setCheckout,checkout} = useContext(CartContext)
+  const {currentUser,currentUserACCESS} = useContext(UserContext)
   const {locale} = useContext(LocaleContext)
   const totalItems = cartData?.lines?.edges?.length ?? 0
   const [progressWidth, setProgressWidth] = useState(100)
+  const [newCheckout,setNewCheckout] = useState()
+  const [checkoutUrl, setCheckoutUrl] = useState()
 
   useEffect(()=>{
     setProgressWidth((cartData?.cost?.subtotalAmount?.amount || 0)/75*100)
@@ -529,6 +497,44 @@ function CartDrawer({openCart, setOpenCart}){
       setViewedCart(true)
     }
   },[openCart])
+  
+
+
+  // NOTE, this use effect is for applying automatic discounts to checkout mutation
+  // AS of Sep 24 2022, we are using the normal cart checkout url.
+  useEffect(()=>{
+    let lines = []
+    cartData?.lines?.edges.forEach((product)=>{
+      lines = [...lines, {quantity:product.node.quantity, variantId:product.node.merchandise.id}]
+    })
+
+    const createNewCheckout = async () =>{
+      //TODO, create a new checkout from exisiting card
+      //NOTE, too many queries might cause errors, please add error handling
+      const {data,errors} = await storefront(createCheckout,{input:{email:currentUser?.email, lineItems:lines}})
+      setNewCheckout(data?.checkoutCreate.checkout)
+
+      // TODO, once checkout has been created, add discount application for free shipping if user is currently logged in.
+      // NOTE, If statement is not necessary as we are creating new checkouts. 
+      if(data?.checkoutCreate?.checkout?.discountApplications?.nodes.length == 0 && currentUser){
+        const {data,errors} = await storefront(applyCheckoutDiscount,{checkoutId:newCheckout?.id,discountCode:"Members Rewards"})
+        console.log(data)
+
+        // TODO, replace checkoutUrl domain with stores domain
+        
+        // NOTE, this fix is very annoying as webUrl from applyCheckoutDiscount mutation
+        // doesnt actually return the newly set url we have created in shopify. This will
+        // do for now.
+        setCheckoutUrl(data?.checkoutDiscountCodeApplyV2?.checkout.webUrl.replace("hufi-2262.myshopify","checkout.hufistore"))
+        setCheckout(data?.checkoutDiscountCodeApplyV2?.checkout)
+      }
+    }
+    createNewCheckout()
+  },[cartData,currentUser])
+
+
+
+
   return(
     <Transition.Root show={openCart} as={Fragment}>
       <Dialog as="div" className="relative z-40" onClose={setOpenCart}>
@@ -638,7 +644,7 @@ function CartDrawer({openCart, setOpenCart}){
                     </p>
                   </div>
                   <div className = "flex flex-col items-center justify-center">
-                    <Link href = {cartData?.checkoutUrl}>
+                    <Link href = {cartData?.checkoutUrl || ''}>
                       <Button text = "Checkout" className = "w-full bg-secondaryVariant hover:bg-secondary"/>
                     </Link>
                       

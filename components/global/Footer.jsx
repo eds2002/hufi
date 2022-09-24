@@ -34,7 +34,7 @@ export default function Footer({data}) {
         </div>
         <div className = 'flex flex-col items-start justify-between w-full mt-8 md:items-center md:flex-row'>
           <p className="text-xs text-center text-gray-400 ">&copy; 2022 Hufi, Inc. All rights reserved.</p>
-          <div className = "flex flex-col items-start mt-10 md:items-center gap-x-4 md:flex-row md:mt-0 gap-y-4">
+          <div className = "flex flex-row items-start mt-10 md:items-center gap-x-4 md:mt-0 gap-y-4">
             <Link href = "/pages/terms-of-service">
               <a className = "text-xs text-gray-400">Terms of Service</a>
             </Link>

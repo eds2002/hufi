@@ -2,16 +2,24 @@ import React from 'react'
 import { storefront } from '../../utils/storefront'
 import {getPageByHandle} from '../../graphql/queries/getPageByHandle'
 
-const PageName = ({pageData:{page:{body,title}}}) => {
+const PageName = ({pageData}) => {
   return (
-    <main>
-      <section className = "w-full h-full py-24">
-        <h1 className = "px-4 mx-auto text-4xl font-medium max-w-7xl">{title}</h1>
-        <div className = "px-4 mx-auto prose max-w-7xl prose-h1:font-semibold prose-h1:text-2xl">
-          <div dangerouslySetInnerHTML={{__html: body}}/>
-        </div>
-      </section>
-    </main>
+    <>
+      {pageData.page ? 
+      <main>
+        <section className = "w-full h-full py-24">
+          <h1 className = "px-4 mx-auto text-4xl font-medium max-w-7xl">{pageData.page.title}</h1>
+          <div className = "px-4 mx-auto prose max-w-7xl prose-h1:font-semibold prose-h1:text-2xl">
+            <div dangerouslySetInnerHTML={{__html: pageData.page.body}}/>
+          </div>
+        </section>
+      </main>
+      :
+      <>
+        Dpesnt exits
+      </>
+      }
+    </>
   )
 }
 

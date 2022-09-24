@@ -8,28 +8,9 @@ import { useState } from 'react'
 import {viewCart} from '../../graphql/mutations/viewCart'
 import CartContext from '../../context/cartContext';
 import { storefront } from '../../utils/storefront';
+import UserContext from '../../context/userContext';
 
 const Layout = ({children}) => {
-  const {setCartData,cartData} = useContext(CartContext)
-  useEffect(()=>{
-    const checkCart = async () =>{
-      if(getCookie('userCart')){
-        // TODO, COOKIE EXISTS
-        const cookieCartData = JSON.parse(getCookie('userCart'))
-        const {data,errors} = await storefront(viewCart,{id:cookieCartData.cartId})
-        setCartData(data.cart)
-      }else{
-        // TODO, COOKIE DOESNT EXIST, CREATE USER CART
-        const {data,errors} = await storefront(createCart)
-        setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt});
-
-        const cartId = data.cartCreate.cart.id
-        const {data:cartRes, errors:cartErrors} = await storefront(viewCart,{id:cartId})
-        setCartData(cartRes.cart)
-      }
-    } 
-    checkCart()
-  },[])
   return (
     <>
       <Header data = {children.props.headerData} user = {children.props.userData}/>
