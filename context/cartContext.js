@@ -38,18 +38,18 @@ export function CartProvider({children}){
 
 
   //TODO, If a user is logged in, associate them to the cart 
-  useEffect(()=>{
-    if(currentUser && cartData){
-      const associateCustomerToCart = async () =>{
-        const {data,errors} = await storefront(cartBuyerIdentity,{buyerIdentity:{customerAccessToken:currentUserACCESS,email:currentUser.email},cartId:cartData.id})
-        console.log(data,errors)
-      }
-      associateCustomerToCart()
-      console.log("works")
+  // useEffect(()=>{
+  //   if(currentUser && cartData){
+  //     const associateCustomerToCart = async () =>{
+  //       const {data,errors} = await storefront(cartBuyerIdentity,{buyerIdentity:{customerAccessToken:currentUserACCESS,email:currentUser.email},cartId:cartData.id})
+  //       console.log(data,errors)
+  //     }
+  //     associateCustomerToCart()
+  //     console.log("works")
 
-      return
-    }
-  },[currentUser,cartData])
+  //     return
+  //   }
+  // },[currentUser,cartData])
   return(
     <CartContext.Provider value={{setCheckout, checkout,openCart,setOpenCart,cartId,setCartId,setCartData,cartData,viewedCart,setViewedCart}}>
       {children}

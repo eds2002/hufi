@@ -48,6 +48,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
     })
 
     const newCart = await addToShopifyCart(cartData,data.variants.nodes[findId].id)
+    console.log(newCart)
     if(newCart){
       setViewedCart(false)
       setCartData(newCart)

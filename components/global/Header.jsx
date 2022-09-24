@@ -502,35 +502,37 @@ function CartDrawer({openCart, setOpenCart}){
 
   // NOTE, this use effect is for applying automatic discounts to checkout mutation
   // AS of Sep 24 2022, we are using the normal cart checkout url.
-  useEffect(()=>{
-    let lines = []
-    cartData?.lines?.edges.forEach((product)=>{
-      lines = [...lines, {quantity:product.node.quantity, variantId:product.node.merchandise.id}]
-    })
 
-    const createNewCheckout = async () =>{
-      //TODO, create a new checkout from exisiting card
-      //NOTE, too many queries might cause errors, please add error handling
-      const {data,errors} = await storefront(createCheckout,{input:{email:currentUser?.email, lineItems:lines}})
-      setNewCheckout(data?.checkoutCreate.checkout)
+  
+  // useEffect(()=>{
+  //   let lines = []
+  //   cartData?.lines?.edges.forEach((product)=>{
+  //     lines = [...lines, {quantity:product.node.quantity, variantId:product.node.merchandise.id}]
+  //   })
 
-      // TODO, once checkout has been created, add discount application for free shipping if user is currently logged in.
-      // NOTE, If statement is not necessary as we are creating new checkouts. 
-      if(data?.checkoutCreate?.checkout?.discountApplications?.nodes.length == 0 && currentUser){
-        const {data,errors} = await storefront(applyCheckoutDiscount,{checkoutId:newCheckout?.id,discountCode:"Members Rewards"})
-        console.log(data)
+  //   const createNewCheckout = async () =>{
+  //     //TODO, create a new checkout from exisiting card
+  //     //NOTE, too many queries might cause errors, please add error handling
+  //     const {data,errors} = await storefront(createCheckout,{input:{email:currentUser?.email, lineItems:lines}})
+  //     setNewCheckout(data?.checkoutCreate.checkout)
 
-        // TODO, replace checkoutUrl domain with stores domain
+  //     // TODO, once checkout has been created, add discount application for free shipping if user is currently logged in.
+  //     // NOTE, If statement is not necessary as we are creating new checkouts. 
+  //     if(data?.checkoutCreate?.checkout?.discountApplications?.nodes.length == 0 && currentUser){
+  //       const {data,errors} = await storefront(applyCheckoutDiscount,{checkoutId:newCheckout?.id,discountCode:"Members Rewards"})
+  //       console.log(data)
+
+  //       // TODO, replace checkoutUrl domain with stores domain
         
-        // NOTE, this fix is very annoying as webUrl from applyCheckoutDiscount mutation
-        // doesnt actually return the newly set url we have created in shopify. This will
-        // do for now.
-        setCheckoutUrl(data?.checkoutDiscountCodeApplyV2?.checkout.webUrl.replace("hufi-2262.myshopify","checkout.hufistore"))
-        setCheckout(data?.checkoutDiscountCodeApplyV2?.checkout)
-      }
-    }
-    createNewCheckout()
-  },[cartData,currentUser])
+  //       // NOTE, this fix is very annoying as webUrl from applyCheckoutDiscount mutation
+  //       // doesnt actually return the newly set url we have created in shopify. This will
+  //       // do for now.
+  //       setCheckoutUrl(data?.checkoutDiscountCodeApplyV2?.checkout.webUrl.replace("hufi-2262.myshopify","checkout.hufistore"))
+  //       setCheckout(data?.checkoutDiscountCodeApplyV2?.checkout)
+  //     }
+  //   }
+  //   createNewCheckout()
+  // },[cartData,currentUser])
 
 
 

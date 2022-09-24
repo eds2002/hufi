@@ -4,8 +4,8 @@ export const addLine = gql`
 mutation cartLinesAdd($cartId: ID!, $quantity:Int,$variantId:ID!) {
   cartLinesAdd(cartId: $cartId, lines: [{quantity:$quantity,merchandiseId:$variantId}]) {
     cart {
-      id
       checkoutUrl
+      id
       lines(first: 10) {
         edges {
           node {
