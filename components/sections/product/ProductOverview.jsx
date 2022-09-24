@@ -119,7 +119,7 @@ export default function ProductOverview({data}) {
                     </div>
 
                     <div className = "mt-1">
-                      <p className = "text-lg text-onBackground/60">{data.product.shortDesc.value}</p>
+                      <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
                     </div>
 
                     {/* Reviews */}

@@ -47,13 +47,11 @@ export async function getStaticProps(){
     // TODO, loop through collection sets, query values and rewrite values to collection data
     for(const [index,set] of collectionsJSON.entries()){
       const queryData = []
-      if(index < 3){
-        for(const value of set.collectionTitles){
-          const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
-          queryData.push(collection)
-        }
-        collectionsJSON[index].collectionTitles = queryData
+      for(const value of set.collectionTitles){
+        const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
+        queryData.push(collection)
       }
+      collectionsJSON[index].collectionTitles = queryData
     }
   
   

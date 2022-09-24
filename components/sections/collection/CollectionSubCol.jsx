@@ -9,17 +9,19 @@ import Signup from '../Signup'
 const CollectionSubCol = ({data}) => {
   return (
     <section className = "w-full">
-      <div className = 'px-4 mx-auto max-w-7xl'>
+      <div className = 'mx-auto '>
         {data.map((collectionSet,index)=>(
           <>
-            {index === data.length-1 && (<Signup/>)}
-            <div className = "py-16 ">
-              <h1 className = "mb-6 text-2xl font-medium">{collectionSet.heading.title ?? 'Collection Heading'}</h1>
+            <div className = "">
+              {collectionSet?.heading?.title != "" && (
+                <h1 className = "px-4 pt-10 mx-auto mb-6 text-2xl font-medium max-w-7xl">{collectionSet?.heading?.title ?? 'Collection Heading'}</h1>
+              )}
               <div className = {`
-                ${collectionSet.style.type === "Default" && ('grid w-full grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-3 h-screen')}
-                ${collectionSet.style.type === "Row" && (`grid grid-flow-col auto-cols-[95%] sm:auto-cols-[48%] lg:auto-cols-[32%] w-full h-[50vh] gap-3`)}
-                ${collectionSet.style.type === "TwoRow" && (`grid md:grid-cols-2  w-full h-screen gap-3`)}
-                ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3`)}
+                ${collectionSet.style.type === "Default" && ('grid w-full grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-3 h-screen max-w-7xl px-4 mx-auto pb-10')}
+                ${collectionSet.style.type === "Row" && (`grid grid-flow-col auto-cols-[95%] sm:auto-cols-[48%] lg:auto-cols-[32%] w-full h-[50vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
+                ${collectionSet.style.type === "TwoRow" && (`grid md:grid-cols-2  w-full h-screen gap-3 max-w-7xl px-4 mx-auto pb-10`)}
+                ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
+                ${collectionSet.style.type === "Header" && (`h-[80vh] px-4`)}
                 overflow-scroll 
               `}>
                 {collectionSet.collectionTitles.map((set,index)=>(
@@ -29,6 +31,9 @@ const CollectionSubCol = ({data}) => {
             </div> 
           </>
         ))}
+        <div className = "px-4 mx-auto max-w-7xl">
+          <Signup/>
+        </div>
       </div>
     </section>
   )
@@ -49,7 +54,7 @@ function CollectionBox({set,index,collectionSet}){
       relative w-full h-full rounded-md overflow-hidden aspect-square`}> 
         <Image src = {set?.collections?.nodes[0]?.image?.url} layout = 'fill' objectFit='cover' className = 'object-cover w-full h-full'/>
         <div className = "absolute inset-0 bg-black/40 mix-blend-darken"/>
-          <div className="relative flex flex-col items-start justify-end w-full h-full p-8 sm:p-12">
+          <div className="relative flex flex-col items-start justify-end w-full h-full p-8 mx-auto sm:p-12 max-w-7xl">
             {/* FORMAT HTML */}
             <div className = {`w-full max-w-xs
             prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90

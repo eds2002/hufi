@@ -254,7 +254,7 @@ export default function Header({data,user}) {
                                         <div className="py-10 columns-5">
                                           {category.items.map((subCategory)=>(
                                             <div key = {subCategory.title} className = "mb-6 break-inside-avoid">
-                                              <Link href = {`/collection/${slugify(category?.title)}/${slugify(subCategory?.title)}`}>
+                                              <Link href = {`/collection/${slugify(category?.title)}/${slugify(category?.title)}-${slugify(subCategory?.title)}`}>
                                                 <p
                                                   id={`desktop-featured-heading-${categoryIdx}`}
                                                   className="text-lg font-medium cursor-pointer hover:text-onBackground/70"
@@ -427,7 +427,7 @@ function MobileLinks({category}){
 
             {/* COLLECTION NAME LINK */}
             <Link href = {`/collection/${slugify(category.title)}`}>
-              <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium">{category.title}</h1>
+              <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium cursor-pointer">{category.title}</h1>
             </Link>
 
             {/* COLLECTION SUBCOLLECTIONS */}
@@ -435,7 +435,7 @@ function MobileLinks({category}){
               <div key={subCategory.title} className="px-4">
                 <div>
                   {/* SUBCOLLECTION TITLES */}
-                  <p className="flex justify-between py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/50" onClick = {()=>setOpenSecondary(subCategory.title)}>
+                  <p className="flex justify-between py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/50 " onClick = {()=>setOpenSecondary(subCategory.title)}>
                     {subCategory.title}
                     <ChevronRightIcon className = "w-5 h-5"/>
                   </p>
@@ -455,8 +455,8 @@ function MobileLinks({category}){
                       </div>
 
                       {/* SUBCOLLECTION TITLE */}
-                      <Link href = {`/collection/${slugify(category.title)}/${slugify(subCategory.title)}`}>
-                        <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium">{subCategory.title}</h1>
+                      <Link href = {`/collection/${slugify(category.title)}/${slugify(category.title)}-${slugify(subCategory.title)}`}>
+                        <h1 className = "px-4 mt-4 mb-4 text-2xl font-medium cursor-pointer">{subCategory.title}</h1>
                       </Link>
 
                       {/* SUBCOLLECTION PRODUCTS */}
