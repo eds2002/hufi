@@ -240,7 +240,6 @@ export default function Header({data,user}) {
                                   <Link href = {`/collection/${slugify(category?.title)}`}>
                                     <div className="relative flex items-center justify-center h-full text-sm font-medium cursor-pointer hover:text-onBackground/70">
                                         {category.title}
-                                        <span className = "transition group-hover:rotate-180"><ChevronDownIcon className = {`w-5 h-5 font-bold transition `}/></span>
                                         <div className = "absolute bottom-0 left-0 right-0 w-full h-0.5 bg-onBackground rounded-full group-hover:block hidden"/>
                                     </div>
                                   </Link>

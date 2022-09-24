@@ -21,7 +21,7 @@ const CollectionSubCol = ({data}) => {
                 ${collectionSet.style.type === "Row" && (`grid grid-flow-col auto-cols-[95%] sm:auto-cols-[48%] lg:auto-cols-[32%] w-full h-[50vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "TwoRow" && (`grid md:grid-cols-2  w-full h-screen gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
-                ${collectionSet.style.type === "Header" && (`h-[80vh] px-4`)}
+                ${collectionSet.style.type === "Header" && (`h-[80vh]`)}
                 overflow-scroll 
               `}>
                 {collectionSet.collectionTitles.map((set,index)=>(
