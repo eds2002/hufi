@@ -210,7 +210,7 @@ export default function Header({data,user}) {
                       <Link href = "/login">
                         <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Login</a>
                       </Link>
-                      <Link href = "/register">
+                      <Link href = "/signup">
                         <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Sign up</a>
                       </Link>
                     </div>
