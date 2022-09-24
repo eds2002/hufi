@@ -4,6 +4,7 @@ import { storefront } from '../utils/storefront'
 import { viewCart } from '../graphql/mutations/viewCart'
 import UserContext from './userContext'
 import { cartBuyerIdentity } from '../graphql/mutations/cartBuyerIdentity'
+import {createCart} from '../graphql/mutations/createCart'
 
 const CartContext = createContext()
 
