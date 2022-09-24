@@ -205,7 +205,7 @@ export default function Header({data,user}) {
                     </div>
                   </div>
                   :
-                  <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
+                  <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15 ">
                     <div className = "w-full">
                       <Link href = "/login">
                         <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Login</a>

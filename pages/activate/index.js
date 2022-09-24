@@ -21,7 +21,7 @@ const index = () => {
           <Link href = "/">
             <Button text = 'Start Shopping'/>
           </Link>
-          <Link href = "/hufirewardsmember">
+          <Link href = "/hufi-rewards-member">
             <Button text = 'View my benefits' CSS = " border border-black"/>
           </Link>
         </div>
