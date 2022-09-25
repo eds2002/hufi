@@ -22,10 +22,11 @@ export default function ProductOverview({data}) {
   const {cartData,setCartData,viewedCart, setViewedCart} = useContext(CartContext)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
   const [soldOutItems,setSoldOutItems] = useState([])
+  const [currentVariant,setCurrentVariant] = useState(null)
 
 
   // TODO, change old array to new array with a value the user has selected
-  const handleVariantChange = (option,selectedValue) =>{
+  const handleVariantChange = async (option,selectedValue) =>{
     if(!soldOutItems.includes(selectedValue)){
       setSelectedOption(prevArr => {
         const newArr = prevArr.map(obj =>{
@@ -39,6 +40,29 @@ export default function ProductOverview({data}) {
       })
     }
   }
+
+
+  // TODO, sets the current image to the variant image
+  useEffect(()=>{
+    let findId;
+
+    const query = []
+
+    // TODO, for each selected option the user has requested, store variable into query array
+    selectedOption.forEach((option)=>{
+      query.push(option.value)
+    })
+
+    // TODO, find the id 
+    data.product.variants.nodes.map((newArr, arrayIndex) =>{
+      if(query.every(object=>newArr.selectedOptions.some(obj=> obj.value === object))){
+        findId = arrayIndex
+      }
+    })
+    setCurrentVariant(data.product.variants.nodes[findId].image.url)
+  },[selectedOption])
+
+
 
   const addToCart = async (e) =>{
     e.preventDefault()
@@ -83,6 +107,7 @@ export default function ProductOverview({data}) {
                 <div className="col-span-8">
                   <h2 className="sr-only">Images</h2>
 
+                  
                   <div className={`
                   grid grid-flow-col auto-cols-[100%] overflow-scroll 
                   lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 `}>
@@ -93,7 +118,7 @@ export default function ProductOverview({data}) {
                       `}
                       key = {index}
                       >
-                        <img src = {media.previewImage.url} className = "object-cover w-full h-full"/>
+                        <img src = {(currentVariant && index == 0) ? currentVariant : media.previewImage.url} className = "object-cover w-full h-full"/>
                       </div>
                     ))}
                   </div>
@@ -122,39 +147,11 @@ export default function ProductOverview({data}) {
                       <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
                     </div>
 
-                    {/* Reviews */}
-                    {/* <div className="mt-4">
-                      <h2 className="sr-only">Reviews</h2>
-                      <div className="flex items-center">
-                        <p className="text-sm text-gray-700">
-                          {product.rating}
-                          <span className="sr-only"> out of 5 stars</span>
-                        </p>
-                        <div className="flex items-center ml-1">
-                          {[0, 1, 2, 3, 4].map((rating) => (
-                            <StarIcon
-                              key={rating}
-                              className={classNames(
-                                product.rating > rating ? 'text-yellow-500' : 'text-gray-400',
-                                'h-5 w-5 flex-shrink-0'
-                              )}
-                              aria-hidden="true"
-                            />
-                          ))}
-                        </div>
-                        <div className="flex ml-4">
-                          <p href="#" className="text-sm transition text-neutral-400">
-                            {product.reviewCount} reviews
-                          </p>
-                        </div>
-                      </div>
-                    </div> */}
-
                     {/* Product Information */}
-                    <div className="mt-8 lg:col-span-5">
+                    <div className="mt-4 lg:col-span-5">
                       <form name = "productInformation" >
                         {data.product.options.map((option,index)=>(
-                          <div key = {index} >
+                          <div key = {index} className = "">
                             {/* Options title */}
                             {/* TODO, avoid rendering products with no options / variants */}
                             {option.name != "Title" && (
@@ -180,7 +177,7 @@ export default function ProductOverview({data}) {
                                         }
                                         text-sm
                                       `}
-                                      style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : value}}
+                                      style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
                                       onClick = {(e)=>handleVariantChange(option.name,value)}
                                       key = {key}
                                       id = {option.value}
@@ -198,14 +195,15 @@ export default function ProductOverview({data}) {
                       </form>
                     </div>
 
-
                     {/* PRODUCT DESCRIPTION */}
                     <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
                       <div
-                        className="prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base"
+                        className="prose-h1:mb-6 prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
                         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
                       />
                     </div>
+
+
 
                     <DetailsComponent data = {data.product.details}/>
                     <LearnMoreComponent data = {data.product.learnmore}/>
@@ -214,11 +212,11 @@ export default function ProductOverview({data}) {
                     <div className = "mt-4">
                         <div className = "flex items-center text-xs gap-x-3">
                           <TruckIcon className = "w-5 h-5 text-primaryVariant" />
-                          <p>Free shipping on orders over $25.</p>
+                          <p>Free shipping for members using code &ldquo;Members Rewards&ldquo;.</p>
                         </div>
                         <div className = "flex items-center mt-2 text-xs gap-x-3">
                           <CheckBadgeIcon className = "w-5 h-5 text-primaryVariant" />
-                          <p>Quality ensured.</p>
+                          <p>Quality ensured on all products.</p>
                         </div>
                     </div>
                   </div>
@@ -247,11 +245,11 @@ function LearnMoreComponent({data}){
         <div className = "mt-4">
           <div className = "prose-h3">
             <div className = "w-full h-full rounded-md bg-surface">
-              <div className = {`flex items-center justify-between w-full p-4 transition rounded-md cursor-pointer hover:bg-secondaryVariant/50 ${open ? 'bg-secondary' : 'bg-surface'}`}
+              <div className = {`flex items-center justify-between w-full px-4 py-2 transition rounded-md cursor-pointer  ${open ? 'bg-primary' : 'bg-surface'}`}
               onClick = {()=>setOpen(!open)}
               >
                 <div
-                  className="prose-h1:block prose-li:hidden prose-h1:text-onSurface prose-h1:font-medium"
+                  className="prose-p:hidden prose-h1:block prose-li:hidden prose-h1:text-onSurface prose-h1:font-medium"
                   dangerouslySetInnerHTML={{ __html: data.value }}
                 />
                 <ChevronDownIcon className = {`w-5 h-5 ${open ? 'rotate-180' : 'rotate-0'}`}/>
@@ -259,7 +257,7 @@ function LearnMoreComponent({data}){
               {open && (
                 <div className = "w-full h-full p-4">
                   <div
-                    className="prose-li:font-light prose-h1:hidden prose-li:text-onSurface prose-li:list-item prose-li:mb-4 prose-li:text-sm"
+                    className="prose-p:mb-4 prose-li:font-light prose-h1:hidden prose-li:text-onSurface prose-li:list-item prose-li:mb-4 prose-li:text-sm"
                     dangerouslySetInnerHTML={{ __html: data.value }}
                   />
                 </div>
@@ -283,11 +281,11 @@ function DetailsComponent({data}){
         <div className = "mt-10">
           <div className = "prose-h3">
             <div className = "w-full h-full rounded-md bg-surface">
-              <div className = {`flex items-center justify-between w-full p-4 transition rounded-md cursor-pointer hover:bg-secondaryVariant/50 ${open ? 'bg-secondary' : 'bg-surface'}`}
+              <div className = {`flex items-center justify-between w-full px-4 py-2 transition rounded-md cursor-pointer ${open ? 'bg-primary' : 'bg-surface'}`}
               onClick = {()=>setOpen(!open)}
               >
                 <div
-                  className="prose-h1:block prose-li:hidden prose-h1:text-onSurface prose-h1:font-medium"
+                  className="prose-p:hidden prose-h1:block prose-li:hidden prose-h1:text-onSurface prose-h1:font-medium"
                   dangerouslySetInnerHTML={{ __html: data.value }}
                 />
                 <ChevronDownIcon className = {`w-5 h-5 ${open ? 'rotate-180' : 'rotate-0'}`}/>
@@ -295,7 +293,7 @@ function DetailsComponent({data}){
               {open && (
                 <div className = "w-full h-full p-4">
                   <div
-                    className="prose-li:font-light prose-h1:hidden prose-li:text-onSurface prose-li:list-item prose-li:mb-4 prose-li:text-sm"
+                    className="prose-p:mb-4 prose-p:text-sm prose-li:font-light prose-h1:hidden prose-li:text-onSurface prose-li:list-item prose-li:mb-4 prose-li:text-sm"
                     dangerouslySetInnerHTML={{ __html: data.value }}
                   />
                 </div>

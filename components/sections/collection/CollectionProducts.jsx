@@ -29,8 +29,10 @@ const CollectionProducts = ({data,filters}) => {
     setTags(productTags)
   },[])
 
+  console.log(filterBy.forEach((test)=> test))
+
   return (
-    <section className = "relative pt-24 pb-10 bg-surface h-[300vh]">
+    <section className = "relative pt-24 pb-10 bg-surface">
       {/* COLLECTION NAME NAV */}
       <nav className = "sticky top-0 z-[22] w-full pt-16">
         <div className = 'z-20 w-full h-full bg-surface'>
@@ -74,8 +76,11 @@ const CollectionProducts = ({data,filters}) => {
                   <ProductCard product={product} data = {data.collectionByHandle.products}/>
                   :
                   <>
-                    {filterBy.includes(product.tags[0]) && (
-                      <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                    {filterBy.every((value)=> product.tags.includes(value)) && (
+                      <>
+                        {filterBy.some(e=>console.log(e))}
+                        <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                      </>
                     )}
                   </>
                 }

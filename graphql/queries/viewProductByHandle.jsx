@@ -35,6 +35,10 @@ query Product($handle: String!) {
       nodes{
         quantityAvailable
         id
+        image{
+					url
+          altText
+        }
         selectedOptions{
           name
           value

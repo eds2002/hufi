@@ -47,7 +47,7 @@ const RewardsMember = () => {
             </div>
           </div>
           <div className = "flex-col md:flex-row-reverse max-w-7xl h-[50%] flex items-center justify-center mx-auto px-4 mb-6">
-            <div className = " h-full bg-red-500 w-full md:w-[50%] relative pointer-events-none select-none">
+            <div className = " h-full w-full md:w-[50%] relative pointer-events-none select-none">
               <Image src = {discount} alt = "image of a truck" layout = 'fill' objectFit='cover'/>
             </div>
             <div className = "md:w-[50%] w-full flex items-end justify-center flex-col">

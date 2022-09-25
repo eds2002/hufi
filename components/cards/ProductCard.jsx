@@ -25,7 +25,7 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "relative flex flex-col w-full h-full p-4 transition rounded-lg shadow-sm aspect-[16/9] group bg-background">
+      <div className = "relative flex flex-col w-full h-full p-4 transition rounded-lg shadow-sm aspect-[16/12] group bg-background">
         <Link href = {`/product/${product?.handle}`}>
           <>
             <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">
@@ -39,7 +39,7 @@ export default function ProductCard({product}){
         </Link>
         <div className = "relative w-full h-full rounded-md cursor-pointer bg-background">
           <Link href = {`/product/${product?.handle}`}>
-            <div className = "absolute inset-0 ">
+            <div className = "absolute inset-0 overflow-hidden rounded-md">
               <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
             </div>
           </Link>
