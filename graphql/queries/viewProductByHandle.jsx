@@ -7,6 +7,10 @@ query Product($handle: String!) {
     id
     title
     totalInventory
+    seo{
+      title
+      description
+    }
     compareAtPriceRange{
       maxVariantPrice{
         amount

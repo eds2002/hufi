@@ -5,6 +5,10 @@ export const getPageByHandle = gql`
     page(handle:$handle){
       body
       title
+      seo{
+        title
+        description
+      }
     }
   }
 `
