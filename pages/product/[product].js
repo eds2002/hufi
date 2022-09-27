@@ -14,30 +14,6 @@ export default function Product({productData}){
     <>
       {productData ? 
         <>
-          <Head>
-            <meta charSet='UTF-8'/>
-            <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
-            <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
-            <title>Hufi</title>
-            <meta name = "description" content = "Selling innovative, life changing products."/>
-            <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
-
-            <meta property="og:title" content="Hufi"/>
-            <meta property="og:description" content="Selling innovative, life changing products."/>
-            <meta property="og:url" content="https://www.hufistore.com/"/>
-            <meta property="og:locale" content="en_US"/>
-            <meta property="og:image" content="http://www.hufistore.com/hufiLogo.svg"/>
-            <meta property="og:type" content="website"/>
-            <meta property="og:site_name" content="Hufi"/>
-
-
-            {/* <!-- Twitter --> */}
-            <meta property="twitter:card" content="summary_large_image"/>
-            <meta property="twitter:url" content="https://www.hufistore.com/"/>
-            <meta property="twitter:title" content="Hufi"/>
-            <meta property="twitter:description" content="Selling innovative, life changing products."/>
-            <meta property="twitter:image" content="http://www.hufistore.com/hufiLogo.svg"/>
-          </Head>
           <main className = "w-full h-screen ">
             <div className = "flex flex-col items-center w-full h-full px-4 pt-24">
               <div className = "relative w-full h-[325px] pointer-events-none select-none">
