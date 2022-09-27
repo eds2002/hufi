@@ -40,7 +40,7 @@ export default function Home({data,collections,productData}) {
             <meta property="og:description" content="Selling innovative, life changing products."/>
             <meta property="og:url" content="https://www.hufistore.com/"/>
             <meta property="og:locale" content="en_US"/>
-            <meta property="og:image" content="http://www.hufistore.com/hufiLogo.svg"/>
+            <meta property="og:image" content="http://www.hufistore.com/hufiOG.png"/>
             <meta property="og:type" content="website"/>
             <meta property="og:site_name" content="Hufi"/>
 
@@ -50,7 +50,7 @@ export default function Home({data,collections,productData}) {
             <meta property="twitter:url" content="https://www.hufistore.com/"/>
             <meta property="twitter:title" content="Hufi"/>
             <meta property="twitter:description" content="Selling innovative, life changing products."/>
-            <meta property="twitter:image" content="http://www.hufistore.com/hufiLogo.svg"/>
+            <meta property="twitter:image" content="http://www.hufistore.com/hufiOG.png"/>
         </Head>
         <main>
           <Hero data = {data}/>
