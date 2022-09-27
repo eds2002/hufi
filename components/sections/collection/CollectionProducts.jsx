@@ -29,7 +29,6 @@ const CollectionProducts = ({data,filters}) => {
     setTags(productTags)
   },[])
 
-  console.log(filterBy.forEach((test)=> test))
 
   return (
     <section className = "relative pt-24 pb-10 bg-surface">
@@ -78,7 +77,6 @@ const CollectionProducts = ({data,filters}) => {
                   <>
                     {filterBy.every((value)=> product.tags.includes(value)) && (
                       <>
-                        {filterBy.some(e=>console.log(e))}
                         <ProductCard product={product} data = {data.collectionByHandle.products}/>
                       </>
                     )}

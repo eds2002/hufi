@@ -14,36 +14,36 @@ export default function Product({productData}){
     <>
       {productData ? 
         <>
-        <Head>
-          <meta charSet='UTF-8'/>
-          <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
-          <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
-          <title>Hufi</title>
-          <meta name = "description" content = "Selling innovative, life changing products."/>
-          <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
+          <Head>
+            <meta charSet='UTF-8'/>
+            <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
+            <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
+            <title>Hufi</title>
+            <meta name = "description" content = "Selling innovative, life changing products."/>
+            <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
 
-          <meta property="og:title" content="Hufi"/>
-          <meta property="og:description" content="Selling innovative, life changing products."/>
-          <meta property="og:url" content="https://www.hufistore.com/"/>
-          <meta property="og:locale" content="en_US"/>
-          <meta property="og:image" content="http://www.hufistore.com/hufiLogo.svg"/>
-          <meta property="og:type" content="website"/>
-          <meta property="og:site_name" content="Hufi"/>
+            <meta property="og:title" content="Hufi"/>
+            <meta property="og:description" content="Selling innovative, life changing products."/>
+            <meta property="og:url" content="https://www.hufistore.com/"/>
+            <meta property="og:locale" content="en_US"/>
+            <meta property="og:image" content="http://www.hufistore.com/hufiLogo.svg"/>
+            <meta property="og:type" content="website"/>
+            <meta property="og:site_name" content="Hufi"/>
 
 
-          {/* <!-- Twitter --> */}
-          <meta property="twitter:card" content="summary_large_image"/>
-          <meta property="twitter:url" content="https://www.hufistore.com/"/>
-          <meta property="twitter:title" content="Hufi"/>
-          <meta property="twitter:description" content="Selling innovative, life changing products."/>
-          <meta property="twitter:image" content="http://www.hufistore.com/hufiLogo.svg"/>
-        </Head>
+            {/* <!-- Twitter --> */}
+            <meta property="twitter:card" content="summary_large_image"/>
+            <meta property="twitter:url" content="https://www.hufistore.com/"/>
+            <meta property="twitter:title" content="Hufi"/>
+            <meta property="twitter:description" content="Selling innovative, life changing products."/>
+            <meta property="twitter:image" content="http://www.hufistore.com/hufiLogo.svg"/>
+          </Head>
           <main className = "w-full h-screen ">
             <div className = "flex flex-col items-center w-full h-full px-4 pt-24">
               <div className = "relative w-full h-[325px] pointer-events-none select-none">
                 <Image src = {ErrorImg} layout='fill' objectFit="cover"/>
               </div>
-              <h1 className = "max-w-sm text-3xl font-medium text-center">Hmmm, it seems like this product doesn't exist.</h1>
+              <h1 className = "max-w-sm text-3xl font-medium text-center">Hmmm, it seems like this product doesn&lsquo;t exist.</h1>
               <Link href = "/">
                 <Button text = 'Back to home' CSS = 'w-auto px-4 bg-secondaryVariant py-2 mt-6 hover:bg-secondary transition'/>
               </Link>

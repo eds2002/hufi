@@ -48,7 +48,6 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
     })
 
     const newCart = await addToShopifyCart(cartData,data.variants.nodes[findId].id)
-    console.log(newCart)
     if(newCart){
       setViewedCart(false)
       setCartData(newCart)
@@ -63,7 +62,6 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
         return currentArr.selectedOptions[0]
       }
     })
-    console.log(data)
     setSoldOutItems(soldOutVariants?.map((variant)=>variant.selectedOptions[0].value))
   },[data])
 
