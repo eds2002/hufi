@@ -7,31 +7,47 @@ import ErrorImg from '../../../assets/404.svg'
 import Link from 'next/link';
 import { Button } from '../../../components/elements';
 import Image from 'next/image';
+import Head from 'next/head';
+import { slugify } from '../../../utils/slugify';
+import { useRouter } from 'next/router';
 
 const CollectionPage = ({collectionData, urlFilters,subCollections,collectionName}) => {
+  const router = useRouter()
   return (
     <>
-      {collectionData && subCollections ? 
+      {collectionData && subCollections &&
+      <>
+      <Head>
+        <meta charSet='UTF-8'/>
+        <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
+        <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
+        <title>Hufi - {collectionData.collectionByHandle.title}</title>
+        <meta name = "description" content = {collectionData.collectionByHandle.seo.description}/>
+        <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
+
+        <meta property="og:title" content="Hufi"/>
+        <meta property="og:description" content={collectionData.collectionByHandle.seo.description}/>
+        <meta property="og:url" content={`https://www.hufistore.com/product/${slugify(collectionData.collectionByHandle.title)}`}/>
+        <meta property="og:locale" content="en_US"/>
+        <meta property="og:image" content="https://www.hufistore.com/hufiOG.png"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:site_name" content="Hufi"/>
+
+
+        {/* <!-- Twitter --> */}
+        <meta property="twitter:card" content="summary_large_image"/>
+        <meta property="twitter:url" content={`https://www.hufistore.com/product/${slugify(collectionData.collectionByHandle.title)}`}/>
+        <meta property="twitter:title" content="Hufi"/>
+        <meta property="twitter:description" content={collectionData.collectionByHandle.seo.description}/>
+        <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
+      </Head>
       <main className = "relative w-full h-full">
         <div className = "sticky z-20 py-2 text-2xl font-medium bg-surface top-16">
           <p className = "px-4 mx-auto max-w-7xl">{collectionData.collectionByHandle.title}</p>
         </div>
         <CollectionSubCol data = {subCollections}/>
       </main>
-      :
-      <>
-          <main className = "w-full h-screen">
-            <div className = "flex flex-col items-center w-full h-full px-4 pt-24">
-              <div className = "relative w-full h-[300px] pointer-events-none select-none">
-                <Image src = {ErrorImg} layout='fill' objectFit="contain"/>
-              </div>
-              <h1 className = "max-w-sm text-3xl font-medium text-center">Hmmm, it seems like this product doesn&lsquo;t exist.</h1>
-              <Link href = "/">
-                <Button text = 'Back to home' CSS = 'w-auto px-4 bg-secondaryVariant py-2 mt-6 hover:bg-secondary transition'/>
-              </Link>
-            </div>
-          </main>
-        </>
+      </>
       }
     </>
   )
@@ -53,7 +69,6 @@ export async function getServerSideProps(context) {
       }
       subCollectionsJSON[index].collectionTitles = queryData
     }
-  
     return{
       props:{
         collectionData:collection || errors,
@@ -61,12 +76,12 @@ export async function getServerSideProps(context) {
         subCollections:subCollectionsJSON,
       }
     }
+  
   }catch(e){
     return{
-      props:{
-        collectionData:null,
-        urlFilters:null,
-        subCollections:null,
+      redirect: {
+        permanent: false,
+        destination: "/404"
       }
     }
   }

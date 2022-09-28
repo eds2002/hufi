@@ -1,7 +1,16 @@
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
+import Head from 'next/head'
 
 const Refunds = () => {
   return (
+    <>
+    <Head>
+      <meta charSet='UTF-8'/>
+      <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
+      <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
+      <title>Hufi - Support & Refunds</title>
+      <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
+    </Head>
     <main>
       <section className = "w-full h-[50vh] py-24">
         <div className = "flex flex-col items-center justify-center w-full h-full px-4 pb-24 mx-auto max-w-7xl">
@@ -16,6 +25,7 @@ const Refunds = () => {
         </div>
       </section>
     </main>
+    </>
   )
 }
 

@@ -8,6 +8,7 @@ import { createCustomer } from '../graphql/mutations/createCustomer'
 import { useRouter } from 'next/router'
 import { createUserAccessToken } from '../graphql/mutations/createUserAccessToken'
 import { getCookie } from 'cookies-next'
+import Head from 'next/head'
 
 
 const Signup = () => {
@@ -114,56 +115,65 @@ const Signup = () => {
   }
 
   return (
-    <section>
-      <div className = "relative flex flex-col items-center justify-center w-full h-screen px-4 mx-auto">
-        <div className = "absolute inset-0">
-          <div className = "absolute inset-0 z-10 bg-black/25"/>
-          <Image src = {signupBackground} layout = 'fill' objectFit="cover" className  = "w-full h-full"/>
-        </div>
-        <div className = "z-10 flex justify-center w-full">
-          <div className = "z-10 w-full max-w-lg shadow-xl bg-surface p-7 rounded-xl">
-            <h1 className = "text-3xl font-medium sm:text-3xl lg:text-4xl">Sign up</h1>
-            <p className = "max-w-sm mt-2 text-base text-left xl:text-lg text-onBackground/70">You&apos;re a couple steps away from being a rewards member.</p>
-            <form className = "w-full max-w-md mt-7" onSubmit={(e)=>handleSubmit(e)}>
-              <div className = "flex justify-between w-full gap-3 mt-3">
-                {inputs.map((input)=>(
-                  <>
-                      {input.id <= 2 && (
-                        <Input {...input} onChange = {onChange} />
-                      )}
-                  </>
-                ))}
-              </div>
-              <div className = "">
-                {inputs.map((input)=>(
-                  <>
-                      {input.id >= 3 && (
-                        <Input {...input} onChange = {onChange}/>
-                      )}
-                  </>
-                ))}
-              </div>
-              <div className = 'flex items-start gap-x-3'>
-                <input type = "checkbox" name = "acceptsEmailMarketing" value = {checkbox} onChange = {()=>setCheckbox(!checkbox)} />
-                <label className = "text-sm text-onSurface/70">
-                  Yes, I would like to receive emails about trending products, offers, and discounts. You can cancel your subscription at any time.  
-                </label>
-              </div>
-              <div className = "mt-6">
-                <Button text = 'Use my benefits'/>
-              </div>
-              <div className = "w-full h-full mt-2 text-xs font-medium text-onSurface/60">
-                <a>Already have an account?{' '}
-                  <Link href = "/login">
-                    <span className = "cursor-pointer text-tertiaryVariant">Login</span>
-                  </Link>
-                </a>
-              </div>
-            </form>
+    <>
+      <Head>
+        <meta charSet='UTF-8'/>
+        <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
+        <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
+        <title>Hufi - Support & Refunds</title>
+        <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
+      </Head>
+      <section>
+        <div className = "relative flex flex-col items-center justify-center w-full h-screen px-4 mx-auto">
+          <div className = "absolute inset-0">
+            <div className = "absolute inset-0 z-10 bg-black/25"/>
+            <Image src = {signupBackground} layout = 'fill' objectFit="cover" className  = "w-full h-full"/>
+          </div>
+          <div className = "z-10 flex justify-center w-full">
+            <div className = "z-10 w-full max-w-lg shadow-xl bg-surface p-7 rounded-xl">
+              <h1 className = "text-3xl font-medium sm:text-3xl lg:text-4xl">Sign up</h1>
+              <p className = "max-w-sm mt-2 text-base text-left xl:text-lg text-onBackground/70">You&apos;re a couple steps away from being a rewards member.</p>
+              <form className = "w-full max-w-md mt-7" onSubmit={(e)=>handleSubmit(e)}>
+                <div className = "flex justify-between w-full gap-3 mt-3">
+                  {inputs.map((input)=>(
+                    <>
+                        {input.id <= 2 && (
+                          <Input {...input} onChange = {onChange} />
+                        )}
+                    </>
+                  ))}
+                </div>
+                <div className = "">
+                  {inputs.map((input)=>(
+                    <>
+                        {input.id >= 3 && (
+                          <Input {...input} onChange = {onChange}/>
+                        )}
+                    </>
+                  ))}
+                </div>
+                <div className = 'flex items-start gap-x-3'>
+                  <input type = "checkbox" name = "acceptsEmailMarketing" value = {checkbox} onChange = {()=>setCheckbox(!checkbox)} />
+                  <label className = "text-sm text-onSurface/70">
+                    Yes, I would like to receive emails about trending products, offers, and discounts. You can cancel your subscription at any time.  
+                  </label>
+                </div>
+                <div className = "mt-6">
+                  <Button text = 'Use my benefits'/>
+                </div>
+                <div className = "w-full h-full mt-2 text-xs font-medium text-onSurface/60">
+                  <a>Already have an account?{' '}
+                    <Link href = "/login">
+                      <span className = "cursor-pointer text-tertiaryVariant">Login</span>
+                    </Link>
+                  </a>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
 

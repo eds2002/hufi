@@ -11,6 +11,10 @@ query viewCollection($handle:String!, $amount:Int){
       url
       altText
     }
+    seo{
+      title
+      description
+    }
     incentives:metafield(namespace:"collection",key:"incentives"){
       value
       type

@@ -26,7 +26,10 @@ export function CartProvider({children}){
       }else{
         // TODO, COOKIE DOESNT EXIST, CREATE USER CART
         const {data,errors} = await storefront(createCart)
-        setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt});
+        const cartCreated = new Date()
+        const cartExpires = cartCreated.setDate(cartCreated.getDate() + 8)
+        console.log(new Date(cartExpires))
+        setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt}, {maxAge: cartExpires});
         
         const cartId = data.cartCreate.cart.id
         const {data:cartRes, errors:cartErrors} = await storefront(viewCart,{id:cartId})

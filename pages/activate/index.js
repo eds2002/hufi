@@ -7,9 +7,18 @@ import Link from 'next/link';
 import { Button } from '../../components/elements';
 import svg from '../../assets/successfulSignup.svg'
 import Image from 'next/image';
+import Head from 'next/head';
 
 const index = () => {
   return (
+    <>
+    <Head>
+      <meta charSet='UTF-8'/>
+      <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
+      <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
+      <title>Hufi - Activated Account</title>
+      <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
+    </Head>
     <section className = "flex items-center justify-center w-full h-screen pb-16 ">
       <div className = "relative z-10 h-auto max-w-xl p-6 px-4 shadow-xl rounded-xl bg-background backdrop-blur-md">
         <h1 className = "max-w-sm mb-5 text-3xl font-medium text-onSurface">It only goes up from here.</h1>
@@ -30,6 +39,7 @@ const index = () => {
         <Image src = {svg} layout = 'fill' objectFit='cover'/>
       </div>
     </section>
+    </>
   )
 }
 
