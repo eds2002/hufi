@@ -74,7 +74,7 @@ function CollectionBox({set,index,collectionSet}){
                 </span>
               }
               <Link href = {handle}>
-                <Button text = "Shop" CSS = ' mt-3 w-24 py-1 bg-secondaryVariant hover:bg-secondary'/>
+                <Button text = "Shop" CSS = ' mt-3 w-24 py-1 bg-background text-onBackground '/>
               </Link>
             </div>          
           </div>

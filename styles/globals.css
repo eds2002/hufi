@@ -26,3 +26,14 @@ a {
   background-size: cover;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollBar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollBar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+

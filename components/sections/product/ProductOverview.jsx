@@ -6,20 +6,12 @@ import LocaleContext from '../../../context/localeContext'
 import { formatNumber } from '../../../utils/formatNumber'
 import { addToShopifyCart } from '../../../utils/addToShopifyCart'
 import CartContext from '../../../context/cartContext'
+import { deliveredDate } from '../../../utils/deliveredDate'
 
-const product = {
-  rating: 3.9,
-  reviewCount: 512,
-  href: '#',
-}
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function ProductOverview({data}) {
   const {locale} = useContext(LocaleContext)
-  const {cartData,setCartData,viewedCart, setViewedCart} = useContext(CartContext)
+  const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
   const [soldOutItems,setSoldOutItems] = useState([])
   const [currentVariant,setCurrentVariant] = useState(null)
@@ -40,6 +32,7 @@ export default function ProductOverview({data}) {
       })
     }
   }
+  const {minMonth,minDays,minYear,maxDays,maxMonth,maxYear} = deliveredDate()
 
 
   // TODO, sets the current image to the variant image
@@ -83,6 +76,7 @@ export default function ProductOverview({data}) {
     })
     const responseCartData = await addToShopifyCart(cartData,data.product.variants.nodes[findId].id)
     setViewedCart(false)
+    setOpenCart(true)
     setCartData(responseCartData)
   }
 
@@ -129,10 +123,10 @@ export default function ProductOverview({data}) {
                   <div className = "sticky top-[104px]">
 
                     {/* Product Title & Pricing */}
-                    <div className="flex items-center justify-between w-full">
+                    <div className="flex flex-col items-start justify-between w-full">
                       <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
-                      <p className="text-xl ">
-                      {data.product?.priceRange?.maxVariantPrice?.amount < data.product.compareAtPriceRange.maxVariantPrice.amount ? 
+                      <p className="text-base sm:text-base">
+                        {data.product?.priceRange?.maxVariantPrice?.amount < data.product.compareAtPriceRange.maxVariantPrice.amount ? 
                         <span className = "flex gap-x-1">
                           <span className = "text-base font-medium text-onBackground">{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
                           {/* <span className = "text-sm font-normal line-through text-tertiaryVariant">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span> */}
@@ -162,10 +156,10 @@ export default function ProductOverview({data}) {
                             )}
 
                             {/* Options Values */}
-                            <div className = "flex flex-wrap items-center gap-3 mt-2 mb-5">
+                            <div className = "flex flex-wrap items-center gap-3 ">
                               {/* TODO, avoid rendering products with no options / variants */}
                               {option.name != "Title" && (
-                                <>
+                                <div className = "flex flex-wrap items-center gap-3 mt-2 mb-4">
                                   {option.values.map((value,key)=>(
                                     <>
                                       <p className = 
@@ -173,7 +167,7 @@ export default function ProductOverview({data}) {
                                         ${option.name === "Color" ? 
                                         (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
                                         :
-                                        (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-2 py-1 ring-2 cursor-pointer`)
+                                        (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full`)
                                         }
                                         text-sm
                                       `}
@@ -186,12 +180,15 @@ export default function ProductOverview({data}) {
                                       </p>
                                     </>
                                   ))}
-                                </>
+                                </div>
                               )}
                             </div>
                           </div>
                         ))}
                         <Button text = "Add to cart" onClick = {(e)=>addToCart(e)}/>
+                        <p className = "mt-2 text-xs text-onBackground/70">Get it
+                          <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays}, ${minYear} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
+                        </p>
                       </form>
                     </div>
 

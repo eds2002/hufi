@@ -123,7 +123,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                                 ${option.name === "Color" ? 
                                 (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
                                 :
-                                (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-2 py-1 ring-2 cursor-pointer`)
+                                (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full `)
                                 }
                                 text-sm
                               `}

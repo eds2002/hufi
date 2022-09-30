@@ -27,7 +27,7 @@ export default function Footer({data}) {
             <div className = "flex mt-4 rounded-md ">
               <input className = "px-4 py-2 bg-transparent border-t border-b border-l border-black rounded-tl-md rounded-bl-md focus:outline-none focus:border-onBackground/50" placeholder="Email"/>
               <button className = "w-full h-full px-4 transition bg-secondaryVariant rounded-tr-md rounded-br-md hover:bg-secondary peer-">
-                <PaperAirplaneIcon className = "w-5 h-5"/>
+                <PaperAirplaneIcon className = "w-5 h-5 text-onSecondary"/>
               </button>
             </div>
           </form>

@@ -124,9 +124,11 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
         {/* TODO, if any of the variants does not have an option for Color
             display a text saying the amount of variants available
           */}
-        {product.options[0].name != "Title" && (
+        {product.options[0].name != "Title" ? 
           <p className = "text-sm text-onBackground/60">{product.options.length} variant{product.options.length > 1 && 's'} available.</p>
-        )}
+          :
+          <p>&nbsp;</p>
+        }
 
 
 
@@ -153,10 +155,10 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
       </div>
 
       {/* Buttons */}
-      <div className = "flex flex-col-reverse items-center justify-center w-full gap-3 mt-3 md:flex-row">
-        <Button text = 'Add to cart' CSS = "md:w-auto w-full px-4 text-sm bg-secondaryVariant hover:bg-secondary py-2" onClick={()=>handleClick(product)}/>
+      <div className = "flex flex-row items-center justify-center gap-3 pt-2 mx-auto mt-3 md:mx-0 md:flex-row md:pt-0">
+        <Button text = 'Add to cart' CSS = "md:w-auto w-full px-4 text-sm bg-secondaryVariant hover:bg-secondary py-2 text-background" onClick={()=>handleClick(product)}/>
         <Link href = {`/product/${product?.handle}`}>
-          <Button text = {"Details"} CSS = 'md:w-auto px-4 text-sm bg-surface py-2'/>
+          <Button text = {"Details"} CSS = 'md:w-auto px-4 text-sm bg-surface py-2 ring-1 ring-black text-onBackground font-medium bg-white'/>
         </Link>
       </div>
     </div>
