@@ -8,9 +8,27 @@ import ErrorImg from '../../assets/404.svg'
 import Link from "next/link";
 import Head from "next/head";
 import { slugify } from "../../utils/slugify";
+import { useEffect,useState, useRef } from "react";
+import useOnScreen from "../../utils/useOnScreen";
+import { ProductStickyCart } from "../../components/features";
 
 
-export default function Product({productData}){
+
+const Product = ({productData})=>{
+  const ref = useRef(null)
+  const [enableStickyCart, setEnableStickCart] = useState(false);
+  const handleScroll = () => {
+      const position = window.pageYOffset;
+      setEnableStickCart(position > 1000);
+  };
+
+  useEffect(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      return () => {
+          window.removeEventListener('scroll', handleScroll);
+      };
+  }, []);
   return (
     <>
       {productData &&
@@ -39,8 +57,9 @@ export default function Product({productData}){
             <meta property="twitter:description" content={productData.product.seo.description}/>
             <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
         </Head>
-        <main>
-          <ProductOverview data = {productData}/>
+        <main className = "relative">
+          <ProductStickyCart data = {productData} display = {enableStickyCart}/>
+          <ProductOverview data = {productData} compRef = {ref}/>
           <ProductUse data = {productData?.product?.useCases}/>
           {/* <ProductIncentive data = {productData}/> */}
           {/* <ProductShopPromise/> */}
@@ -55,6 +74,7 @@ export default function Product({productData}){
     </>
   )
 }
+export default Product
 
 export async function getServerSideProps(context) {
   try{

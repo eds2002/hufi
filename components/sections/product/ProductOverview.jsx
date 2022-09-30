@@ -7,15 +7,24 @@ import { formatNumber } from '../../../utils/formatNumber'
 import { addToShopifyCart } from '../../../utils/addToShopifyCart'
 import CartContext from '../../../context/cartContext'
 import { deliveredDate } from '../../../utils/deliveredDate'
+import ProductContext from '../../../context/productContext'
 
 
-export default function ProductOverview({data}) {
+export default function ProductOverview({data,compRef}) {
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
+  const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
+
+
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
+  
+  
   const [soldOutItems,setSoldOutItems] = useState([])
   const [currentVariant,setCurrentVariant] = useState(null)
-
+  const didMount = useRef(false)
+  
+  // TODO, this is for the sticky cart
+  setSelectedProduct(selectedOption)
 
   // TODO, change old array to new array with a value the user has selected
   const handleVariantChange = async (option,selectedValue) =>{
@@ -37,8 +46,12 @@ export default function ProductOverview({data}) {
 
   // TODO, sets the current image to the variant image
   useEffect(()=>{
-    let findId;
+    if(!didMount.current){
+      didMount.current = true
+      return
+    }
 
+    let findId;
     const query = []
 
     // TODO, for each selected option the user has requested, store variable into query array
@@ -53,6 +66,7 @@ export default function ProductOverview({data}) {
       }
     })
     setCurrentVariant(data.product.variants.nodes[findId].image.url)
+    return(()=>{})
   },[selectedOption])
 
 
@@ -87,12 +101,13 @@ export default function ProductOverview({data}) {
       }
     })
     setSoldOutItems(soldOutVariants.map((variant)=>variant.selectedOptions[0].value))
+    return(()=>{})
   },[])
 
   return (
     <>
       {data.product ?  
-        <div className="relative bg-background">
+        <div className="relative bg-background" ref = {compRef}>
           <div className="pt-6 pb-24">
             <div className="max-w-2xl px-4 mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="flex flex-col w-full h-full gap-10 lg:grid lg:grid-cols-12">

@@ -9,22 +9,25 @@ import CartContext, { CartProvider } from '../context/cartContext'
 import NextNProgress from "nextjs-progressbar";
 import Cookies from 'cookies'
 import { getCustomer } from '../graphql/queries/getCustomer'
+import { ProductProvider } from '../context/productContext'
 
 function MyApp({ Component, pageProps }) {
   return (
   <UserProvider props = {pageProps}>
     <CartProvider>
       <LocaleProvider>
-        <NextNProgress
-          color="#7fa353"
-          startPosition={0.3}
-          stopDelayMs={200}
-          height={3}
-          showOnShallow={true}
-        />
-        <Layout {...pageProps}>
-          <Component {...pageProps}/>
-        </Layout>
+        <ProductProvider>
+          <NextNProgress
+            color="#7fa353"
+            startPosition={0.3}
+            stopDelayMs={200}
+            height={3}
+            showOnShallow={true}
+          />
+          <Layout {...pageProps}>
+            <Component {...pageProps}/>
+          </Layout>
+        </ProductProvider>
       </LocaleProvider>
     </CartProvider>
   </UserProvider>
