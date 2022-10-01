@@ -3,7 +3,7 @@ import React from 'react'
 
 const ProductImageView = ({data}) => {
   return (
-    <section className = "w-full mx-auto max-w-7xl">
+    <section className = "w-full mx-auto md:px-4 max-w-7xl">
       {(data?.product?.mediaOne?.reference?.image?.url && data?.product?.mediaOneText?.value) && (
         <div className = "flex flex-col w-full h-full md:flex-row">
           <div className = "md:flex-1 h-[50vh] md:h-[80vh] relative">

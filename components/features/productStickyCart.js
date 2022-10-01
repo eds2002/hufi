@@ -34,7 +34,6 @@ const ProductStickyCart = ({data,display}) => {
     setOpenCart(true)
     setCartData(responseCartData)
   }
-  console.log(data)
 
   return (
     <div className = {`sticky bottom-0 z-20 py-2 top-16 bg-surface/80 backdrop-blur-2xl shadow-xl
@@ -43,9 +42,15 @@ const ProductStickyCart = ({data,display}) => {
     `}>
       <div className = "flex items-center justify-between gap-6 px-4 mx-auto max-w-7xl">
         <div className = "flex flex-col">
-          {selectedProduct?.map((selected)=>(
-            <p key = {selected.name} className = "relative flex-1 w-full cursor-pointer min-w-min"><span className = "font-medium">{selected.name}</span>: {selected.value}</p>
-          ))}
+          {data.product.options[0].values[0] === 'Default Title' ?
+            <p key = {data.product.title} className = "relative flex-1 w-full min-w-min"><span className = "font-medium">{data.product.title}</span></p>
+          :
+          <>
+            {selectedProduct?.map((selected)=>(
+              <p key = {selected.name} className = "relative flex-1 w-full min-w-min"><span className = "font-medium">{selected.name}</span>: {selected.value}</p>
+            ))}
+          </>
+          }
         </div>
         <div className = "">
           <Button text = {`Add to cart`} CSS = 'bg-secondaryVariant text-onSecondary px-4 text-sm py-2' onClick = {(e)=>addToCart(e)}/>

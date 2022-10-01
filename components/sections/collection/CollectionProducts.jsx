@@ -17,9 +17,14 @@ const CollectionProducts = ({data,filters}) => {
 
   useEffect(()=>{
     let productTags = []
+
+    // TODO, avoids adding already known tags
+    // EXAMPLE: If user decides to view the watches sub collection,
+    // then the 'Watches' filter tag should not be displayed.
+    const currentCollection = data.collectionByHandle.title.split(" ")
     data?.collectionByHandle?.products?.nodes?.forEach((arr)=>{
       arr.tags?.forEach(tag=>{
-        if(productTags.includes(tag)){
+        if(productTags.includes(tag) || currentCollection.includes(tag)){
           return
         }else{
           productTags.push(tag)

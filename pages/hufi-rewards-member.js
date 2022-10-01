@@ -22,7 +22,7 @@ const RewardsMember = () => {
           <div className = "flex items-center justify-between px-4 mx-auto max-w-7xl">
             <p className = "text-sm font-medium">Hufi Rewards Member</p>
             <Link href = "/signup">
-              <Button text = 'Become a member' CSS={"w-auto px-4 py-1 rounded-full text-sm bg-secondaryVariant"}/>
+              <Button text = 'Become a member' CSS={"w-auto px-4 py-1 rounded-full text-sm bg-secondaryVariant text-onSecondary"}/>
             </Link>
           </div>
         </div>
@@ -35,7 +35,7 @@ const RewardsMember = () => {
             <p className = "max-w-md mt-2">The rewards are endless, and we&apos;re always adding more benefits for our loyal customers.</p>
             <div className = "mt-4 text-base xl:text-lg ">
               <Link href = "/signup">
-                <Button text = 'Become a member' CSS = {'px-4 py-2 bg-secondaryVariant hover:bg-secondary '}/>
+                <Button text = 'Become a member' CSS = {'px-4 py-2 bg-secondaryVariant hover:bg-secondary text-onSecondary'}/>
               </Link>
             </div>
           </div>
@@ -95,7 +95,7 @@ const RewardsMember = () => {
             <p className = "max-w-sm mt-2 text-base font-light text-onBackground/80">Stay tuned as we&apos;re always adding new benefits for our members.</p>
             <div className = "mt-6">
               <Link href = "/">
-                <Button text = 'Start Shopping' CSS = 'bg-secondaryVariant py-2 hover:bg-secondary px-4'/>
+                <Button text = 'Start Shopping' CSS = 'bg-secondaryVariant py-2 hover:bg-secondary px-4 text-onSecondary'/>
               </Link>
             </div>
           </div>

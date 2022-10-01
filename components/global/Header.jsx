@@ -248,13 +248,13 @@ export default function Header({data,user}) {
                                     <div className="absolute inset-0 shadow-xl top-1/2" aria-hidden="true" />
                                     <div className="relative bg-background">
                                       <div className="px-4 mx-auto max-w-7xl">
-                                        <div className="py-10 columns-5">
+                                        <div className="py-10 columns-4">
                                           {category.items.map((subCategory)=>(
                                             <div key = {subCategory.title} className = "mb-6 break-inside-avoid">
                                               <Link href = {`/collection/${slugify(category?.title)}/${slugify(category?.title)}-${slugify(subCategory?.title)}`}>
                                                 <p
                                                   id={`desktop-featured-heading-${categoryIdx}`}
-                                                  className="text-lg font-medium cursor-pointer hover:text-onBackground/70"
+                                                  className="self-start text-lg font-medium cursor-pointer hover:text-onBackground/70 justify-self-start"
                                                 >
                                                   {subCategory?.title}
                                                 </p>
@@ -265,7 +265,7 @@ export default function Header({data,user}) {
                                                 className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                               >
                                                 {subCategory.items.map((item) => (
-                                                  <Link href = {`collection/${slugify(category?.title)}/${slugify(subCategory?.title)}/${slugify(item?.title)}}`} key={item.title}>
+                                                  <Link href = {`product/${slugify(item?.title)}`} key={item.title}>
                                                     <li className="flex">
                                                       <a className="cursor-pointer text-onBackground/80 hover:text-onBackground/50">
                                                         {item.title}
@@ -460,7 +460,7 @@ function MobileLinks({category}){
 
                       {/* SUBCOLLECTION PRODUCTS */}
                       {subCategory.items.map((item) => (
-                        <Link href = "" key = {item.title}>
+                        <Link href = {`product/${slugify(item.title)}`} key = {item.title}>
                           <p className="px-4 py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/40">
                             {item.title}
                           </p>

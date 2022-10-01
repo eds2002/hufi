@@ -21,10 +21,10 @@ export default function FAQ({data}) {
     <>
     {reviews && (
       <div className="py-24 bg-background">
-        <div className="px-4 mx-auto max-w-7xl sm:py-16 sm:px-6 lg:px-8">
+        <div className="px-4 mx-auto max-w-7xl sm:py-16 ">
           <div className="mx-auto mt-10 divide-y-2 divide-onBackground/10 ">
-            <h2 className="text-3xl font-bold tracking-tight text-center text-onBackground sm:text-4xl">
-              Frequently asked questions
+            <h2 className="text-3xl font-medium tracking-tight text-left text-onBackground sm:text-4xl">
+              Frequently asked questions ({reviews.length})
             </h2>
             <dl className="mt-6 space-y-6 divide-y divide-gray-200">
               {reviews.map((faq) => (

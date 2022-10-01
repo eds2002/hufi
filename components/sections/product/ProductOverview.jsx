@@ -108,7 +108,7 @@ export default function ProductOverview({data,compRef}) {
     <>
       {data.product ?  
         <div className="relative bg-background" ref = {compRef}>
-          <div className="pt-6 pb-24">
+          <div className="pb-24">
             <div className="max-w-2xl px-4 mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="flex flex-col w-full h-full gap-10 lg:grid lg:grid-cols-12">
 
@@ -118,12 +118,12 @@ export default function ProductOverview({data,compRef}) {
 
                   
                   <div className={`
-                  grid grid-flow-col auto-cols-[100%] overflow-scroll 
+                  grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
                   lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 `}>
                     {data.product?.media?.nodes?.map((media,index)=>(
                       <div className = {`
                       ${index === 0 ? ('lg:col-span-4 w-full') :('lg:col-span-2')}
-                      rounded-xl relative w-full  overflow-hidden 
+                      rounded-xl relative w-full  overflow-hidden snap-center
                       `}
                       key = {index}
                       >
@@ -228,7 +228,7 @@ export default function ProductOverview({data,compRef}) {
                         </div>
                         <div className = "flex items-center mt-2 text-xs gap-x-3">
                           <CheckBadgeIcon className = "w-5 h-5 text-primaryVariant" />
-                          <p>Quality ensured on all products.</p>
+                          <p>A 30-day warranty is provided.</p>
                         </div>
                     </div>
                   </div>

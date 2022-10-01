@@ -34,7 +34,7 @@ export default function ProductCard({product}){
             <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">
               <span>{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</span>
             </p>
-            <p className = "block pb-4 mt-2 text-sm text-left sm:text-sm md:hidden text-onBackground/60">{product.shortDesc?.value}</p>
+            <p className = "block pb-4 mt-2 text-sm text-left sm:text-sm md:hidden text-onBackground/60">{product.shortDesc?.value ?? <span>&nbsp;</span>}</p>
           </>
         </Link>
         <div className = "relative w-full h-full rounded-md cursor-pointer bg-background">
@@ -77,7 +77,7 @@ function ProductTextDisplay({product}){
         <div className = "w-0.5 rounded-full h-5 mx-3 bg-onPrimary/70"/>
         <p className = "text-base font-medium">{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</p>
       </div>
-      <p className = "text-sm text-onBackground/60">{product.shortDesc?.value}</p>
+      <p className = "text-sm text-onBackground/60">{product.shortDesc?.value ?? <span>&nbsp;</span>}</p>
     </div>
     </>
   )

@@ -48,7 +48,7 @@ const Ambassador = () => {
                 <input className = "w-full px-4 py-2 bg-transparent border-t-2 border-b-2 border-l-2 border-onSurface rounded-tl-md rounded-bl-md focus:outline-none focus:border-white/50" placeholder="Email"/>
                 <div className = "h-full">
                   <button className = "flex items-center justify-center h-full px-4 py-2 transition rounded-tr-md rounded-br-md bg-secondaryVariant hover:bg-secondary hover:shadow-md">
-                    <PaperAirplaneIcon className = "w-7 h-7"/>
+                    <PaperAirplaneIcon className = "w-7 h-7 text-onSecondary"/>
                   </button>
                 </div>
               </form>

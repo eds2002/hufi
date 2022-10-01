@@ -20,7 +20,7 @@ const Index = () => {
             <form onSubmit={(e)=>e.preventDefault()} className = "flex items-center justify-center w-full mt-10">
               <input className = "w-full max-w-md px-4 py-2 border border-black rounded-tl-md rounded-bl-md focus:outline-none focus:border-black/60"  required name = "textBox"/>
               <div className = "flex items-center justify-center h-full px-4 transition cursor-pointer bg-secondaryVariant rounded-tr-md rounded-br-md hover:bg-secondary hover:shadow-sm">
-                <button className = "w-7 h-7 "><PaperAirplaneIcon/></button>
+                <button className = "w-7 h-7 text-onSecondary"><PaperAirplaneIcon/></button>
               </div>
             </form>
           </div>
