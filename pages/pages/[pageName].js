@@ -2,6 +2,7 @@ import React from 'react'
 import { storefront } from '../../utils/storefront'
 import {getPageByHandle} from '../../graphql/queries/getPageByHandle'
 import Head from 'next/head'
+import { slugify } from '../../utils/slugify'
 
 const PageName = ({pageData}) => {
   return (
