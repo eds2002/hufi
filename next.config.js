@@ -4,7 +4,8 @@ const nextConfig = {
   swcMinify: true,
   images:{
     domains:["cdn.shopify.com","tailwindui.com","cdn-icons-png.flaticon.com","images.pexels.com"]
-  }
+  },
+  compress:true,
 }
 
 module.exports = nextConfig
