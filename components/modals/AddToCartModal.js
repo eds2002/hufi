@@ -139,7 +139,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                         </div>
                       </div>
                     ))}
-                    <Button text = "Add to cart" onClick = {(e)=>findProductId(e)}/>
+                    <Button text = "Add to cart" onClick = {(e)=>findProductId(e)} tag = "modal-add-to-cart"/>
                   </form>
                 </Dialog.Panel>
               </Transition.Child>

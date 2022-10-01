@@ -26,7 +26,7 @@ const Hero = ({data}) => {
             />
           </div>
           <Link href = {handle ?? '/collections/all-products'}>
-            <Button text = "Shop now" CSS = {"w-[50%] bg-background py-2 text-onBackground"}/>
+            <Button text = "Shop now" CSS = {"w-[50%] bg-background py-2 text-onBackground"} tag = 'hero-shop-now'/>
           </Link>
         </div>
       </div>

@@ -10,8 +10,17 @@ import NextNProgress from "nextjs-progressbar";
 import Cookies from 'cookies'
 import { getCustomer } from '../graphql/queries/getCustomer'
 import { ProductProvider } from '../context/productContext'
+import TagManager, {TagManagerArgs} from 'react-gtm-module'
+import { useEffect } from 'react'
 
 function MyApp({ Component, pageProps }) {
+  useEffect(()=>{
+    const gtmId = process.env.NEXT_PUBLIC_GTM_ID || ''
+    const tagManagerArgs = {
+      gtmId: gtmId
+    }
+    TagManager.initialize(tagManagerArgs)
+  },[])
   return (
   <UserProvider props = {pageProps}>
     <CartProvider>

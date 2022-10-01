@@ -53,7 +53,7 @@ const ProductStickyCart = ({data,display}) => {
           }
         </div>
         <div className = "">
-          <Button text = {`Add to cart`} CSS = 'bg-secondaryVariant text-onSecondary px-4 text-sm py-2' onClick = {(e)=>addToCart(e)}/>
+          <Button text = {`Add to cart`} CSS = 'bg-secondaryVariant text-onSecondary px-4 text-sm py-2' tag = 'sticky-cart-add-to-cart' onClick = {(e)=>addToCart(e)}/>
         </div>
       </div>
     </div>

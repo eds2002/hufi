@@ -200,7 +200,7 @@ export default function ProductOverview({data,compRef}) {
                             </div>
                           </div>
                         ))}
-                        <Button text = "Add to cart" onClick = {(e)=>addToCart(e)}/>
+                        <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
                         <p className = "mt-2 text-xs text-onBackground/70">Get it
                           <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays}, ${minYear} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
                         </p>

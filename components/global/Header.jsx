@@ -375,7 +375,7 @@ export default function Header({data,user}) {
                       </div>
                       <div className="flex items-center lg:ml-8">
                         <div className="relative flow-root rounded-full ">
-                            <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer relative z-10`}
+                            <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer relative z-10 view-cart-GA4`}
                             onClick = {()=>setOpenCart(!openCart)}
                             >
                               <span className="text-sm font-medium ">{cartData?.lines?.edges?.length || 0}</span>

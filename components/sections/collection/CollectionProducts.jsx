@@ -20,7 +20,7 @@ const CollectionProducts = ({data,filters}) => {
 
     // TODO, avoids adding already known tags
     // EXAMPLE: If user decides to view the watches sub collection,
-    // then the 'Watches' filter tag should not be displayed.
+    // then if product contains the tag 'Watches', it should not be displayed in the filtesr.
     const currentCollection = data.collectionByHandle.title.split(" ")
     data?.collectionByHandle?.products?.nodes?.forEach((arr)=>{
       arr.tags?.forEach(tag=>{
