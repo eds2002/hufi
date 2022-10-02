@@ -6,6 +6,16 @@ query getShopifyCart($id:ID!) {
     id: $id
   ) {
     checkoutUrl
+    discountCodes{
+      code
+      applicable
+    }
+    discountAllocations{
+      discountedAmount{
+        amount
+        currencyCode
+      }
+    }
     id
     createdAt
     updatedAt

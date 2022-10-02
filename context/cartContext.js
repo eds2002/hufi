@@ -28,7 +28,6 @@ export function CartProvider({children}){
         const {data,errors} = await storefront(createCart)
         const cartCreated = new Date()
         const cartExpires = cartCreated.setDate(cartCreated.getDate() + 8)
-        console.log(new Date(cartExpires))
         setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt}, {maxAge: cartExpires});
         
         const cartId = data.cartCreate.cart.id

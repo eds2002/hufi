@@ -7,8 +7,13 @@ import { viewIndexMetafields } from '../graphql/queries/viewIndexMetafields'
 import CollectionSubCol from '../components/sections/collection/CollectionSubCol'
 import img from '../assets/abstractBlocks.svg'
 import Image from 'next/image'
+import { FirstTimeModal } from '../components/modals'
+import { useContext, useState } from 'react'
+import UserContext from '../context/userContext'
 
 export default function Home({data,collections,productData}) {
+  const {currentUser} = useContext(UserContext)
+  const [openModal,setOpenModal] = useState(false)
   return (
     <>
       {!data || !collections || !productData ? (
@@ -56,6 +61,18 @@ export default function Home({data,collections,productData}) {
           <Hero data = {data}/>
           <HorizontalProducts data = {productData}/>
           <CollectionSubCol data = {collections}/>
+
+          {/* Display only this part when a user is present or if user is not present */}
+          {currentUser?.orders?.nodes?.length === 0 || !currentUser  && (
+            <>
+              <FirstTimeModal openModal={openModal} setOpenModal={setOpenModal} userSignedIn = {currentUser?.orders?.nodes?.length === 0}/>
+              <div className = "fixed inset-0 z-20 flex items-center justify-start pointer-events-none select-none">
+                <div className = {` ${openModal ? '-translate-x-full':'-translate-x-0'} flex items-center justify-center px-2 py-4 font-medium transition cursor-pointer pointer-events-auto md:px-4 bg-primary text-onPrimary hover:bg-primaryVariant rounded-tr-md rounded-br-md hover:shadow-xl`} onClick = {()=>setOpenModal(!openModal)}>
+                  <p className = "font-medium w-[3ch] text-xs md:text-base">20% Off</p>
+                </div>
+              </div>  
+            </>
+          )}
         </main>
         </>
       )}

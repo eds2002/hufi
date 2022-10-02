@@ -31,6 +31,16 @@ mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
           }
         }
       }
+      discountCodes{
+        code
+        applicable
+      }
+      discountAllocations{
+        discountedAmount{
+          amount
+          currencyCode
+				}
+			}
       cost {
         totalAmount {
           amount

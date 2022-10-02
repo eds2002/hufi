@@ -31,6 +31,16 @@ mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
           }
         }
       }
+      discountCodes{
+        code
+        applicable
+      }
+      discountAllocations{
+        discountedAmount{
+          amount
+          currencyCode
+				}
+			}
       cost {
         totalAmount {
           amount

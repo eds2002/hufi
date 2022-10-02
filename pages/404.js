@@ -23,7 +23,7 @@ const Error = () => {
         </div>
         <h1 className = "max-w-sm text-3xl font-medium text-center">Hmmm, it seems like this page doesn&lsquo;t exist.</h1>
         <Link href = "/">
-          <Button text = 'Back to home' CSS = 'w-auto px-4 bg-secondaryVariant py-2 mt-6 hover:bg-secondary transition'/>
+          <Button text = 'Back to home' CSS = 'w-auto px-4 bg-secondaryVariant py-2 mt-6 hover:bg-secondary transition text-onSecondary'/>
         </Link>
       </div>
     </main>

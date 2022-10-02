@@ -153,7 +153,7 @@ const Signup = () => {
                   ))}
                 </div>
                 <div className = 'flex items-start gap-x-3'>
-                  <input type = "checkbox" name = "acceptsEmailMarketing" value = {checkbox} onChange = {()=>setCheckbox(!checkbox)} />
+                  <input className = "flex-1" type = "checkbox" name = "acceptsEmailMarketing" value = {checkbox} onChange = {()=>setCheckbox(!checkbox)} />
                   <label className = "text-sm text-onSurface/70">
                     Yes, I would like to receive emails about trending products, offers, and discounts. You can cancel your subscription at any time.  
                   </label>

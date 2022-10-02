@@ -12,6 +12,7 @@ import { getCustomer } from '../graphql/queries/getCustomer'
 import { ProductProvider } from '../context/productContext'
 import TagManager, {TagManagerArgs} from 'react-gtm-module'
 import { useEffect } from 'react'
+import Script from 'next/script'
 
 function MyApp({ Component, pageProps }) {
   useEffect(()=>{

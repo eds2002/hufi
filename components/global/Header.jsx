@@ -646,7 +646,7 @@ function CartDrawer({openCart, setOpenCart}){
                   </div>
                   <div className = "flex flex-col items-center justify-center">
                     <Link href = {cartData?.checkoutUrl || ''}>
-                      <Button text = "Checkout" className = "w-full bg-secondaryVariant hover:bg-secondary"/>
+                      <Button text = "Checkout" className = "w-full checkout-button bg-secondaryVariant hover:bg-secondary"/>
                     </Link>
                       
                     <span className = "mt-2 text-xs text-neutral-400">Members get free shipping on any order.</span>

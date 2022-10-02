@@ -6,6 +6,16 @@ mutation cartLinesAdd($cartId: ID!, $quantity:Int,$variantId:ID!) {
     cart {
       checkoutUrl
       id
+      discountCodes{
+        code
+        applicable
+      }
+      discountAllocations{
+        discountedAmount{
+          amount
+          currencyCode
+				}
+			}
       lines(first: 10) {
         edges {
           node {
