@@ -7,7 +7,6 @@ export function UserProvider({children,props}){
   const [currentUserACCESS, setCurrentUserACCESS] = useState(null)
 
   useEffect(()=>{
-    console.log(currentUser)
     if(currentUser == null || currentUserACCESS == null){
       setCurrentUser(props?.userData?.customer || undefined)
       setCurrentUserACCESS(props?.userAccess || undefined)
