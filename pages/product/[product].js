@@ -11,10 +11,13 @@ import { slugify } from "../../utils/slugify";
 import { useEffect,useState, useRef } from "react";
 import useOnScreen from "../../utils/useOnScreen";
 import { ProductStickyCart } from "../../components/features";
+import { viewMenu } from "../../graphql/queries/viewMenu";
+import { getCustomer } from "../../graphql/queries/getCustomer";
+import Layout from "../../components/global/Layout";
 
 
 
-const Product = ({productData})=>{
+const Product = ({productData,pageProps})=>{
   const ref = useRef(null)
   const [enableStickyCart, setEnableStickCart] = useState(false);
   const handleScroll = () => {
@@ -57,18 +60,20 @@ const Product = ({productData})=>{
             <meta property="twitter:description" content={productData.product.seo.description}/>
             <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
         </Head>
-        <main className = "relative">
-          <ProductStickyCart data = {productData} display = {enableStickyCart}/>
-          <ProductOverview data = {productData} compRef = {ref}/>
-          <ProductUse data = {productData?.product?.useCases}/>
-          {/* <ProductIncentive data = {productData}/> */}
-          {/* <ProductShopPromise/> */}
-          {/* <ProductFeatures data = {productData}/> */}
-          <ProductImageView data = {productData}/>
-          <ProductFAQ data = {productData}/>
-          <Signup/>
-          {/* <ProductReviews/> */}
-        </main>
+        <Layout {...pageProps}>
+          <main className = "relative">
+            <ProductStickyCart data = {productData} display = {enableStickyCart}/>
+            <ProductOverview data = {productData} compRef = {ref}/>
+            <ProductUse data = {productData?.product?.useCases}/>
+            {/* <ProductIncentive data = {productData}/> */}
+            {/* <ProductShopPromise/> */}
+            {/* <ProductFeatures data = {productData}/> */}
+            <ProductImageView data = {productData}/>
+            <ProductFAQ data = {productData}/>
+            <Signup/>
+            {/* <ProductReviews/> */}
+          </main>
+        </Layout>
         </>
       }
     </>
@@ -78,11 +83,22 @@ export default Product
 
 export async function getServerSideProps(context) {
   try{
+    // For layout
+    const cookies = context?.req?.cookies?.userAccess
+    let pageProps = {}
+    const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+    const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+    const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+    pageProps["headerData"] = headerData
+    pageProps["footerData"] = footerData
+    pageProps["userData"] = userInformation
+    pageProps["userAccess"] = cookies
+
     const { req, query, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:query.product})
     if(product.product){
       return{
-        props:{productData:product || errors}
+        props:{productData:product || errors, pageProps:pageProps}
       }
     }else{
       return{

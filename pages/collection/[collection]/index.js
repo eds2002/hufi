@@ -10,8 +10,11 @@ import Image from 'next/image';
 import Head from 'next/head';
 import { slugify } from '../../../utils/slugify';
 import { useRouter } from 'next/router';
+import Layout from '../../../components/global/Layout';
+import { viewMenu } from '../../../graphql/queries/viewMenu';
+import { getCustomer } from '../../../graphql/queries/getCustomer';
 
-const CollectionPage = ({collectionData, urlFilters,subCollections,collectionName}) => {
+const CollectionPage = ({collectionData, urlFilters,subCollections,collectionName,pageProps}) => {
   const router = useRouter()
   return (
     <>
@@ -41,12 +44,14 @@ const CollectionPage = ({collectionData, urlFilters,subCollections,collectionNam
         <meta property="twitter:description" content={collectionData.collectionByHandle.seo.description}/>
         <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
       </Head>
-      <main className = "relative w-full h-full">
-        <div className = "sticky z-20 py-2 text-2xl font-medium bg-surface top-16">
-          <p className = "px-4 mx-auto max-w-7xl">{collectionData.collectionByHandle.title}</p>
-        </div>
-        <CollectionSubCol data = {subCollections}/>
-      </main>
+      <Layout {...pageProps}>
+        <main className = "relative w-full h-full">
+          <div className = "sticky z-20 py-2 text-2xl font-medium bg-surface top-16">
+            <p className = "px-4 mx-auto max-w-7xl">{collectionData.collectionByHandle.title}</p>
+          </div>
+          <CollectionSubCol data = {subCollections}/>
+        </main>
+      </Layout>
       </>
       }
     </>
@@ -55,6 +60,18 @@ const CollectionPage = ({collectionData, urlFilters,subCollections,collectionNam
 
 export async function getServerSideProps(context) {
   try{
+    // For layout
+    const cookies = context?.req?.cookies?.userAccess
+    let pageProps = {}
+    const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+    const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+    const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+    pageProps["headerData"] = headerData
+    pageProps["footerData"] = footerData
+    pageProps["userData"] = userInformation
+    pageProps["userAccess"] = cookies
+
+
     const { req, query, res, asPath, pathname } = context;
     const filtersArr = await query?.filterBy?.split(",")
     const {data:collection,errors} = await storefront(viewCollectionByHandle, {handle:query.collection, amount:50})
@@ -74,6 +91,7 @@ export async function getServerSideProps(context) {
         collectionData:collection || errors,
         urlFilters:filtersArr || null,
         subCollections:subCollectionsJSON,
+        pageProps:pageProps
       }
     }
   

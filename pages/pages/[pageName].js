@@ -3,8 +3,11 @@ import { storefront } from '../../utils/storefront'
 import {getPageByHandle} from '../../graphql/queries/getPageByHandle'
 import Head from 'next/head'
 import { slugify } from '../../utils/slugify'
+import Layout from '../../components/global/Layout'
+import { viewMenu } from '../../graphql/queries/viewMenu'
+import { getCustomer } from '../../graphql/queries/getCustomer'
 
-const PageName = ({pageData}) => {
+const PageName = ({pageData,pageProps}) => {
   return (
     <>
       {pageData.page &&
@@ -33,14 +36,14 @@ const PageName = ({pageData}) => {
         <meta property="twitter:description" content={pageData.page.seo.description}/>
         <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
       </Head>
-      <main>
+      <Layout {...pageProps}>
         <section className = "w-full h-full py-24">
           <h1 className = "px-4 mx-auto text-4xl font-medium max-w-7xl">{pageData.page.title}</h1>
           <div className = "px-4 mx-auto prose max-w-7xl prose-h1:font-semibold prose-h1:text-2xl">
             <div dangerouslySetInnerHTML={{__html: pageData.page.body}}/>
           </div>
         </section>
-      </main>
+      </Layout>
       </>
       }
     </>
@@ -51,11 +54,23 @@ export default PageName
 
 export async function getServerSideProps(context) {
   try{
+    // For layout
+    const cookies = context?.req?.cookies?.userAccess
+    let pageProps = {}
+    const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+    const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+    const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+    pageProps["headerData"] = headerData
+    pageProps["footerData"] = footerData
+    pageProps["userData"] = userInformation
+    pageProps["userAccess"] = cookies
+
+    
     const { req, query, res, asPath, pathname } = context;
     const {data:pageData,errors} = await storefront(getPageByHandle, {handle:query.pageName})
     if(pageData.page){
       return{
-        props:{pageData:pageData || errors, title:query.pageName}
+        props:{pageData:pageData || errors, title:query.pageName, pageProps:pageProps}
       }
     }else{
       return{

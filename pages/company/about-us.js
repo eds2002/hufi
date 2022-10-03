@@ -3,8 +3,9 @@ import Link from 'next/link'
 import React from 'react'
 import { Button } from '../../components/elements'
 import Head from 'next/head'
+import Layout from '../../components/global/Layout'
 
-const AboutUs = () => {
+export default function AboutUs({pageProps}){
   return (
     <>
       <Head>
@@ -14,7 +15,7 @@ const AboutUs = () => {
         <title>Hufi - About us.</title>
         <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
       </Head>
-      <main>
+      <Layout {...pageProps}>
         <section>
           <div className = "w-full bg-surface">
             <div className=  "flex flex-col items-center justify-center w-full px-4 py-24 mx-auto max-w-7xl">
@@ -61,9 +62,23 @@ const AboutUs = () => {
             </Link>
           </div>
         </section>
-      </main>
+      </Layout>
     </>
   )
 }
 
-export default AboutUs
+export { default as getServerSideProps } from '../../utils/getServerSideProps'
+
+// export async function getServerSideProps(context){
+//   const cookies = context?.req?.cookies?.userAccess
+//   let pageProps = {}
+//   const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+//   const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+//   const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+//   pageProps["headerData"] = headerData
+//   pageProps["footerData"] = footerData
+//   pageProps["userData"] = userInformation
+//   pageProps["userAccess"] = cookies
+//   console.log(pageProps)
+//   return {props:{pageProps:pageProps}}
+// }

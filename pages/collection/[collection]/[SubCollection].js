@@ -7,8 +7,11 @@ import ErrorImg from '../../../assets/404.svg'
 import { Button } from '../../../components/elements';
 import Head from 'next/head';
 import { slugify } from '../../../utils/slugify';
+import Layout from '../../../components/global/Layout';
+import { viewMenu } from '../../../graphql/queries/viewMenu';
+import { getCustomer } from '../../../graphql/queries/getCustomer';
 
-const SubCollectionPage = ({collectionData, urlFilters}) => {
+const SubCollectionPage = ({collectionData, urlFilters,pageProps}) => {
   return (
     <>
       {collectionData.collectionByHandle &&
@@ -37,8 +40,10 @@ const SubCollectionPage = ({collectionData, urlFilters}) => {
           <meta property="twitter:description" content={collectionData.collectionByHandle.seo.description}/>
           <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
         </Head>
-        <CollectionBanner data = {collectionData}/>
-        <CollectionProducts data = {collectionData} filters = {urlFilters}/>
+        <Layout {...pageProps}>
+          <CollectionBanner data = {collectionData}/>
+          <CollectionProducts data = {collectionData} filters = {urlFilters}/>
+        </Layout>
       </>
       }
     </>
@@ -47,6 +52,18 @@ const SubCollectionPage = ({collectionData, urlFilters}) => {
 
 export async function getServerSideProps(context) {
   try{
+    // For layout
+    const cookies = context?.req?.cookies?.userAccess
+    let pageProps = {}
+    const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+    const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+    const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+    pageProps["headerData"] = headerData
+    pageProps["footerData"] = footerData
+    pageProps["userData"] = userInformation
+    pageProps["userAccess"] = cookies
+
+
     const { req, query, res, asPath, pathname } = context;
     const filtersArr = await query?.filterBy?.split(",")
     const {data:collection,errors} = await storefront(viewCollectionByHandle, {handle:query.SubCollection, amount:50})
@@ -55,6 +72,7 @@ export async function getServerSideProps(context) {
         props:{
           collectionData:collection || errors,
           urlFilters:filtersArr || null,
+          pageProps:pageProps || null,
         }
       }
     }else{

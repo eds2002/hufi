@@ -5,11 +5,14 @@ import Link from 'next/link'
 import loginBackground from '../assets/login.svg'
 import { storefront } from '../utils/storefront'
 import { createUserAccessToken } from '../graphql/mutations/createUserAccessToken'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { getCookie } from 'cookies-next'
 import Head from 'next/head'
+import { viewMenu } from '../graphql/queries/viewMenu'
+import { getCustomer } from '../graphql/queries/getCustomer'
+import Layout from '../components/global/Layout'
 
-const Login = () => {
+const Login = ({pageProps}) => {
   const router = useRouter()
   const [inputs,setInputs] = useState([
     {
@@ -48,7 +51,7 @@ const Login = () => {
 
       const {code} = await response.json()
       if(code == 302){
-        router.push('/')
+        Router.push('/')
       }
     }else{
       alert('Sorry, issue logging in.')
@@ -64,35 +67,37 @@ const Login = () => {
         <title>Hufi - Login</title>
         <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
       </Head>
-      <section>
-        <div className = "relative flex flex-col items-center justify-center w-full h-screen px-4 mx-auto">
-          <div className = "absolute inset-0">
-            <div className = "absolute inset-0 z-10 bg-black/25"/>
-            <Image src = {loginBackground} layout = 'fill' objectFit="cover" className  = "w-full h-full"/>
-          </div>
-          <div className = "z-10 flex justify-center w-full">
-            <div className = "z-10 w-full max-w-lg shadow-xl bg-surface p-7 rounded-xl">
-              <h1 className = "text-3xl font-medium sm:text-3xl lg:text-4xl">Login</h1>
-              <p className = "max-w-sm mt-2 text-base text-left xl:text-lg text-onBackground/70">Hi, welcome back! We&apos;re happy to see you again.</p>
-              <form className = "w-full max-w-md mt-7" onSubmit={(e)=>handleSubmit(e)}>
-                {inputs.map((input,key)=>(
-                  <Input {...input} onChange = {onChange} key = {key}/>
-                ))}
-                <div className = "mt-6">
-                  <Button text = 'Login'/>
-                </div>
-                <div className = "w-full h-full mt-2 text-xs font-medium text-onSurface/60">
-                  <a>Need an account?{' '}
-                    <Link href = "/signup">
-                      <span className = "cursor-pointer text-tertiaryVariant">Signup</span>
-                    </Link>
-                  </a>
-                </div>
-              </form>
+      <Layout {...pageProps}>
+        <section>
+          <div className = "relative flex flex-col items-center justify-center w-full h-screen px-4 mx-auto">
+            <div className = "absolute inset-0">
+              <div className = "absolute inset-0 z-10 bg-black/25"/>
+              <Image src = {loginBackground} layout = 'fill' objectFit="cover" className  = "w-full h-full"/>
+            </div>
+            <div className = "z-10 flex justify-center w-full">
+              <div className = "z-10 w-full max-w-lg shadow-xl bg-surface p-7 rounded-xl">
+                <h1 className = "text-3xl font-medium sm:text-3xl lg:text-4xl">Login</h1>
+                <p className = "max-w-sm mt-2 text-base text-left xl:text-lg text-onBackground/70">Hi, welcome back! We&apos;re happy to see you again.</p>
+                <form className = "w-full max-w-md mt-7" onSubmit={(e)=>handleSubmit(e)}>
+                  {inputs.map((input,key)=>(
+                    <Input {...input} onChange = {onChange} key = {key}/>
+                  ))}
+                  <div className = "mt-6">
+                    <Button text = 'Login'/>
+                  </div>
+                  <div className = "w-full h-full mt-2 text-xs font-medium text-onSurface/60">
+                    <a>Need an account?{' '}
+                      <Link href = "/signup">
+                        <span className = "cursor-pointer text-tertiaryVariant">Signup</span>
+                      </Link>
+                    </a>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Layout>
     </>
   )
 }
@@ -100,6 +105,16 @@ const Login = () => {
 
 
 export async function getServerSideProps({req,res}){
+  // For layout
+  const cookies = req?.cookies?.userAccess
+  let pageProps = {}
+  const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+  const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+  const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+  pageProps["headerData"] = headerData
+  pageProps["footerData"] = footerData
+  pageProps["userData"] = userInformation
+  pageProps["userAccess"] = cookies
   const cookie = getCookie('userAccess',{req,res})
   if(cookie){
     return {
@@ -110,7 +125,7 @@ export async function getServerSideProps({req,res}){
     }
   }else{
     return{
-      props:{}
+      props:{pageProps:pageProps}
     }
   }
 }

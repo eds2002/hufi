@@ -21,9 +21,6 @@ import { createCheckout } from '../../graphql/mutations/createCheckout'
 import { applyCheckoutDiscount } from '../../graphql/mutations/applyCheckoutDiscount'
 
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 
 
@@ -72,22 +69,22 @@ export default function Header({data,user}) {
                 <p className = "text-sm font-medium cursor-pointer text-onPrimary hover:text-onBackground/70">Hi, {user.customer.firstName}</p>
                 <div className = "absolute right-0 z-40 max-w-xl py-4 rounded-lg shadow-xl opacity-0 pointer-events-none bg-surface group-hover:opacity-100 group-hover:pointer-events-auto">
                   <div className="flex flex-col items-start justify-start gap-3 w-44">
-                    <Link href = "/profile">
+                    <Link href = "/user/profile?tab=profile">
                       <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
-                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Profile <UserCircleIcon className = "w-5 h-5"/></a>
+                        <li className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Profile <UserCircleIcon className = "w-5 h-5"/></li>
                       </div>
                     </Link>
-                    <Link href = "/profile?tab=orders">
+                    <Link href = "/user/profile?tab=orders">
                       <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Orders <CubeIcon className = "w-5 h-5"/></a>
                       </div>
                     </Link>
-                    <Link href = "/profile?tab=settings">
+                    <Link href = "/user/profile?tab=support">
                       <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Settings <Cog6ToothIcon className = "w-5 h-5"/></a>
                       </div>
                     </Link>
-                    <Link href = "/api/logout">
+                    <Link href = "/api/logout" >
                       <div className = "w-full pl-4 pr-10 mt-5 rounded-md hover:bg-background">
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground ">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
                       </div>
@@ -183,17 +180,17 @@ export default function Header({data,user}) {
                   <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
                     <div className="flex flex-col gap-3">
                       <div>
-                        <Link href = "/profile">
+                        <Link href = "/user/profile?tab=profile">
                           <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Profile <UserCircleIcon className = "w-5 h-5"/></a>
                         </Link>
                       </div>
                       <div>
-                        <Link href = "/profile?tab=orders">
+                        <Link href = "/user/profile?tab=orders">
                         <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Orders <CubeIcon className = "w-5 h-5"/></a>
                         </Link>
                       </div>
                       <div>
-                        <Link href = "/profile?tab=settings">
+                        <Link href = "/user/profile?tab=settings">
                         <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Settings <Cog6ToothIcon className = "w-5 h-5"/></a>
                         </Link>
                       </div>

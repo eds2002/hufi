@@ -1,8 +1,9 @@
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import React from 'react'
 import Head from 'next/head'
+import Layout from '../../components/global/Layout'
 
-const Index = () => {
+const Index = ({pageProps}) => {
   return (
     <>
       <Head>
@@ -12,7 +13,7 @@ const Index = () => {
         <title>Hufi - Support & Refunds</title>
         <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
       </Head>
-      <main>
+      <Layout {...pageProps}>
         <section className = "w-full h-[50vh] py-24">
           <div className = "flex flex-col items-center justify-center w-full h-full px-4 pb-24 mx-auto max-w-7xl">
             <h1 className = "text-3xl font-medium text-center">Comments, questions, concerns?</h1>
@@ -25,9 +26,12 @@ const Index = () => {
             </form>
           </div>
         </section>
-      </main>
+      </Layout>
     </>
   )
 }
+
+export { default as getServerSideProps } from '../../utils/getServerSideProps'
+
 
 export default Index

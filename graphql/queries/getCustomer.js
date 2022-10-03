@@ -11,11 +11,63 @@ query customer($token:String!){
     email
     orders(first:50){
       nodes{
+        lineItems(first:50){
+          nodes{
+            quantity
+            variant{
+              product{
+                title
+                productType
+								featuredImage{
+                  url
+                  altText
+                }
+                compareAtPriceRange{
+                  minVariantPrice{
+                    amount
+                    currencyCode
+                  }
+                  maxVariantPrice{
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+              title
+              image{
+                url
+                altText
+              }
+            }
+          }
+        }
         id
         orderNumber
+        subtotalPriceV2{
+          amount
+          currencyCode
+        }
+        totalPriceV2{
+          amount
+          currencyCode
+				}
+        totalRefundedV2{
+          amount
+          currencyCode
+        }
+        totalTaxV2{
+          amount
+          currencyCode
+        }
         totalShippingPriceV2{
           amount
           currencyCode
+        }
+        shippingDiscountAllocations{
+          allocatedAmount{
+            amount
+            currencyCode
+          }
         }
         processedAt
         currentSubtotalPrice{
@@ -23,6 +75,17 @@ query customer($token:String!){
           currencyCode
         }
         canceledAt
+        shippingAddress{
+          firstName
+          lastName
+          address1
+          address2
+          zip
+          province
+          city
+          country
+				}
+        fulfillmentStatus
       }
     }
   }

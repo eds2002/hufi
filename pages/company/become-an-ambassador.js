@@ -2,8 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import Head from 'next/head'
+import Layout from '../../components/global/Layout'
 
-const Ambassador = () => {
+export default function Ambassador({pageProps}){
   return (
     <>
       <Head>
@@ -13,7 +14,7 @@ const Ambassador = () => {
         <title>Hufi - Become and Ambassador</title>
         <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
       </Head>
-      <main>
+      <Layout {...pageProps}>
         <section className = "relative flex w-full h-screen">
           <div className = "grid w-full h-full grid-cols-12 grid-rows-2 gap-6 min-w-[1200px]">
             {/* ROW 1 */}
@@ -56,9 +57,9 @@ const Ambassador = () => {
             </div>
           </div>
         </section>
-      </main>
+      </Layout>
     </>
   )
 }
 
-export default Ambassador
+export { default as getServerSideProps } from '../../utils/getServerSideProps'

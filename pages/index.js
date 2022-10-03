@@ -8,11 +8,16 @@ import CollectionSubCol from '../components/sections/collection/CollectionSubCol
 import img from '../assets/abstractBlocks.svg'
 import Image from 'next/image'
 import { FirstTimeModal } from '../components/modals'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import UserContext from '../context/userContext'
+import Layout from '../components/global/Layout'
+import { viewMenu } from '../graphql/queries/viewMenu'
+import { getCustomer } from '../graphql/queries/getCustomer'
 
-export default function Home({data,collections,productData}) {
-  const {currentUser} = useContext(UserContext)
+export default function Home({data,collections,productData,pageProps}) {
+  const {currentUser,setCurrentUser} = useContext(UserContext)
+  setCurrentUser(pageProps.userData.customer)
+  const [hasPurchased,setHasPurchased] = useState(currentUser?.orders?.nodes?.length == 0 )
   const [openModal,setOpenModal] = useState(false)
   return (
     <>
@@ -57,23 +62,36 @@ export default function Home({data,collections,productData}) {
             <meta property="twitter:description" content="Selling innovative, life changing products."/>
             <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
         </Head>
-        <main>
+        <Layout {...pageProps}>
           <Hero data = {data}/>
           <HorizontalProducts data = {productData}/>
           <CollectionSubCol data = {collections}/>
-
           {/* Display only this part when a user is present or if user is not present */}
-          {currentUser?.orders?.nodes?.length === 0 || !currentUser  && (
+          {currentUser != null ? (
             <>
-              <FirstTimeModal openModal={openModal} setOpenModal={setOpenModal} userSignedIn = {currentUser?.orders?.nodes?.length === 0}/>
-              <div className = "fixed inset-0 z-20 flex items-center justify-start pointer-events-none select-none">
-                <div className = {` ${openModal ? '-translate-x-full':'-translate-x-0'} flex items-center justify-center px-2 py-4 font-medium transition cursor-pointer pointer-events-auto md:px-4 bg-primary text-onPrimary hover:bg-primaryVariant rounded-tr-md rounded-br-md hover:shadow-xl`} onClick = {()=>setOpenModal(!openModal)}>
-                  <p className = "font-medium w-[3ch] text-xs md:text-base">20% Off</p>
-                </div>
-              </div>  
+              {!hasPurchased && (
+                <>
+                  <FirstTimeModal openModal={openModal} setOpenModal={setOpenModal} isUserSignedAndQualified = {true}/>
+                  <div className = "fixed inset-0 z-20 flex items-center justify-start pointer-events-none select-none">
+                    <div className = {` ${openModal ? '-translate-x-full':'-translate-x-0'} flex items-center justify-center px-2 py-4 font-medium transition cursor-pointer pointer-events-auto md:px-4 bg-primary text-onPrimary hover:bg-primaryVariant rounded-tr-md rounded-br-md hover:shadow-xl`} onClick = {()=>setOpenModal(!openModal)}>
+                      <p className = "font-medium w-[3ch] text-xs md:text-base">20% Off</p>
+                    </div>
+                  </div>  
+                </>
+              )}
             </>
-          )}
-        </main>
+          )
+          :
+          <>
+            <FirstTimeModal openModal={openModal} setOpenModal={setOpenModal} isUserSignedAndQualified = {false}/>
+            <div className = "fixed inset-0 z-20 flex items-center justify-start pointer-events-none select-none">
+              <div className = {` ${openModal ? '-translate-x-full':'-translate-x-0'} flex items-center justify-center px-2 py-4 font-medium transition cursor-pointer pointer-events-auto md:px-4 bg-primary text-onPrimary hover:bg-primaryVariant rounded-tr-md rounded-br-md hover:shadow-xl`} onClick = {()=>setOpenModal(!openModal)}>
+                <p className = "font-medium w-[3ch] text-xs md:text-base">20% Off</p>
+              </div>
+            </div>  
+          </>
+          }
+        </Layout>
         </>
       )}
     </>
@@ -81,8 +99,19 @@ export default function Home({data,collections,productData}) {
 }
 
 
-export async function getStaticProps(){
+export async function getServerSideProps(context){
   try{
+    // For layout
+    const cookies = context?.req?.cookies?.userAccess
+    let pageProps = {}
+    const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+    const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+    const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+    pageProps["headerData"] = headerData
+    pageProps["footerData"] = footerData
+    pageProps["userData"] = userInformation
+    pageProps["userAccess"] = cookies
+
     const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
   
     const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
@@ -111,6 +140,7 @@ export async function getStaticProps(){
         data:data,
         collections:collectionsJSON,
         productData:prods,
+        pageProps:pageProps
       }
     }
   }catch(e){

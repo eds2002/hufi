@@ -34,9 +34,7 @@ function MyApp({ Component, pageProps }) {
             height={3}
             showOnShallow={true}
           />
-          <Layout {...pageProps}>
             <Component {...pageProps}/>
-          </Layout>
         </ProductProvider>
       </LocaleProvider>
     </CartProvider>
@@ -46,18 +44,19 @@ function MyApp({ Component, pageProps }) {
 
 export default MyApp
 
-MyApp.getInitialProps = async (context) =>{
-  let pageProps = {}
-  try{
-    const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
-    const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
-    const {data:userInformation} = await storefront(getCustomer,{token:context?.ctx?.req?.cookies?.userAccess || "randomletters"})
-    pageProps["headerData"] = headerData
-    pageProps["footerData"] = footerData
-    pageProps["userData"] = userInformation
-    pageProps["userAccess"] = context?.ctx?.req?.cookies?.userAccess
-  }catch(e) {
-    console.log(e)
-  }
-  return {pageProps}
-}
+// MyApp.getInitialProps = async (context) =>{
+//   const cookies = context?.ctx?.req?.cookies?.userAccess
+//   let pageProps = {}
+//   try{
+//     const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
+//     const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
+//     const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
+//     pageProps["headerData"] = headerData
+//     pageProps["footerData"] = footerData
+//     pageProps["userData"] = userInformation
+//     pageProps["userAccess"] = context?.ctx?.req?.cookies?.userAccess
+//   }catch(e) {
+//     console.log(e)
+//   }
+//   return {pageProps}
+// }

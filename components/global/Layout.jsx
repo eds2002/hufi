@@ -10,12 +10,12 @@ import CartContext from '../../context/cartContext';
 import { storefront } from '../../utils/storefront';
 import UserContext from '../../context/userContext';
 
-const Layout = ({children}) => {
+const Layout = ({children,headerData,userData,footerData}) => {
   return (
     <>
-      <Header data = {children.props.headerData} user = {children.props.userData}/>
+      <Header data = {headerData} user = {userData}/>
         {children}
-      <Footer data = {children.props.footerData}/>
+      <Footer data = {footerData}/>
     </>
   )
 }
