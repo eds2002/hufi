@@ -197,10 +197,10 @@ export async function getServerSideProps({req,res}){
   const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
   const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
   const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
-  pageProps["headerData"] = headerData
-  pageProps["footerData"] = footerData
-  pageProps["userData"] = userInformation
-  pageProps["userAccess"] = cookies
+  pageProps["headerData"] = headerData || null
+  pageProps["footerData"] = footerData || null
+  pageProps["userData"] = userInformation || null
+  pageProps["userAccess"] = cookies || null
 
 
   const cookie = getCookie('userAccess',{req,res})
