@@ -177,7 +177,7 @@ export default function Header({data,user}) {
                   </div>
 
                   {user?.customer ? 
-                  <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15">
+                  <div className="absolute bottom-0 w-full px-4 py-6 pb-12 space-y-6 border-t border-onBackground/15">
                     <div className="flex flex-col gap-3">
                       <div>
                         <Link href = "/user/profile?tab=profile">
@@ -202,7 +202,7 @@ export default function Header({data,user}) {
                     </div>
                   </div>
                   :
-                  <div className="absolute bottom-0 w-full px-4 py-6 pb-24 space-y-6 border-t border-onBackground/15 ">
+                  <div className="absolute bottom-0 w-full px-4 py-6 pb-12 space-y-6 border-t border-onBackground/15 ">
                     <div className = "w-full">
                       <Link href = "/login">
                         <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Login</a>
@@ -407,7 +407,7 @@ function MobileLinks({category}){
       </p>
       {open && (
         <>
-          <div className = "absolute inset-0 w-full overflow-scroll bg-background">
+          <div className = "absolute inset-0 z-10 w-full overflow-scroll bg-background">
             {/* HEADER */}
             <div className="flex px-4 pt-5 pb-2 mt-2 text-onBackground/50">
               <button
@@ -457,11 +457,11 @@ function MobileLinks({category}){
 
                       {/* SUBCOLLECTION PRODUCTS */}
                       {subCategory.items.map((item) => (
-                        <Link href = {`product/${slugify(item.title)}`} key = {item.title}>
+                        <a href = {`/product/${slugify(item.title)}`} key = {item.title}>
                           <p className="px-4 py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/40">
                             {item.title}
                           </p>
-                        </Link>
+                        </a>
                       ))}
                     </div>
                   )}
@@ -562,7 +562,7 @@ function CartDrawer({openCart, setOpenCart}){
 
             
               {/* CART HEADER */}
-              {cartData?.lines.edges.length == 0 ?
+              {cartData?.lines?.edges?.length == 0 ?
                 <>
                   <div className="flex justify-between px-4 pt-5 pb-2">
                     <span className = "text-xl font-medium">Cart <span className = "text-xl text-gray-400">{totalItems}</span></span>
@@ -602,8 +602,8 @@ function CartDrawer({openCart, setOpenCart}){
                 </div>
 
                 {/* PRODUCTS CONTAINER */}
-                <div className = "w-full h-full overflow-scroll ">
-                  {cartData?.lines.edges.map((product)=>(
+                <div className = "w-full h-full overflow-scroll divide-y-2">
+                  {cartData?.lines?.edges?.map((product)=>(
                       <CartProduct data = {product} key = {product.id}/>
                   ))}
                 </div>
@@ -661,7 +661,15 @@ function CartDrawer({openCart, setOpenCart}){
 
 function CartProduct({data}){
   const {locale} = useContext(LocaleContext)
-  const {cartData,setCartData} = useContext(CartContext)
+  const {cartData,setCartData,coupons} = useContext(CartContext)
+  // const [hasCoupon, setHasCoupon] = useState(cartData.discountCodes.some(discount=> coupons.some(coupon=>coupon.)discount.code === data.node.merchandise.product.title))
+
+  // NOTE, please look back and see if there is a better way of doing this.
+  // ISSUE, there is no possible way of retrieving if product has any coupons as of Oct 4,2022 through the storefront API.
+  // TODO, filter out the stored coupons, (stored coupons are added when a user clicks on apply coupon, AKA coupon container)
+  // Check if the stored coupon is in the current cart (Sometimes coupons disappear randomly in cart)
+  // Also check if stored coupon's first word matches the word of the product. (This seems to be the only way to do it as a of now.)
+  const currentCoupon = useMemo(()=>{return coupons.filter((coupon)=> cartData?.discountCodes.some(discount=> discount.code == coupon.discountName && coupon.discountName.split(" ")[0] == data.node.merchandise.product.title.split(" ")[0]))},[]) 
 
   const handleDelete = async (data)=>{
     const newCart = await removeProduct(data,cartData)
@@ -673,36 +681,63 @@ function CartProduct({data}){
     setCartData(newCart)
   }
 
-  return(
-    <div className = "flex w-full max-w-xs gap-6 px-4 py-6 border-b border-onPrimary/15">
-      {/* IMAGE */}
-      <div className = "relative w-20 h-20 bg-gray-400 rounded-md flex-0 "> 
-        <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
-        <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-primary text-onPrimary/70">{data.node.quantity}</span>
-      </div>
-      <div className = "flex-1 w-full h-full">
-        <div className = "grid grid-rows-1 gap-1">
-          {/* TITLE & PRICE */}
-          <p className = "flex items-center justify-between w-full">
-            <span className = "font-medium">{data.node.merchandise.product.title}</span>
-            <span className = "font-medium">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
-          </p>
-          {/* SELECTED VARIANTS */}
-          <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{data.node.merchandise.title === "Default Title" ? data.node.merchandise.product.title : (data.node.merchandise.title).replace("/","-")}</p>
 
-          {/* INPUTS */}
-          <div className = "flex items-center justify-between">
-            <div className = "flex items-center justify-center">
-              <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity-1,data)}><MinusIcon className = "w-4 h-4"/></button>
-              <p className = "flex items-center justify-center w-10">{data.node.quantity}</p>
-              <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity+1,data)}><PlusIcon className = "w-4 h-4"/></button>
+  return(
+    <>
+    <div className = {`${currentCoupon.length >= 1 && ('bg-surface py-4 rounded-md')}`}>
+      <span className = "px-4 text-xs ">
+        {currentCoupon.length >= 1 &&
+        <>
+          <span className = "px-2 py-0.5 font-medium rounded-md bg-primaryVariant text-opacity-60">
+            {currentCoupon[0].discountAmount}% Discount applied at checkout.
+          </span>
+        </>
+        }
+      </span>
+      <div className = "flex w-full max-w-xs gap-6 px-4 py-4">
+        {/* IMAGE */}
+        <a href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
+          <div className = "relative w-20 h-20 bg-gray-400 rounded-md cursor-pointer flex-0"> 
+            <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
+            <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-secondary text-onSecondary">{data.node.quantity}</span>
+          </div>
+        </a>
+        <div className = "flex-1 w-full h-full">
+          <div className = "grid grid-rows-1 gap-1">
+            {/* TITLE & PRICE */}
+            <p className = "flex items-center justify-between w-full">
+              <a href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
+                <span className = "font-medium">{data.node.merchandise.product.title}</span>
+              </a>
+              <span className = "font-medium">
+              {currentCoupon.length >= 1 ? 
+                <p className = "flex items-center">
+                  <span className = "mr-1 text-xs line-through md:text-sm text-tertiaryVariant/50">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
+                  <span>{formatNumber(data.node.merchandise.priceV2.amount - (data.node.merchandise.priceV2.amount * (currentCoupon[0].discountAmount)/100),data.node.merchandise.priceV2.currencyCode,locale)}</span>
+                </p>
+              :
+              formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)
+              }
+              </span>
+            </p>
+            {/* SELECTED VARIANTS */}
+            <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{data.node.merchandise.title === "Default Title" ? data.node.merchandise.product.title : (data.node.merchandise.title).replace("/","-")}</p>
+
+            {/* INPUTS */}
+            <div className = "flex items-center justify-between">
+              <div className = "flex items-center justify-center">
+                <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity-1,data)}><MinusIcon className = "w-4 h-4"/></button>
+                <p className = "flex items-center justify-center w-10">{data.node.quantity}</p>
+                <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity+1,data)}><PlusIcon className = "w-4 h-4"/></button>
+              </div>
+              <TrashIcon className = "w-5 h-5 transition cursor-pointer hover:text-tertiaryVariant"
+                onClick = {()=>handleDelete(data)}
+              />
             </div>
-            <TrashIcon className = "w-5 h-5 transition cursor-pointer hover:text-tertiaryVariant"
-              onClick = {()=>handleDelete(data)}
-            />
           </div>
         </div>
       </div>
     </div>
+    </>
   )
 }

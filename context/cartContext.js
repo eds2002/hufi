@@ -15,6 +15,7 @@ export function CartProvider({children}){
   const [viewedCart,setViewedCart] = useState(false)
   const [checkout,setCheckout] = useState()
   const {currentUser,currentUserACCESS} = useContext(UserContext)
+  const [coupons,setCoupons] = useState([])
 
   useEffect(()=>{
     const checkCart = async () =>{
@@ -53,7 +54,7 @@ export function CartProvider({children}){
   //   }
   // },[currentUser,cartData])
   return(
-    <CartContext.Provider value={{setCheckout, checkout,openCart,setOpenCart,cartId,setCartId,setCartData,cartData,viewedCart,setViewedCart}}>
+    <CartContext.Provider value={{setCheckout, checkout,openCart,setOpenCart,cartId,setCartId,setCartData,cartData,viewedCart,setViewedCart,coupons,setCoupons}}>
       {children}
     </CartContext.Provider>
   )

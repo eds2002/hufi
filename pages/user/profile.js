@@ -11,6 +11,9 @@ import { slugify } from '../../utils/slugify'
 import Link from 'next/link'
 import { formatNumber } from '../../utils/formatNumber'
 import LocaleContext from '../../context/localeContext'
+import { useMemo } from 'react'
+import Head from 'next/head'
+import { ButtonGroup } from '@mui/material'
 
 export default function Profile({pageProps}){
   const {currentUser,setCurrentUser} = useContext(UserContext)
@@ -30,6 +33,10 @@ export default function Profile({pageProps}){
 
 
   return (
+    <>
+    <Head>
+      <title>Hufi - Settings</title>
+    </Head>
     <Layout {...pageProps}>
       <section>
         <div className = "w-full h-full px-4 pt-24 mx-auto bg-secondary">
@@ -60,6 +67,7 @@ export default function Profile({pageProps}){
         <OrdersTab currentUser={currentUser}/>
       )}
     </Layout>
+    </>
   )
 }
 
@@ -176,6 +184,29 @@ const OrdersTab = ({currentUser})=>{
   const {locale} = useContext(LocaleContext)
 
 
+  // Todo, story expensive function into system
+  // Filter out orders by the month and year.
+  const dates = useMemo(()=>{
+    return getOrderDates(currentUser)
+  },[currentUser]) 
+
+  function getOrderDates(currentUser){
+    const dateArr = []
+    currentUser?.orders?.nodes?.forEach((order)=>{
+      if(dateArr.some(obj => obj.month == new Date (new Date(order?.processedAt).toDateString()).getMonth())) return
+      dateArr.push({
+        month:new Date (new Date(order?.processedAt).toDateString()).getMonth(),
+        year:new Date (new Date(order?.processedAt).toDateString()).getFullYear(),
+      })
+    })
+    return dateArr
+  }
+
+  const getMonth = (dateNum) => {
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return months[dateNum]
+  }
+
   const formatDate = (userDate,monthAdd) =>{
     const num = monthAdd ?? 0
 
@@ -192,7 +223,6 @@ const OrdersTab = ({currentUser})=>{
     
 
   }
-
   return(
     <section className = "py-24">
       <div className = "px-4 mx-auto max-w-7xl">
@@ -201,125 +231,151 @@ const OrdersTab = ({currentUser})=>{
           <p className = "max-w-sm mt-7 text-onBackground/60">View all orders you have made with us. </p>
         </div>
       </div>
-      <div className = "grid grid-cols-1 gap-6 px-4 pt-10 mx-auto max-w-7xl">
-        {currentUser?.orders?.nodes.map((order)=>(
-          <>
-            <div className = "p-4 rounded-md bg-surface">
-              <div className = "md:flex md:justify-between md:items-start">
-                <p className = "text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start"><span className = "font-medium text-onSurface">Order Date:</span> <span className = "font-medium">{formatDate(order.processedAt).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</span></p>
-                <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start">
-                  <span className = "font-medium">Total</span>
-                  <span>{formatNumber(order?.totalPriceV2?.amount,order.totalPriceV2.currencyCode,locale)}</span>
-                </p>
-                <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start">
-                  <span className = "font-medium">Shipped to:</span>
-                  <span>{order.shippingAddress.address1}</span>
-                  <span>{order.shippingAddress.address2}</span>
-                </p>
-                <p className = "text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start"><span className ="font-medium text-onSurface">Order #:</span> <span className = "font-medium">{order.orderNumber}</span></p>
-
+      {currentUser.orders.nodes.length == 0 ?
+        <div className = "h-[50vh]">
+          <div className = "flex flex-col items-center justify-center h-full px-4 mx-auto text-center max-w-7xl">
+            <h1 className = "text-3xl font-medium text-center">It&apos;s lonesome in here.</h1>
+            <p className = "mt-2 text-onBackground/60">Did you know we are always selling unique products?<br/></p>
+            <Link href = "/">
+              <div className = "w-full max-w-md mt-7">
+                <Button text = 'Start shopping'/>
               </div>
-              <div className = "w-full h-0.5 my-4 bg-onSurface/10"/>
+            </Link>
+          </div>
+        </div>
+      :
+        <div className = "grid grid-cols-1 gap-6 px-4 pt-10 mx-auto max-w-7xl">
+          {dates.map((dateNum)=>(
+            <>
+              <h1 className = "text-3xl font-medium">{getMonth(dateNum.month)}, {dateNum.year}</h1>
+              {currentUser?.orders?.nodes.map((order)=>(
+                <>  
+                  {new Date (new Date(order?.processedAt).toDateString()).getMonth() === dateNum.month && (
+                    <>
+                      <div className = "">
+                        <p className = "md:hidden"> <span className = "mb-1 text-lg font-medium">{formatDate(order.processedAt).month} {formatDate(order.processedAt).day}</span></p>
+                        <div className = "p-4 rounded-md bg-surface">
+                          <div className = "md:flex md:justify-between md:items-start">
+                            <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start"><span className = "font-medium text-onSurface">Order Date:</span> <span className = "font-medium">{formatDate(order.processedAt).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</span></p>
+                            <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start">
+                              <span className = "font-medium">Total</span>
+                              <span>{formatNumber(order?.totalPriceV2?.amount,order.totalPriceV2.currencyCode,locale)}</span>
+                            </p>
+                            <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start">
+                              <span className = "font-medium">Shipped to:</span>
+                              <span>{order.shippingAddress.address1}</span>
+                              <span>{order.shippingAddress.address2}</span>
+                            </p>
+                            <p className = "text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start"><span className ="font-medium text-onSurface">Order #:</span> <span className = "font-medium">{order.orderNumber}</span></p>
+
+                          </div>
+                          <div className = "w-full h-0.5 my-4 bg-onSurface/10"/>
 
 
-              <h3 className = "text-lg font-medium">Order Items</h3>
-              <div className = "divide-y">
-                {order?.lineItems?.nodes?.map((orderProduct)=>(
-                  <div className = "h-full md:my-6 md:p-4 md:border md:rounded-lg md:flex md:gap-6 md:border-onSurface/20" key = {orderProduct?.orderProduct?.variant.product.title}>
-                    <div className = "flex items-center justify-start flex-1 w-full h-full gap-6">
-                      <Link href = {`product/${slugify(orderProduct?.variant?.product.title)}`}>
-                        <div className = "relative my-6 overflow-hidden rounded-md cursor-pointer w-28 h-28 md:h-36 md:w-36 ">
-                          <Image src = {orderProduct?.variant?.image.url} alt={orderProduct?.variant?.image.altText} layout = 'fill'/>
-                        </div>
-                      </Link>
-                      <div className = "flex justify-between flex-1 w-full h-full">
-                        <div className = "w-full h-full ">
-                          <p className = "text-sm sm:text-base">{orderProduct?.variant?.product.title}</p>
-                          <p className = "text-xs md:text-sm text-onSurface/50">{orderProduct?.variant?.title}</p>
-                          <p className = "text-xs md:text-sm text-onSurface/50 ">Qty: <span className = "font-medium">{orderProduct?.quantity}</span></p>
-                          <p className = "text-xs md:text-sm text-onSurface/50 ">Refundable by: <br/><b>{formatDate(order?.processedAt,1).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</b></p>
-                          <p className = "hidden text-sm md:block">{formatNumber(orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.amount,orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.currencycode,locale)}</p>
-                          <div className = "flex items-center mt-2 gap-x-2">
-                            <Link href = {`/product/${slugify(orderProduct?.variant?.product.title)}`}>
-                              <div className = "w-auto">
-                                <Button text = 'Buy again' CSS = 'text-xs sm:text-sm bg-secondaryVariant hover:bg-secondary text-onSecondary text-sm  w-full py-1 px-3'/>
+                          <h3 className = "text-lg font-medium">Order Items</h3>
+                          <div className = "divide-y">
+                            {order?.lineItems?.nodes?.map((orderProduct)=>(
+                              <div className = "h-full md:my-6 md:p-4 md:flex md:gap-6 md:border-onSurface/20" key = {orderProduct?.orderProduct?.variant.product.title}>
+                                <div className = "flex items-center justify-start flex-1 w-full h-full gap-6">
+                                  <Link href = {`product/${slugify(orderProduct?.variant?.product.title)}`}>
+                                    <div className = "relative my-6 overflow-hidden rounded-md cursor-pointer w-28 h-28 md:h-36 md:w-36 ">
+                                      <Image src = {orderProduct?.variant?.image.url} alt={orderProduct?.variant?.image.altText} layout = 'fill'/>
+                                    </div>
+                                  </Link>
+                                  <div className = "flex justify-between flex-1 w-full h-full">
+                                    <div className = "w-full h-full ">
+                                      <p className = "text-sm sm:text-base">{orderProduct?.variant?.product.title}</p>
+                                      <p className = "text-xs md:text-sm text-onSurface/50">{orderProduct?.variant?.title}</p>
+                                      <p className = "text-xs md:text-sm text-onSurface/50 ">Qty: <span className = "font-medium">{orderProduct?.quantity}</span></p>
+                                      <p className = "text-xs md:text-sm text-onSurface/50 ">Refundable by: <br/><b>{formatDate(order?.processedAt,1).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</b></p>
+                                      <p className = "hidden text-sm md:block">{formatNumber(orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.amount,orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.currencycode,locale)}</p>
+                                      <div className = "flex items-center mt-2 gap-x-2">
+                                        <Link href = {`/product/${slugify(orderProduct?.variant?.product.title)}`}>
+                                          <div className = "w-auto">
+                                            <Button text = 'Buy again' CSS = 'text-xs sm:text-sm bg-secondaryVariant hover:bg-secondary text-onSecondary text-sm  w-full py-1 px-3'/>
+                                          </div>
+                                        </Link>
+                                        <Link href = {`/support/refunds?orderNumber=${order.orderNumber}&email=${currentUser.email}&productName=${orderProduct?.variant?.product.title}${orderProduct.variant.title}`}>
+                                          <span className = "text-xs hover:text-onSurface/50">or refund</span>
+                                        </Link>
+                                      </div>
+                                    </div>
+                                    <div className = "text-sm md:hidden sm:text-base">
+                                      <p>{formatNumber(orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.amount,orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.currencycode,locale)}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className = "flex-col justify-center hidden gap-3 md:flex ">
+                                  <div>
+                                    <Button text = 'Track my package' CSS = 'bg-secondary text-onSecondary px-4 py-2'/>
+                                  </div>
+                                  <div className='mt-2'>
+                                    <Button text = 'Write a review' CSS = 'bg-primaryVariant text-onPrimary/60 px-4 py-1'/>
+                                  </div>
+                                  <div>
+                                    <Button text = 'Request a refund' CSS = 'bg-primaryVariant text-onPrimary/60 px-4 py-1'/>
+                                  </div>
+                                </div>
                               </div>
-                            </Link>
-                            <Link href = {`/support/refunds?orderNumber=${order.orderNumber}&email=${currentUser.email}&productName=${orderProduct?.variant?.product.title}${orderProduct.variant.title}`}>
-                              <span className = "text-xs hover:text-onSurface/50">or refund</span>
-                            </Link>
+                            ))}
+                          </div>
+                          <div className = "w-full h-0.5 my-4 bg-onSurface/10 md:hidden"/>
+
+
+                          <h3 className = "text-lg font-medium md:hidden">Shipping Details</h3>
+                          <div className = 'w-full p-4 text-sm border rounded-md border-onSurface/20 md:hidden'>
+                            <p>
+                              <span>{order?.shippingAddress.firstName}</span>
+                              {' '}
+                              <span>{order?.shippingAddress.lastName}</span>
+                            </p>
+                            <p>{order?.shippingAddress.address1}</p>
+                            <p>{order?.shippingAddress.address2}</p>
+                            <p>
+                              <span>{order?.shippingAddress.city}, </span>
+                              <span>{order?.shippingAddress?.province} </span>
+                              <span>{order?.shippingAddress?.zip}</span>
+                            </p>
+                            <p>{order.shippingAddress.country}</p>
+                          </div>
+                          <div className = "w-full h-0.5 my-4 bg-onSurface/10 md:hidden"/>
+
+                          
+                          <h3 className = "text-lg font-medium md:hidden">Order Summary</h3>
+                          <div className = "p-4 border rounded-md border-onSurface/20 md:hidden">
+                            <p className = "flex items-center justify-between text-onSurface/50">
+                              <span>Subtotal:</span> 
+                              <span>{formatNumber(order?.subtotalPriceV2?.amount,order.subtotalPriceV2.currencyCode,locale)}</span>
+                            </p>
+                            <p className = "flex items-center justify-between text-onSurface/50">
+                              <span>Shipping & Handling:</span>
+                              <span>{formatNumber(order.totalShippingPriceV2.amount,order.totalShippingPriceV2.currencyCode,locale)}</span>
+                            </p>
+                            {order.shippingDiscountAllocations.length != 0 && (
+                              <p className = "flex items-center justify-between text-onSurface/50">
+                                <span>Shipping Discount:</span>
+                                <span>{formatNumber(order.shippingDiscountAllocations[0].allocatedAmount.amount * -1,order.shippingDiscountAllocations[0].allocatedAmount.currencyCode,locale)}</span>
+                              </p>
+                            )}
+                            <p className = "flex items-center justify-between text-onSurface/50">
+                              <span>Tax:</span>
+                              <span>{formatNumber(order.totalTaxV2.amount,order.totalTaxV2.currencyCode,locale)}</span>
+                            </p>
+                            <h3 className = "flex justify-between mt-4">
+                              <span className = "text-lg font-medium">Order total</span>
+                              <span className = "text-lg font-medium text-tertiaryVariant">{formatNumber(order.totalPriceV2.amount,order.totalPriceV2.currencyCode,locale)}</span>
+                            </h3>
                           </div>
                         </div>
-                        <div className = "text-sm md:hidden sm:text-base">
-                          <p>{formatNumber(orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.amount,orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.currencycode,locale)}</p>
-                        </div>
                       </div>
-                    </div>
-                    <div className = "flex-col justify-center hidden gap-3 md:flex ">
-                      <div>
-                        <Button text = 'Track my package' CSS = 'bg-secondary text-onSecondary px-4 py-2'/>
-                      </div>
-                      <div className='mt-2'>
-                        <Button text = 'Write a review' CSS = 'bg-primaryVariant text-onPrimary/60 px-4 py-1'/>
-                      </div>
-                      <div>
-                        <Button text = 'Request a refund' CSS = 'bg-primaryVariant text-onPrimary/60 px-4 py-1'/>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className = "w-full h-0.5 my-4 bg-onSurface/10 md:hidden"/>
-
-
-              <h3 className = "text-lg font-medium md:hidden">Shipping Details</h3>
-              <div className = 'w-full p-4 text-sm border rounded-md border-onSurface/20 md:hidden'>
-                <p>
-                  <span>{order?.shippingAddress.firstName}</span>
-                  {' '}
-                  <span>{order?.shippingAddress.lastName}</span>
-                </p>
-                <p>{order?.shippingAddress.address1}</p>
-                <p>{order?.shippingAddress.address2}</p>
-                <p>
-                  <span>{order?.shippingAddress.city}, </span>
-                  <span>{order?.shippingAddress?.province} </span>
-                  <span>{order?.shippingAddress?.zip}</span>
-                </p>
-                <p>{order.shippingAddress.country}</p>
-              </div>
-              <div className = "w-full h-0.5 my-4 bg-onSurface/10 md:hidden"/>
-
-              
-              <h3 className = "text-lg font-medium md:hidden">Order Summary</h3>
-              <div className = "p-4 border rounded-md border-onSurface/20 md:hidden">
-                <p className = "flex items-center justify-between text-onSurface/50">
-                  <span>Subtotal:</span> 
-                  <span>{formatNumber(order?.subtotalPriceV2?.amount,order.subtotalPriceV2.currencyCode,locale)}</span>
-                </p>
-                <p className = "flex items-center justify-between text-onSurface/50">
-                  <span>Shipping & Handling:</span>
-                  <span>{formatNumber(order.totalShippingPriceV2.amount,order.totalShippingPriceV2.currencyCode,locale)}</span>
-                </p>
-                {order.shippingDiscountAllocations.length != 0 && (
-                  <p className = "flex items-center justify-between text-onSurface/50">
-                    <span>Shipping Discount:</span>
-                    <span>{formatNumber(order.shippingDiscountAllocations[0].allocatedAmount.amount * -1,order.shippingDiscountAllocations[0].allocatedAmount.currencyCode,locale)}</span>
-                  </p>
-                )}
-                <p className = "flex items-center justify-between text-onSurface/50">
-                  <span>Tax:</span>
-                  <span>{formatNumber(order.totalTaxV2.amount,order.totalTaxV2.currencyCode,locale)}</span>
-                </p>
-                <h3 className = "flex justify-between mt-4">
-                  <span className = "text-lg font-medium">Order total</span>
-                  <span className = "text-lg font-medium text-tertiaryVariant">{formatNumber(order.totalPriceV2.amount,order.totalPriceV2.currencyCode,locale)}</span>
-                </h3>
-              </div>
-            </div>
-          </>
-        ))}
-      </div>
+                    </>
+                  )}
+                </>
+              ))}
+            </>
+          ))}
+        </div>
+      }
     </section>
   )
 }

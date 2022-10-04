@@ -8,17 +8,20 @@ import ErrorImg from '../../assets/404.svg'
 import Link from "next/link";
 import Head from "next/head";
 import { slugify } from "../../utils/slugify";
-import { useEffect,useState, useRef } from "react";
+import { useEffect,useState, useRef,useContext } from "react";
 import useOnScreen from "../../utils/useOnScreen";
 import { ProductStickyCart } from "../../components/features";
 import { viewMenu } from "../../graphql/queries/viewMenu";
 import { getCustomer } from "../../graphql/queries/getCustomer";
 import Layout from "../../components/global/Layout";
+import UserContext from "../../context/userContext";
 
 
 
 const Product = ({productData,pageProps})=>{
   const ref = useRef(null)
+  const {setCurrentUser} = useContext(UserContext)
+  setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
   const handleScroll = () => {
       const position = window.pageYOffset;

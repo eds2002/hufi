@@ -135,6 +135,18 @@ query Product($handle: String!) {
       value 
       type
     }
+    orderWithin:metafield(namespace:"product",key:"order_within"){
+      value
+      type
+    }
+    deliveryBusinessDays:metafield(namespace:"product",key:"delivery_business_days"){
+      value
+      type
+    }
+    coupon:metafield(namespace:"product",key:"coupon"){
+      value
+      type
+		}
   }
 }
 `

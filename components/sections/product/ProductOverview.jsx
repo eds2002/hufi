@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
@@ -8,6 +8,10 @@ import { addToShopifyCart } from '../../../utils/addToShopifyCart'
 import CartContext from '../../../context/cartContext'
 import { deliveredDate } from '../../../utils/deliveredDate'
 import ProductContext from '../../../context/productContext'
+import { useMemo } from 'react'
+import { storefront } from '../../../utils/storefront'
+import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountCode'
+import UserContext from '../../../context/userContext'
 
 
 export default function ProductOverview({data,compRef}) {
@@ -41,10 +45,9 @@ export default function ProductOverview({data,compRef}) {
       })
     }
   }
-  const {minMonth,minDays,minYear,maxDays,maxMonth,maxYear} = deliveredDate()
 
 
-  // TODO, sets the current image to the variant image
+  // TODO, sets the current image to the variant selected image
   useEffect(()=>{
     if(!didMount.current){
       didMount.current = true
@@ -138,72 +141,15 @@ export default function ProductOverview({data,compRef}) {
                   <div className = "sticky top-[104px]">
 
                     {/* Product Title & Pricing */}
-                    <div className="flex flex-col items-start justify-between w-full">
-                      <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
-                      <p className="text-base sm:text-base">
-                        {data.product?.priceRange?.maxVariantPrice?.amount < data.product.compareAtPriceRange.maxVariantPrice.amount ? 
-                        <span className = "flex gap-x-1">
-                          <span className = "text-base font-medium text-onBackground">{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
-                          {/* <span className = "text-sm font-normal line-through text-tertiaryVariant">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span> */}
-                        </span>
-                        :
-                        <span>{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
-                      }
-                      </p>
-                    </div>
-
-                    <div className = "mt-1">
-                      <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
-                    </div>
+                    <ProductHeading data = {data}/>
 
                     {/* Product Information */}
                     <div className="mt-4 lg:col-span-5">
                       <form name = "productInformation" >
-                        {data.product.options.map((option,index)=>(
-                          <div key = {index} className = "">
-                            {/* Options title */}
-                            {/* TODO, avoid rendering products with no options / variants */}
-                            {option.name != "Title" && (
-                              <h3 className = "text-base font-medium" id = {option.name}>
-                                <span>{option.name}: </span>
-                                <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt.name === option.name)].value}</span>
-                              </h3>
-                            )}
-
-                            {/* Options Values */}
-                            <div className = "flex flex-wrap items-center gap-3 ">
-                              {/* TODO, avoid rendering products with no options / variants */}
-                              {option.name != "Title" && (
-                                <div className = "flex flex-wrap items-center gap-3 mt-2 mb-4">
-                                  {option.values.map((value,key)=>(
-                                    <>
-                                      <p className = 
-                                      {`
-                                        ${option.name === "Color" ? 
-                                        (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
-                                        :
-                                        (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full`)
-                                        }
-                                        text-sm
-                                      `}
-                                      style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
-                                      onClick = {(e)=>handleVariantChange(option.name,value)}
-                                      key = {key}
-                                      id = {option.value}
-                                      >
-                                        {option.name === "Color" ? '' : value}
-                                      </p>
-                                    </>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
+                        <CouponComponent data = {data} selectedOption = {selectedOption}/>
+                        <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
                         <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
-                        <p className = "mt-2 text-xs text-onBackground/70">Get it
-                          <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays}, ${minYear} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
-                        </p>
+                        <GetItByComponent data = {data}/>
                       </form>
                     </div>
 
@@ -244,6 +190,199 @@ export default function ProductOverview({data,compRef}) {
       }
     </>
   )
+}
+
+function CouponComponent({data,selectedOption}){
+  const {cartData,setCartData, setCoupons} = useContext(CartContext)
+  const couponCode = data.product.coupon?.value ? JSON.parse(data.product.coupon?.value) : ''
+
+  // TODO, if coupon is already in cartData, set checked automaticlly on.
+  const [checked,setChecked] = useState(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName))
+  
+  const {currentUser} = useContext(UserContext)
+
+  // Handle addToCartDiscount if user checked box for promotional coupon
+  useEffect(()=>{
+    if(!checked) return
+    const handleChecked = async () =>{
+      if(!checked) return
+      setCoupons(oldArr => [...oldArr, couponCode])
+      const {data,errors} = await storefront(addCartDiscountCode,{cartId:cartData.id,discountCodes:[couponCode.discountName, currentUser ? 'Members Rewards' : '']})
+      if(data && data?.cartDiscountCodesUpdate.userErrors.length == 0){
+        setCartData(data.cartDiscountCodesUpdate.cart)
+      }else{
+        alert("Error in adding coupon.")
+      }
+    }
+    handleChecked()
+  },[checked])
+  return(
+    <>
+    {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant) && (  
+      <div className = "flex items-center w-full mb-1 gap-x-3">
+        <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
+        onClick = {()=>setChecked(true)}
+        >
+        {checked && (
+          <CheckIcon className = "w-5 h-5 text-onSecondary"/>
+        )}
+        </div>
+        <p className = "text-sm text-onBackground/70">
+          <span className = {`font-medium text-onBackground`}>{couponCode.discountAmount}%</span>{' '}
+          {checked ? 
+            <span>applied at checkout</span>
+          :
+            'Promotional coupon'
+          }
+        </p>
+      </div>
+    )}
+    </>
+  )
+
+}
+
+function GetItByComponent({data}){
+  const [day,setDay] = useState(0)
+  const [hour,setHour] = useState(0)
+  const [minute,setMinute] = useState(0)
+  const [second,setSecond] = useState(0)
+  const dates = data.product.deliveryBusinessDays?.value ? JSON.parse(data.product.deliveryBusinessDays.value) : null
+
+  
+  // Time variables
+  const today = new Date().getTime()
+  const orderWithinDate = data.product.orderWithin?.value ? new Date(JSON.parse(data.product.orderWithin.value)).getTime() : null 
+  const gap = orderWithinDate ? orderWithinDate - today : 0 
+  useEffect(()=>{
+    const interval = setInterval(()=>{
+      const today = new Date().getTime()
+      const orderWithinDate = data?.product?.orderWithin?.value ? new Date(JSON.parse(data.product.orderWithin.value)).getTime() : null 
+      const gap = orderWithinDate - today
+      
+      const second = 1000;
+      const minutes = second * 60
+      const hours = minutes * 60
+      const day = hours * 24
+      
+      if(gap <= 0) return 
+      setDay(Math.floor(gap/day))
+      setHour(Math.floor((gap % day) / hours))
+      setMinute(Math.floor((gap % hours) / minutes))
+      setSecond(Math.floor((gap % minutes) / second))
+    },1000)
+
+    
+    return() => {
+      clearInterval(interval)
+    }
+  },[day,hour,minute,second])
+
+  
+  const {minMonth,minDays,minYear,maxDays,maxMonth,maxYear} = useMemo(()=>{
+    return deliveredDate(dates ? dates[0]?.default?.min : 7, dates ? dates[0]?.default?.max : 14)
+  },[]) 
+
+  const orderWithinDates = useMemo(()=>{
+    return deliveredDate(dates ? dates[0]?.orderWithin.min : 7, dates ? dates[0]?.orderWithin.max : 14)
+  },[])
+  return(
+  <>
+      {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
+        <p className = "mt-2 text-xs text-onBackground/70">Get it by
+          <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays}, ${minYear} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
+        </p>
+      :
+      <>
+        <p className = "mt-2 text-sm text-onBackground/70">Fast delivery: 
+          <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxDays}`}</span>
+          <br/>
+          Order within:
+          <span className = "font-medium text-tertiaryVariant">{`
+            ${day != 0 ? (`${day} day${day > 1 ? 's' : ''}`) : ('')} 
+            ${hour != 0 ? (`${hour} hr${hour > 1 ? 's' : ''}`) : ('')} 
+            ${minute != 0 ? (`${minute} min${minute > 1 ? 's' : ''}`) : ('')} 
+            ${hour == 0 ? (`${second} sec${second > 1 ? 's' : ''}`) : ('')}
+            `}
+          </span>
+        </p>
+      </>
+      }
+  </>
+  )
+}
+
+function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
+  return(
+    <>
+      {data.product.options.map((option,index)=>(
+        <div key = {index} className = "">
+          {/* Options title */}
+          {/* TODO, avoid rendering products with no options / variants */}
+          {option.name != "Title" && (
+            <h3 className = "text-base font-medium" id = {option.name}>
+              <span>{option.name}: </span>
+              <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt.name === option.name)].value}</span>
+            </h3>
+          )}
+  
+          {/* Options Values */}
+          <div className = "flex flex-wrap items-center gap-3 ">
+            {/* TODO, avoid rendering products with no options / variants */}
+            {option.name != "Title" && (
+              <div className = "flex flex-wrap items-center gap-3 mt-2 mb-4">
+                {option.values.map((value,key)=>(
+                  <>
+                    <p className = 
+                    {`
+                      ${option.name === "Color" ? 
+                      (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
+                      :
+                      (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full`)
+                      }
+                      text-sm
+                    `}
+                    style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
+                    onClick = {(e)=>handleVariantChange(option.name,value)}
+                    key = {key}
+                    id = {option.value}
+                    >
+                      {option.name === "Color" ? '' : value}
+                    </p>
+                  </>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </>
+  )
+}
+
+function ProductHeading({data}){
+  const {locale} =  useContext(LocaleContext)
+  return(
+  <>
+    <div className="flex flex-col items-start justify-between w-full">
+    <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
+    <p className="text-base sm:text-base">
+      {data.product?.priceRange?.maxVariantPrice?.amount < data.product.compareAtPriceRange.maxVariantPrice.amount ? 
+      <span className = "flex gap-x-1">
+        <span className = "text-base font-medium text-onBackground">{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+        {/* <span className = "text-sm font-normal line-through text-tertiaryVariant">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span> */}
+      </span>
+      :
+      <span>{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+    }
+    </p>
+    </div>
+
+    <div className = "mt-1">
+    <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
+    </div>
+  </>
+)
 }
 
 function LearnMoreComponent({data}){
