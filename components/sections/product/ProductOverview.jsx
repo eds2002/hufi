@@ -107,6 +107,7 @@ export default function ProductOverview({data,compRef}) {
     return(()=>{})
   },[])
 
+
   return (
     <>
       {data.product ?  
@@ -218,7 +219,7 @@ function CouponComponent({data,selectedOption}){
   },[checked])
   return(
     <>
-    {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant) && (  
+    {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
       <div className = "flex items-center w-full mb-1 gap-x-3">
         <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
         onClick = {()=>setChecked(true)}
@@ -313,6 +314,7 @@ function GetItByComponent({data}){
 }
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
+  const couponCode = data.product.coupon?.value ? JSON.parse(data.product.coupon?.value) : ''
   return(
     <>
       {data.product.options.map((option,index)=>(

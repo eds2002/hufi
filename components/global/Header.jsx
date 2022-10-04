@@ -684,7 +684,7 @@ function CartProduct({data}){
 
   return(
     <>
-    <div className = {`${currentCoupon.length >= 1 && ('bg-surface py-4 rounded-md')}`}>
+    <div className = {`${currentCoupon.length >= 1 && (' py-4 ')}`}>
       <span className = "px-4 text-xs ">
         {currentCoupon.length >= 1 &&
         <>
@@ -712,7 +712,7 @@ function CartProduct({data}){
               <span className = "font-medium">
               {currentCoupon.length >= 1 ? 
                 <p className = "flex items-center">
-                  <span className = "mr-1 text-xs line-through md:text-sm text-tertiaryVariant/50">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
+                  <span className = "mr-1 text-xs line-through md:text-sm text-onSurface/50">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
                   <span>{formatNumber(data.node.merchandise.priceV2.amount - (data.node.merchandise.priceV2.amount * (currentCoupon[0].discountAmount)/100),data.node.merchandise.priceV2.currencyCode,locale)}</span>
                 </p>
               :
