@@ -23,14 +23,25 @@ export function CartProvider({children}){
         // TODO, CART COOKIE EXISTS, SET CART DATA
         const cookieCartData = JSON.parse(getCookie('userCart'))
         const {data,errors} = await storefront(viewCart,{id:cookieCartData.cartId})
-        setCartData(data.cart)
+        if(data.cart){
+          setCartData(data.cart)
+        }else{
+          setCookie('userCart','',{maxAge:1*1})
+          const {data:newCart,errors} = await storefront(createCart)
+          // Max age of a week
+          setCookie('userCart', {cartId:newCart.cartCreate.cart.id, created:newCart.cartCreate.cart.createdAt}, {maxAge: 60*60*24*7})
+
+          const cartId = newCart.cartCreate.cart.id
+          const {data:cartRes, errors:cartErrors} = await storefront(viewCart,{id:cartId})
+          setCartData(cartRes.cart)
+        }
+
       }else{
         // TODO, COOKIE DOESNT EXIST, CREATE USER CART
         const {data,errors} = await storefront(createCart)
-        const cartCreated = new Date()
-        const cartExpires = cartCreated.setDate(cartCreated.getDate() + 8)
-        setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt}, {maxAge: cartExpires});
-        
+        // Max age of a week
+        setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt}, {maxAge: 60*60*24*7})
+
         const cartId = data.cartCreate.cart.id
         const {data:cartRes, errors:cartErrors} = await storefront(viewCart,{id:cartId})
         setCartData(cartRes.cart)
