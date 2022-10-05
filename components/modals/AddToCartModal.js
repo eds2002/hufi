@@ -67,7 +67,9 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
     setSoldOutItems(soldOutVariants?.map((variant)=>variant.selectedOptions[0].value))
   },[data])
 
-
+  const calculatePercentage = (minNum, maxNum) =>{
+    return ((minNum-maxNum) / maxNum * 100).toFixed(0)
+  }
 
   return(
     <Transition appear show={openModal} as={Fragment}>
@@ -96,17 +98,35 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                  <div className = "flex items-center justify-start">
-                    <Link href = {`/product/${data?.handle}`}>
-                      <p className = "text-xl font-medium cursor-pointer hover:text-onBackground/70">{data?.title}</p>
-                    </Link>
-                    <div className = "w-0.5 h-5 mx-3 bg-onBackground rounded-full"/>
-                    <p className = "text-xl font-medium">{formatNumber(data?.priceRange.maxVariantPrice.amount,data?.priceRange.maxVariantPrice.currenyCode, locale)}</p>
+                  <div className = "flex flex-col items-start justify-start">
+                    <div className = "flex items-center">
+                      <Link href = {`/product/${data?.handle}`}>
+                        <p className = "text-xl font-medium cursor-pointer hover:text-onBackground/70">{data?.title}</p>
+                      </Link>
+                      {/* <div className = "w-0.5 mx-2 h-5 bg-black rounded-md" /> */}
+                      <Link href = {`/product/${data?.handle}`}>
+                        <a className = "pl-3 text-sm underline text-onBackground/60 hover:text-onBackground/80">View product</a>
+                      </Link>
+                    </div>
+                    <p className="mt-1 text-base sm:text-base">
+                      {data?.priceRange?.maxVariantPrice?.amount < data?.compareAtPriceRange?.maxVariantPrice?.amount ? 
+                      <span className = "flex flex-col gap-x-1">
+                        <span className = "font-medium text-onBackground">
+                          <span className = ' text-tertiaryVariant'>{calculatePercentage(data?.priceRange?.maxVariantPrice?.amount, data.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+                            {'  '}
+                            {formatNumber(data?.priceRange?.maxVariantPrice?.amount,data.priceRange.maxVariantPrice.currencyCode,locale)}
+                          </span>
+                        <span className = "mt-1 text-xs font-normal">
+                          <span>Original</span>
+                          {' '}
+                          <span className = "line-through">{formatNumber(data?.compareAtPriceRange.maxVariantPrice.amount,data.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span>
+                        </span>
+                      </span>
+                      :
+                      <span>{formatNumber(data?.priceRange.maxVariantPrice.amount,data?.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+                    }
+                    </p>
                   </div> 
-                  <Link href = {`/product/${data?.handle}`}>
-                    <a className = "text-sm font-medium underline text-onBackground/60 hover:text-onBackground/80">Learn more</a>
-                  </Link>
-
 
                   {/* VARIANT OPTIONS */}
                   <form className = "mt-5" >

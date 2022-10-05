@@ -9,6 +9,16 @@ export const viewProducts = gql`
         title
         handle
         description
+        compareAtPriceRange{
+          maxVariantPrice{
+            amount
+            currencyCode
+          }
+          minVariantPrice{
+            amount
+            currencyCode
+          }
+        }
         priceRange{
           maxVariantPrice{
             amount

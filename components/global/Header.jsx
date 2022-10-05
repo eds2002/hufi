@@ -19,6 +19,7 @@ import { storefront } from '../../utils/storefront'
 import { cartBuyerIdentity } from '../../graphql/mutations/cartBuyerIdentity'
 import { createCheckout } from '../../graphql/mutations/createCheckout'
 import { applyCheckoutDiscount } from '../../graphql/mutations/applyCheckoutDiscount'
+import { useRouter } from 'next/router'
 
 
 
@@ -39,20 +40,20 @@ export default function Header({data,user}) {
     setScrollPos(position)
   };
   // TODO, get the scroll position
-  useEffect(()=>{
-    window.addEventListener('scroll',handleScroll)
+  // useEffect(()=>{
+  //   window.addEventListener('scroll',handleScroll)
 
-    return()=>{
-      window.removeEventListener('scroll',handleScroll)
-    }
-  },[])
+  //   return()=>{
+  //     window.removeEventListener('scroll',handleScroll)
+  //   }
+  // },[])
 
 
-  useEffect(()=>{
-    if(scrollDirection != null){
-      setScrolling(scrollDirection)
-    }
-  },[scrollDirection])
+  // useEffect(()=>{
+  //   if(scrollDirection != null){
+  //     setScrolling(scrollDirection)
+  //   }
+  // },[scrollDirection])
 
   return (
     <>
@@ -457,11 +458,11 @@ function MobileLinks({category}){
 
                       {/* SUBCOLLECTION PRODUCTS */}
                       {subCategory.items.map((item) => (
-                        <a href = {`/product/${slugify(item.title)}`} key = {item.title}>
+                        <Link href = {`/product/${slugify(item.title)}`} key = {item.title}>
                           <p className="px-4 py-2 text-lg font-medium cursor-pointer text-onBackground/70 hover:text-onBackground/40">
                             {item.title}
                           </p>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   )}
@@ -482,8 +483,7 @@ function CartDrawer({openCart, setOpenCart}){
   const {locale} = useContext(LocaleContext)
   const totalItems = cartData?.lines?.edges?.length ?? 0
   const [progressWidth, setProgressWidth] = useState(100)
-  const [newCheckout,setNewCheckout] = useState()
-  const [checkoutUrl, setCheckoutUrl] = useState()
+  console.log(cartData)
 
   useEffect(()=>{
     setProgressWidth((cartData?.cost?.subtotalAmount?.amount || 0)/75*100)
@@ -662,6 +662,7 @@ function CartDrawer({openCart, setOpenCart}){
 function CartProduct({data}){
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,coupons} = useContext(CartContext)
+  const router = useRouter()
   // const [hasCoupon, setHasCoupon] = useState(cartData.discountCodes.some(discount=> coupons.some(coupon=>coupon.)discount.code === data.node.merchandise.product.title))
 
   // NOTE, please look back and see if there is a better way of doing this.
@@ -681,7 +682,6 @@ function CartProduct({data}){
     setCartData(newCart)
   }
 
-
   return(
     <>
     <div className = {`${currentCoupon.length >= 1 && (' py-4 ')}`}>
@@ -696,19 +696,19 @@ function CartProduct({data}){
       </span>
       <div className = "flex w-full max-w-xs gap-6 px-4 py-4">
         {/* IMAGE */}
-        <a href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
+        <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
           <div className = "relative w-20 h-20 bg-gray-400 rounded-md cursor-pointer flex-0"> 
             <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
             <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-secondary text-onSecondary">{data.node.quantity}</span>
           </div>
-        </a>
+        </Link>
         <div className = "items-start flex-1 w-full h-full">
           <div className = "grid grid-rows-1 gap-1">
             {/* TITLE & PRICE */}
             <p className = "flex items-start justify-between w-full gap-3 ">
-              <a href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
+              <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
                 <span className = "font-medium">{data.node.merchandise.product.title}</span>
-              </a>
+              </Link>
               <span className = "font-medium">
               {currentCoupon.length >= 1 ? 
                 <p className = "flex items-center">

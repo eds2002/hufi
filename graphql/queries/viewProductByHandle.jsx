@@ -16,6 +16,10 @@ query Product($handle: String!) {
         amount
         currencyCode
       }
+      minVariantPrice{
+        amount
+        currencyCode
+      }
     }
     options{
       name

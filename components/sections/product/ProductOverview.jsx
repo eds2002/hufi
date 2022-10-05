@@ -15,6 +15,7 @@ import UserContext from '../../../context/userContext'
 
 
 export default function ProductOverview({data,compRef}) {
+  console.log(data)
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
   const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
@@ -26,11 +27,22 @@ export default function ProductOverview({data,compRef}) {
   const [soldOutItems,setSoldOutItems] = useState([])
   const [currentVariant,setCurrentVariant] = useState(null)
   const didMount = useRef(false)
+
+
+  // TODO, reset to default once the data changes.
+  useEffect(()=>{
+    didMount.current = false
+    setSelectedOption(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
+    setCurrentVariant(null)
+    return(()=>{})
+  },[data])
+
   
   // TODO, this is for the sticky cart
   setSelectedProduct(selectedOption)
+  
 
-  // TODO, change old array to new array with a value the user has selected
+  // FUNCTION TODO, change old array to new array with a value the user has selected
   const handleVariantChange = async (option,selectedValue) =>{
     if(!soldOutItems.includes(selectedValue)){
       setSelectedOption(prevArr => {
@@ -74,6 +86,7 @@ export default function ProductOverview({data,compRef}) {
 
 
 
+  // FUNCTION TODO, add to cart
   const addToCart = async (e) =>{
     e.preventDefault()
     let findId;
@@ -97,6 +110,7 @@ export default function ProductOverview({data,compRef}) {
     setCartData(responseCartData)
   }
 
+  // TODO, on mount, set the data for variants that are sold out.
   useEffect(()=>{
     const soldOutVariants = data.product.variants.nodes.filter((currentArr)=>{
       if(currentArr.quantityAvailable === 0){
@@ -194,35 +208,46 @@ export default function ProductOverview({data,compRef}) {
 }
 
 function CouponComponent({data,selectedOption}){
-  const {cartData,setCartData, setCoupons} = useContext(CartContext)
+  const {cartData,setCartData, setCoupons,coupons} = useContext(CartContext)
   const couponCode = data.product.coupon?.value ? JSON.parse(data.product.coupon?.value) : ''
 
   // TODO, if coupon is already in cartData, set checked automaticlly on.
-  const [checked,setChecked] = useState(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName))
+  const [checked,setChecked] = useState()
+  useEffect(()=>{
+    // if(cartData?.discountCodes.some((discount)=> discount.code != couponCode?.discountName)) setCoupons(oldArr => [...oldArr, couponCode])
+    setChecked(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName))
+  },[cartData,data])
+  
+
   
   const {currentUser} = useContext(UserContext)
-
   // Handle addToCartDiscount if user checked box for promotional coupon
-  useEffect(()=>{
-    if(!checked) return
-    const handleChecked = async () =>{
-      if(!checked) return
-      setCoupons(oldArr => [...oldArr, couponCode])
-      const {data,errors} = await storefront(addCartDiscountCode,{cartId:cartData.id,discountCodes:[couponCode.discountName, currentUser ? 'Members Rewards' : '']})
-      if(data && data?.cartDiscountCodesUpdate.userErrors.length == 0){
-        setCartData(data.cartDiscountCodesUpdate.cart)
-      }else{
-        alert("Error in adding coupon.")
-      }
+
+
+  // Created an array of already set discounts
+  const currentDiscountsArr = useMemo(()=>{return cartData?.discountCodes.map((discountCode)=> discountCode.code)})
+
+  const handleChecked = async () =>{
+    if(checked) return
+
+    setCoupons(oldArr => [...oldArr, couponCode]) //Set coupon in CartContext, this is for ux purposes
+    currentDiscountsArr.includes(couponCode.discountName) ? '' : currentDiscountsArr.push(couponCode.discountName)// Push non exisiting code into array, this avoids removing codes already set in the users cart
+    currentUser ? currentDiscountsArr.includes('Members Rewards') ? '' : currentDiscountsArr.push('Members Rewards') : '' //If user is a customer, add the free shipping discount.
+    console.log(currentDiscountsArr)
+
+    const {data,errors} = await storefront(addCartDiscountCode,{cartId:cartData.id,discountCodes:currentDiscountsArr})
+    if(data && data?.cartDiscountCodesUpdate.userErrors.length == 0){
+      setCartData(data.cartDiscountCodesUpdate.cart)
+    }else{
+      alert("Error in adding coupon.")
     }
-    handleChecked()
-  },[checked])
+  }
   return(
     <>
     {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
       <div className = "flex items-center w-full mb-1 gap-x-3">
         <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
-        onClick = {()=>setChecked(true)}
+        onClick = {()=>handleChecked()}
         >
         {checked && (
           <CheckIcon className = "w-5 h-5 text-onSecondary"/>
@@ -314,7 +339,6 @@ function GetItByComponent({data}){
 }
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
-  const couponCode = data.product.coupon?.value ? JSON.parse(data.product.coupon?.value) : ''
   return(
     <>
       {data.product.options.map((option,index)=>(
@@ -324,7 +348,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
           {option.name != "Title" && (
             <h3 className = "text-base font-medium" id = {option.name}>
               <span>{option.name}: </span>
-              <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt.name === option.name)].value}</span>
+              <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span>
             </h3>
           )}
   
@@ -364,20 +388,33 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
 
 function ProductHeading({data}){
   const {locale} =  useContext(LocaleContext)
+
+  const calculatePercentage = (minNum, maxNum) =>{
+    return ((minNum-maxNum) / maxNum * 100).toFixed(0)
+  }
+
   return(
   <>
     <div className="flex flex-col items-start justify-between w-full">
-    <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
-    <p className="text-base sm:text-base">
-      {data.product?.priceRange?.maxVariantPrice?.amount < data.product.compareAtPriceRange.maxVariantPrice.amount ? 
-      <span className = "flex gap-x-1">
-        <span className = "text-base font-medium text-onBackground">{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
-        {/* <span className = "text-sm font-normal line-through text-tertiaryVariant">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span> */}
-      </span>
-      :
-      <span>{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
-    }
-    </p>
+      <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
+      <p className="text-base sm:text-base">
+        {data.product?.priceRange?.maxVariantPrice?.amount < data?.product?.compareAtPriceRange?.maxVariantPrice?.amount ? 
+        <span className = "flex flex-col gap-x-1">
+          <span className = "text-xl font-medium text-onBackground">
+            <span className = ' text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+              {'  '}
+              {formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
+            </span>
+          <span className = "mt-1 text-xs font-normal">
+            <span>Original</span>
+            {' '}
+            <span className = "line-through">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span>
+          </span>
+        </span>
+        :
+        <span>{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+      }
+      </p>
     </div>
 
     <div className = "mt-1">

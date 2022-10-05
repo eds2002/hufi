@@ -16,7 +16,6 @@ export function CartProvider({children}){
   const [checkout,setCheckout] = useState()
   const {currentUser,currentUserACCESS} = useContext(UserContext)
   const [coupons,setCoupons] = useState([])
-
   useEffect(()=>{
     const checkCart = async () =>{
       if(getCookie('userCart')){
