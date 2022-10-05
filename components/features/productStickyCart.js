@@ -36,12 +36,12 @@ const ProductStickyCart = ({data,display}) => {
   }
 
   return (
-    <div className = {`sticky bottom-0 z-20 py-2 top-16 bg-surface/80 backdrop-blur-2xl shadow-xl
+    <div className = {`fixed z-20 right-0 left-0 py-2 top-16 bg-surface/80 backdrop-blur-2xl shadow-xl
     ${display ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
     transition-opacity duration-300
     `}>
       <div className = "flex items-center justify-between gap-6 px-4 mx-auto max-w-7xl">
-        <div className = "flex flex-col">
+        <div className = "flex flex-col flex-1">
           {data.product.options[0].values[0] === 'Default Title' ?
             <p key = {data.product.title} className = "relative flex-1 w-full min-w-min"><span className = "font-medium">{data.product.title}</span></p>
           :

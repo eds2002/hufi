@@ -702,10 +702,10 @@ function CartProduct({data}){
             <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-secondary text-onSecondary">{data.node.quantity}</span>
           </div>
         </a>
-        <div className = "flex-1 w-full h-full">
+        <div className = "items-start flex-1 w-full h-full">
           <div className = "grid grid-rows-1 gap-1">
             {/* TITLE & PRICE */}
-            <p className = "flex items-center justify-between w-full">
+            <p className = "flex items-start justify-between w-full gap-3 ">
               <a href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
                 <span className = "font-medium">{data.node.merchandise.product.title}</span>
               </a>
@@ -721,7 +721,7 @@ function CartProduct({data}){
               </span>
             </p>
             {/* SELECTED VARIANTS */}
-            <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{data.node.merchandise.title === "Default Title" ? data.node.merchandise.product.title : (data.node.merchandise.title).replace("/","-")}</p>
+            <p className = "flex items-center justify-between w-full text-sm text-onBackground/60">{data.node.merchandise.title === "Default Title" ? '' : (data.node.merchandise.title).replace("/","-")}</p>
 
             {/* INPUTS */}
             <div className = "flex items-center justify-between">

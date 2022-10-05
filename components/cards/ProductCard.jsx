@@ -85,7 +85,7 @@ function ProductTextDisplay({product}){
 
 function ActionsContainer({product, setSelectedProduct, setSelectedOption, selectedOption, setOpenModal,enable}){
   // const [selectedOption, setSelectedOption] = useState(product?.options?.map((option)=>{return({name:option.name,value:option.values[0]})}))  
-  const {cartData, setCartData, viewedCart, setViewedCart} = useContext(CartContext)
+  const {cartData, setCartData, viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
 
   
   const handleClick = async (product) =>{
@@ -97,6 +97,7 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
       const newCart = await addToShopifyCart(cartData, product.variants.nodes[0].id)
       setViewedCart(false)
       setCartData(newCart)
+      setOpenCart(true)
       return
     }
     setOpenModal(true)
@@ -158,7 +159,7 @@ function ActionsContainer({product, setSelectedProduct, setSelectedOption, selec
       <div className = "flex flex-row items-center justify-center gap-3 pt-2 mx-auto mt-3 md:mx-0 md:flex-row md:pt-0">
         <Button text = 'Add to cart' tag = 'product-card-add-to-cart' CSS = "md:w-auto sm:px-4 w-full text-sm bg-secondaryVariant hover:bg-secondary py-2 text-background" onClick={()=>handleClick(product)}/>
         <Link href = {`/product/${product?.handle}`}>
-          <Button text = {"Details"} CSS = 'md:w-auto text-sm bg-surface sm:px-4 py-2 ring-1 ring-black text-onBackground font-medium bg-white'/>
+          <Button text = {"Details"} CSS = 'md:w-auto flex-1 px-6  md:flex-0 text-sm bg-surface sm:px-4 py-2 ring-1 ring-black text-onBackground font-medium bg-white'/>
         </Link>
       </div>
     </div>

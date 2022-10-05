@@ -23,15 +23,15 @@ export const viewProducts = gql`
           nodes{
             quantityAvailable
             id
+            image{
+              url
+              altText
+            }
             selectedOptions{
               name
               value
             }
           }
-        }
-        shortDesc:metafield(namespace:"product",key:"short_description"){
-          value
-          type
         }
         media(first:2){
           nodes{
@@ -40,6 +40,22 @@ export const viewProducts = gql`
               url
             }
           }
+        }
+        shortDesc:metafield(namespace:"product",key:"short_description"){
+          value
+          type
+        }
+        orderWithin:metafield(namespace:"product",key:"order_within"){
+          value
+          type
+        }
+        deliveryBusinessDays:metafield(namespace:"product",key:"delivery_business_days"){
+          value
+          type
+        }
+        coupon:metafield(namespace:"product",key:"coupon"){
+          value
+          type
         }
       }
     }

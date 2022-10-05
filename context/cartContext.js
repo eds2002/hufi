@@ -26,6 +26,7 @@ export function CartProvider({children}){
         if(data.cart){
           setCartData(data.cart)
         }else{
+          // Temporary fix for incorrectly stored cookies, delete within a week.
           setCookie('userCart','',{maxAge:1*1})
           const {data:newCart,errors} = await storefront(createCart)
           // Max age of a week

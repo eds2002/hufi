@@ -25,8 +25,8 @@ export default function Footer({data}) {
             <h5 className = "text-base font-medium">Interested in our future</h5>
             <p className = "text-sm text-onBackground/60"> Subscribe to learn more about future products and future discounts.</p>
             <div className = "flex mt-4 rounded-md ">
-              <input className = "px-4 py-2 bg-transparent border-t border-b border-l border-black rounded-tl-md rounded-bl-md focus:outline-none focus:border-onBackground/50" placeholder="Email"/>
-              <button className = "w-full h-full px-4 transition bg-secondaryVariant rounded-tr-md rounded-br-md hover:bg-secondary peer-">
+              <input className = "px-4 py-2 bg-transparent border-t border-b border-l border-black rounded-tl-full rounded-bl-full focus:outline-none focus:border-onBackground/50" placeholder="Email"/>
+              <button className = "w-full h-full px-4 transition rounded-tr-full rounded-br-full bg-secondaryVariant hover:bg-secondary peer-">
                 <PaperAirplaneIcon className = "w-5 h-5 text-onSecondary"/>
               </button>
             </div>
