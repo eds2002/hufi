@@ -25,8 +25,8 @@ export function CartProvider({children}){
         if(data.cart){
           setCartData(data.cart)
         }else{
-          // Temporary fix for incorrectly stored cookies, delete within a week.
-          setCookie('userCart','',{maxAge:1*1})
+          //Carts that are not valid anymore will get removed and replaced with a new cart.
+          setCookie('userCart','',{maxAge:1})
           const {data:newCart,errors} = await storefront(createCart)
           // Max age of a week
           setCookie('userCart', {cartId:newCart.cartCreate.cart.id, created:newCart.cartCreate.cart.createdAt}, {maxAge: 60*60*24*7})
