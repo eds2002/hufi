@@ -22,6 +22,7 @@ export function CartProvider({children}){
         // TODO, CART COOKIE EXISTS, SET CART DATA
         const cookieCartData = JSON.parse(getCookie('userCart'))
         const {data,errors} = await storefront(viewCart,{id:cookieCartData.cartId})
+        console.log(data,errors)
         if(data.cart){
           setCartData(data.cart)
         }else{
