@@ -408,7 +408,7 @@ function ProductHeading({data}){
         <p className = "text-sm md:text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
       </div>
       <p className="mt-1 text-base md:text-lg sm:text-base">
-        {data.product?.priceRange?.maxVariantPrice?.amount < data?.product?.compareAtPriceRange?.maxVariantPrice?.amount ? 
+        {parseInt(data.product?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
         <span className = "flex flex-col gap-x-1">
           <span className = "font-medium text-onBackground">
             <span className = 'text-base text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
