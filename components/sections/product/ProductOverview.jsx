@@ -323,12 +323,12 @@ function GetItByComponent({data}){
   <>
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
         <p className = "mt-2 text-xs text-onBackground/70">Get it by
-          <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays}, ${minYear} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
+          <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
         </p>
       :
       <>
         <p className = "mt-2 text-sm text-onBackground/70">Fast delivery: 
-          <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
+          <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
           <br/>
           Order within:
           <span className = "font-medium text-tertiaryVariant">{`
