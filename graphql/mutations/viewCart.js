@@ -34,6 +34,10 @@ query getShopifyCart($id:ID!) {
               }
               product{
                 title
+                coupon:metafield(namespace:"product",key:"coupon"){
+      						value
+      						type
+								}
               }
               image{
                 url

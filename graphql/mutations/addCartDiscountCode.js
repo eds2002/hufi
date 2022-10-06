@@ -33,6 +33,10 @@ mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes:[String!]!) {
                 }
                 product{
                   title
+                  coupon:metafield(namespace:"product",key:"coupon"){
+                    value
+                    type
+                  }
                 }
                 image{
                   url

@@ -31,6 +31,10 @@ mutation cartLinesAdd($cartId: ID!, $quantity:Int,$variantId:ID!) {
                 }
                 product{
                   title
+                  coupon:metafield(namespace:"product",key:"coupon"){
+                    value
+                    type
+                  }
                 }
                 image{
                   url

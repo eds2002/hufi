@@ -35,26 +35,6 @@ export default function Header({data,user}) {
 
   const headerRef = useRef()
 
-  const handleScroll = () => {
-    const position = window.pageYOffset;
-    setScrollPos(position)
-  };
-  // TODO, get the scroll position
-  // useEffect(()=>{
-  //   window.addEventListener('scroll',handleScroll)
-
-  //   return()=>{
-  //     window.removeEventListener('scroll',handleScroll)
-  //   }
-  // },[])
-
-
-  // useEffect(()=>{
-  //   if(scrollDirection != null){
-  //     setScrolling(scrollDirection)
-  //   }
-  // },[scrollDirection])
-
   return (
     <>
       <div className="relative z-40 bg-surface">
@@ -263,7 +243,7 @@ export default function Header({data,user}) {
                                                 className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                               >
                                                 {subCategory.items.map((item) => (
-                                                  <Link href = {`product/${slugify(item?.title)}`} key={item.title}>
+                                                  <Link href = {`/product/${slugify(item?.title)}`} key={item.title}>
                                                     <li className="flex">
                                                       <a className="cursor-pointer text-onBackground/80 hover:text-onBackground/50">
                                                         {item.title}
@@ -494,44 +474,6 @@ function CartDrawer({openCart, setOpenCart}){
   },[openCart])
   
 
-
-  // NOTE, this use effect is for applying automatic discounts to checkout mutation
-  // AS of Sep 24 2022, we are using the normal cart checkout url.
-
-  
-  // useEffect(()=>{
-  //   let lines = []
-  //   cartData?.lines?.edges.forEach((product)=>{
-  //     lines = [...lines, {quantity:product.node.quantity, variantId:product.node.merchandise.id}]
-  //   })
-
-  //   const createNewCheckout = async () =>{
-  //     //TODO, create a new checkout from exisiting card
-  //     //NOTE, too many queries might cause errors, please add error handling
-  //     const {data,errors} = await storefront(createCheckout,{input:{email:currentUser?.email, lineItems:lines}})
-  //     setNewCheckout(data?.checkoutCreate.checkout)
-
-  //     // TODO, once checkout has been created, add discount application for free shipping if user is currently logged in.
-  //     // NOTE, If statement is not necessary as we are creating new checkouts. 
-  //     if(data?.checkoutCreate?.checkout?.discountApplications?.nodes.length == 0 && currentUser){
-  //       const {data,errors} = await storefront(applyCheckoutDiscount,{checkoutId:newCheckout?.id,discountCode:"Members Rewards"})
-  //       console.log(data)
-
-  //       // TODO, replace checkoutUrl domain with stores domain
-        
-  //       // NOTE, this fix is very annoying as webUrl from applyCheckoutDiscount mutation
-  //       // doesnt actually return the newly set url we have created in shopify. This will
-  //       // do for now.
-  //       setCheckoutUrl(data?.checkoutDiscountCodeApplyV2?.checkout.webUrl.replace("hufi-2262.myshopify","checkout.hufistore"))
-  //       setCheckout(data?.checkoutDiscountCodeApplyV2?.checkout)
-  //     }
-  //   }
-  //   createNewCheckout()
-  // },[cartData,currentUser])
-
-
-
-
   return(
     <Transition.Root show={openCart} as={Fragment}>
       <Dialog as="div" className="relative z-40" onClose={setOpenCart}>
@@ -564,7 +506,7 @@ function CartDrawer({openCart, setOpenCart}){
               {cartData?.lines?.edges?.length == 0 ?
                 <>
                   <div className="flex justify-between px-4 pt-5 pb-2">
-                    <span className = "text-xl font-medium">Cart <span className = "text-xl text-gray-400">{totalItems}</span></span>
+                    <span className = "text-xl font-medium">Cart <span className = "text-xl">{totalItems}</span></span>
                     <button
                       type="button"
                       className="inline-flex items-center justify-center p-2 -m-2 rounded-md text-onBackground"
@@ -579,7 +521,7 @@ function CartDrawer({openCart, setOpenCart}){
                       <h1 className = "text-xl font-medium">Your cart is empty.</h1>
                       <h3 className = "text-base text-onBackground/60">Start shopping the latest.</h3>
                       <div className = "w-full mt-4">
-                        <Link href =  "/collections/all-products">
+                        <Link href =  "/">
                           <Button text = 'Shop' className = "w-full bg-secondaryVariant hover:bg-secondary" />
                         </Link>
                       </div>
@@ -588,8 +530,8 @@ function CartDrawer({openCart, setOpenCart}){
                 </>
               :
               <>
-                <div className="flex justify-between px-4 py-4 bg-surface">
-                  <span className = "text-xl font-medium">Cart <span className = "text-xl text-gray-400">{totalItems}</span></span>
+                <div className="flex justify-between px-4 py-4">
+                  <span className = "text-xl font-medium">Cart <span className = "text-xl">({totalItems})</span></span>
                   <button
                     type="button"
                     className="inline-flex items-center justify-center p-2 -m-2 rounded-md text-onBackground"
@@ -601,7 +543,7 @@ function CartDrawer({openCart, setOpenCart}){
                 </div>
 
                 {/* PRODUCTS CONTAINER */}
-                <div className = "w-full h-full overflow-scroll divide-y-2">
+                <div className = "w-full h-full overflow-scroll divide-y">
                   {cartData?.lines?.edges?.map((product)=>(
                       <CartProduct data = {product} key = {product.id}/>
                   ))}
@@ -609,28 +551,32 @@ function CartDrawer({openCart, setOpenCart}){
 
                 {/* BOTTOM INFORMATION */}
                 <div className = "w-full px-4 py-6 pb-16 overflow-hidden border-b border-onPrimary/15 bg-surface">
-                  {/* SLIDER FOR FREE SHIPPING */}
-                  <div className = "relative left-0 right-0 w-full">
-                    <p className = "w-full pb-1 text-sm text-center text-neutral-500">
-                      {cartData?.cost.subtotalAmount.amount >= 75 ? 
-                        `Qualified for free shipping.`
-                      :
-                      <>
-                        You are <b>{formatNumber(75 - cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</b> away from <b>free shipping.</b>
-                      </>
-                      }
-                    </p>
-                    <div className = "absolute w-full h-2 overflow-hidden transition-all duration-500 rounded-full bg-neutral-400">
-                      {cartData?.cost.subtotalAmount.amount >= 75 ? 
-                      <div style = {{width:"100%"}} className = "absolute h-2 overflow-hidden rounded-full bg-primaryVariant"/>
-                      :
-                      <div style = {{width:progressWidth+ "%"}} className = "absolute h-2 overflow-hidden transition duration-500 rounded-full bg-primaryVariant"/>
-                      }
+                  {/* If user is logged in do not display the slider as they get free shipping. */}
+                  {currentUser ? 
+                    <></>
+                  :
+                    <div className = "relative left-0 right-0 w-full pb-7">
+                      <p className = "w-full pb-1 text-sm text-center text-neutral-500">
+                        {cartData?.cost.subtotalAmount.amount >= 75 ? 
+                          `Qualified for free shipping.`
+                        :
+                        <>
+                          You are <b>{formatNumber(75 - cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</b> away from <b>free shipping.</b>
+                        </>
+                        }
+                      </p>
+                      <div className = "absolute w-full h-2 overflow-hidden transition-all duration-500 rounded-full bg-neutral-400">
+                        {cartData?.cost.subtotalAmount.amount >= 75 ? 
+                        <div style = {{width:"100%"}} className = "absolute h-2 overflow-hidden rounded-full bg-primaryVariant"/>
+                        :
+                        <div style = {{width:progressWidth+ "%"}} className = "absolute h-2 overflow-hidden transition duration-500 rounded-full bg-primaryVariant"/>
+                        }
+                      </div>
                     </div>
-                  </div>
+                  }
 
                   {/* Subtotal information */}
-                  <div className = "w-full pt-6 pb-2">
+                  <div className = "w-full pb-2">
                     <p className = "flex items-center justify-between">
                       <span className = "text-lg font-medium">Subtotal</span>
                       <span className = "text-lg font-medium">{formatNumber(cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</span>
@@ -657,14 +603,20 @@ function CartDrawer({openCart, setOpenCart}){
 function CartProduct({data}){
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,coupons} = useContext(CartContext)
-  // const [hasCoupon, setHasCoupon] = useState(cartData.discountCodes.some(discount=> coupons.some(coupon=>coupon.)discount.code === data.node.merchandise.product.title))
+  const [cartCoupons,setCartCoupons] = useState([])
+  const [currentCoupon,setCurrentCoupon] = useState(data?.node?.merchandise?.product?.coupon?.value ? JSON.parse(data?.node?.merchandise?.product?.coupon?.value) : [])
+  const [isCouponApplied,setIsCouponApplied] = useState()
 
-  // NOTE, please look back and see if there is a better way of doing this.
-  // ISSUE, there is no possible way of retrieving if product has any coupons as of Oct 4,2022 through the storefront API.
-  // TODO, filter out the stored coupons, (stored coupons are added when a user clicks on apply coupon, AKA coupon container)
-  // Check if the stored coupon is in the current cart (Sometimes coupons disappear randomly in cart)
-  // Also check if stored coupon's first word matches the word of the product. (This seems to be the only way to do it as a of now.)
-  const currentCoupon = useMemo(()=>{return coupons.filter((coupon)=> cartData?.discountCodes.some(discount=> discount.code == coupon.discountName && coupon.discountName.split(" ")[0] == data.node.merchandise.product.title.split(" ")[0]))},[coupons]) 
+  useEffect(()=>{
+    setCartCoupons(cartData?.discountCodes?.map((discount)=>discount.code))
+    setCurrentCoupon(data?.node?.merchandise?.product?.coupon?.value ? JSON.parse(data?.node?.merchandise?.product?.coupon?.value) : null)
+  },[cartData,data])
+
+
+  useEffect(()=>{
+    setIsCouponApplied(cartCoupons.includes(currentCoupon?.discountName))
+  },[currentCoupon,cartCoupons])
+
 
   const handleDelete = async (data)=>{
     const newCart = await removeProduct(data,cartData)
@@ -678,23 +630,20 @@ function CartProduct({data}){
 
   return(
     <>
-    <div className = {`${currentCoupon.length >= 1 && (' py-4 bg-surface')}`}>
-      <div className = "mb-2 text-xs">
-        {currentCoupon.length >= 1 &&
-        <p className = "flex items-center justify-between px-4">
-          <span className = "px-2 py-0.5 font-medium rounded-md bg-primaryVariant text-opacity-60">
-            {currentCoupon[0].discountAmount}% coupon applied.
-          </span>
-          <span className = "px-2 py-0.5 font-medium rounded-md bg-tertiaryVariant text-opacity-60">
-            {formatNumber((data.node.merchandise.priceV2.amount * (currentCoupon[0].discountAmount)/100),data.node.merchandise.priceV2.currencyCode,locale)} savings
-          </span>
-        </p>
+    <div className = {`${(isCouponApplied && currentCoupon) && (' ')} py-4`}>
+      <div className = "mb-1 text-xs ">
+        {(isCouponApplied && currentCoupon) &&
+          <p className = "flex items-center justify-end px-4 ">
+            <span className = "px-2 font-medium rounded-full text-onBackground/70 bg-tertiaryVariant">
+              {currentCoupon.discountAmount}% off 
+            </span>
+          </p>
         }
       </div>
-      <div className = "flex w-full max-w-xs gap-6 px-4 py-4">
+      <div className = "flex w-full max-w-xs gap-6 px-4 pb-2">
         {/* IMAGE */}
         <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
-          <div className = "relative w-20 h-20 bg-gray-400 rounded-md cursor-pointer flex-0"> 
+          <div className = "relative w-20 h-20 rounded-md cursor-pointer flex-0"> 
             <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
             <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-secondary text-onSecondary">{data.node.quantity}</span>
           </div>
@@ -702,18 +651,18 @@ function CartProduct({data}){
         <div className = "items-start flex-1 w-full h-full">
           <div className = "grid grid-rows-1 gap-1">
             {/* TITLE & PRICE */}
-            <p className = "flex items-start justify-between w-full gap-3 ">
+            <p className = "flex items-center justify-between w-full gap-3 ">
               <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
                 <span className = "font-medium">{data.node.merchandise.product.title}</span>
               </Link>
               <span className = "font-medium">
-              {currentCoupon.length >= 1 ? 
-                <p className = "flex items-center">
-                  <span className = "mr-1 text-xs line-through md:text-sm text-onSurface/50">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
-                  <span>{formatNumber(data.node.merchandise.priceV2.amount - (data.node.merchandise.priceV2.amount * (currentCoupon[0].discountAmount)/100),data.node.merchandise.priceV2.currencyCode,locale)}</span>
+              {isCouponApplied && currentCoupon  ? 
+                <p className = "flex items-center ">
+                  <span className = "mr-1 text-xs font-light line-through md:text-sm text-onSurface/50">{formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)}</span>
+                  <span className = "text-sm">{formatNumber(data.node.merchandise.priceV2.amount - (data.node.merchandise.priceV2.amount * (currentCoupon.discountAmount)/100),data.node.merchandise.priceV2.currencyCode,locale)}</span>
                 </p>
               :
-              formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)
+                formatNumber(data.node.merchandise.priceV2.amount,data.node.merchandise.priceV2.currencyCode,locale)
               }
               </span>
             </p>
@@ -727,7 +676,7 @@ function CartProduct({data}){
                 <p className = "flex items-center justify-center w-10">{data.node.quantity}</p>
                 <button className = "hover:text-neutral-400" onClick = {()=>handleQty(data.node.quantity+1,data)}><PlusIcon className = "w-4 h-4"/></button>
               </div>
-              <TrashIcon className = "w-5 h-5 transition cursor-pointer hover:text-tertiaryVariant"
+              <TrashIcon className = "w-4 h-4 transition cursor-pointer hover:text-tertiaryVariant"
                 onClick = {()=>handleDelete(data)}
               />
             </div>

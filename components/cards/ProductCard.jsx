@@ -23,6 +23,10 @@ export default function ProductCard({product}){
     }
   }
 
+  const calculatePercentage = (minNum, maxNum) =>{
+    return ((minNum-maxNum) / maxNum * 100).toFixed(0)
+  }
+
   return(
     <>
       <div className = "relative flex flex-col w-full h-full p-4 transition rounded-lg shadow-sm aspect-[16/12] group bg-background">
@@ -31,8 +35,20 @@ export default function ProductCard({product}){
             <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">
               <span>{product?.title}</span>
             </p>
-            <p className ="flex items-center justify-between text-sm font-medium cursor-pointer hover:text-onBackground/70 md:hidden">
-              <span>{formatNumber(product?.priceRange.maxVariantPrice.amount,product?.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+            <p className="text-sm sm:text-base md:hidden">
+              {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
+                <span className = "flex flex-col gap-x-1">
+                  <span className = " text-onBackground">
+                    <span className = ' text-tertiaryVariant'>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+                      {'  '}
+                      {formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}
+                    </span>
+                </span>
+              :
+                <>
+                <span>{formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+                </>
+              }
             </p>
             <p className = "block pb-4 mt-2 text-sm text-left sm:text-sm md:hidden text-onBackground/60">{product.shortDesc?.value ?? <span>&nbsp;</span>}</p>
           </>

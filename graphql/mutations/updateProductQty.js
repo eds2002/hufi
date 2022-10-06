@@ -20,6 +20,22 @@ mutation updateLine($cartId:ID!, $lineId:ID!, $amount: Int!){
             merchandise {
               ... on ProductVariant {
                 id
+                title
+                priceV2{
+                  currencyCode
+                  amount
+                }
+                product{
+                  title
+                  coupon:metafield(namespace:"product",key:"coupon"){
+                    value
+                    type
+                  }
+                }
+                image{
+                  url
+                  altText
+                }
               }
             }
           }

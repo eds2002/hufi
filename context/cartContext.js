@@ -14,25 +14,23 @@ export function CartProvider({children}){
   const [cartData,setCartData] = useState()
   const [viewedCart,setViewedCart] = useState(false)
   const [checkout,setCheckout] = useState()
-  const {currentUser,currentUserACCESS} = useContext(UserContext)
-  const [coupons,setCoupons] = useState([])
+
+  
   useEffect(()=>{
     const checkCart = async () =>{
       if(getCookie('userCart')){
         // TODO, CART COOKIE EXISTS, SET CART DATA
         const cookieCartData = JSON.parse(getCookie('userCart'))
         const {data,errors} = await storefront(viewCart,{id:cookieCartData.cartId})
-        console.log(data,errors)
         if(data.cart){
           setCartData(data.cart)
         }else{
           //Carts that are not valid anymore will get removed and replaced with a new cart.
-          setCookie('userCart','',{maxAge:1})
-          const {data:newCart,errors} = await storefront(createCart)
+          const {data,errors} = await storefront(createCart)
           // Max age of a week
-          setCookie('userCart', {cartId:newCart.cartCreate.cart.id, created:newCart.cartCreate.cart.createdAt}, {maxAge: 60*60*24*7})
+          setCookie('userCart', {cartId:data.cartCreate.cart.id, created:data.cartCreate.cart.createdAt}, {maxAge: 60*60*24*7})
 
-          const cartId = newCart.cartCreate.cart.id
+          const cartId = data.cartCreate.cart.id
           const {data:cartRes, errors:cartErrors} = await storefront(viewCart,{id:cartId})
           setCartData(cartRes.cart)
         }
@@ -50,23 +48,8 @@ export function CartProvider({children}){
     } 
     checkCart()
   },[])
-
-
-  //TODO, If a user is logged in, associate them to the cart 
-  // useEffect(()=>{
-  //   if(currentUser && cartData){
-  //     const associateCustomerToCart = async () =>{
-  //       const {data,errors} = await storefront(cartBuyerIdentity,{buyerIdentity:{customerAccessToken:currentUserACCESS,email:currentUser.email},cartId:cartData.id})
-  //       console.log(data,errors)
-  //     }
-  //     associateCustomerToCart()
-  //     console.log("works")
-
-  //     return
-  //   }
-  // },[currentUser,cartData])
   return(
-    <CartContext.Provider value={{setCheckout, checkout,openCart,setOpenCart,cartId,setCartId,setCartData,cartData,viewedCart,setViewedCart,coupons,setCoupons}}>
+    <CartContext.Provider value={{setCheckout, checkout,openCart,setOpenCart,cartId,setCartId,setCartData,cartData,viewedCart,setViewedCart}}>
       {children}
     </CartContext.Provider>
   )

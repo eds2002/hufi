@@ -117,7 +117,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                             {formatNumber(data?.priceRange?.maxVariantPrice?.amount,data.priceRange.maxVariantPrice.currencyCode,locale)}
                           </span>
                         <span className = "mt-1 text-xs font-normal">
-                          <span>Original</span>
+                          <span>Was</span>
                           {' '}
                           <span className = "line-through">{formatNumber(data?.compareAtPriceRange.maxVariantPrice.amount,data.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span>
                         </span>
@@ -269,35 +269,40 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
 }
 
 function CouponComponent({data,selectedOption}){
-  const {cartData,setCartData, setCoupons} = useContext(CartContext)
-  const couponCode = data?.coupon?.value ? JSON.parse(data?.coupon?.value) : ''
-
-  // TODO, if coupon is already in cartData, set checked automaticlly on.
-  const [checked,setChecked] = useState(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName))
-  
+  const {cartData,setCartData} = useContext(CartContext)
   const {currentUser} = useContext(UserContext)
-
-  // Handle addToCartDiscount if user checked box for promotional coupon
+  const [checked,setChecked] = useState()
+  const couponCode = useMemo(()=>{return data?.coupon?.value ? JSON.parse(data?.coupon?.value) : ''},[data,cartData])
+  
+  // TODO, if coupon is already in cartData, set checked automaticlly on.
   useEffect(()=>{
-    if(!checked) return
-    const handleChecked = async () =>{
-      if(!checked) return
-      setCoupons(oldArr => [...oldArr, couponCode])
-      const {data,errors} = await storefront(addCartDiscountCode,{cartId:cartData.id,discountCodes:[couponCode.discountName, currentUser ? 'Members Rewards' : '']})
-      if(data && data?.cartDiscountCodesUpdate.userErrors.length == 0){
-        setCartData(data.cartDiscountCodesUpdate.cart)
-      }else{
-        alert("Error in adding coupon.")
-      }
+    setChecked(cartData?.discountCodes.filter((discountCode)=> couponCode.discountName == discountCode.code).length  > 0)    
+  },[cartData,data])
+
+  // Created an array of already set discounts
+  const currentDiscountsArr = useMemo(()=>{return cartData?.discountCodes.map((discountCode)=> discountCode.code)})
+
+  const handleChecked = async () =>{
+    if(checked) return
+    
+
+    // Avoids adding duplicate discount codes as well as adding a shipping discount if user is verifed 
+    currentDiscountsArr.includes(couponCode.discountName) ? '' : currentDiscountsArr.push(couponCode.discountName)// Push non exisiting code into array, this avoids removing codes already set in the users cart
+    currentUser ? currentDiscountsArr.includes('Members Rewards') ? '' : currentDiscountsArr.push('Members Rewards') : '' //If user is a customer, add the free shipping discount.
+
+    const {data,errors} = await storefront(addCartDiscountCode,{cartId:cartData.id,discountCodes:currentDiscountsArr})
+    if(data && data?.cartDiscountCodesUpdate.userErrors.length == 0){
+      setCartData(data.cartDiscountCodesUpdate.cart)
+    }else{
+      alert("Error in adding coupon.")
     }
-    handleChecked()
-  },[checked])
+  }
   return(
     <>
     {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
       <div className = "flex items-center w-full mb-1 gap-x-3">
         <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
-        onClick = {()=>setChecked(true)}
+        onClick = {()=>handleChecked()}
         >
         {checked && (
           <CheckIcon className = "w-5 h-5 text-onSecondary"/>

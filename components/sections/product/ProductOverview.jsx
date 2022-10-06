@@ -33,7 +33,10 @@ export default function ProductOverview({data,compRef}) {
 
   // TODO, reset to default once the data changes.
   useEffect(()=>{
-    didMount.current = false
+    if(!didMount.current){
+      didMount.current = true
+      return
+    }
     setSelectedOption(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
     setCurrentVariant(null)
     return(()=>{})
@@ -218,29 +221,24 @@ export default function ProductOverview({data,compRef}) {
 }
 
 function CouponComponent({data,selectedOption}){
-  const {cartData,setCartData, setCoupons,coupons} = useContext(CartContext)
-  const couponCode = data.product.coupon?.value ? JSON.parse(data.product.coupon?.value) : ''
-
-  // TODO, if coupon is already in cartData, set checked automaticlly on.
-  const [checked,setChecked] = useState()
-  useEffect(()=>{
-    setChecked(cartData?.discountCodes.some((discount)=> coupons.filter((storedCoupon)=> storedCoupon.discountName === discount )))
-    if(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName)) setCoupons(oldArr => [...oldArr, couponCode])
-  },[cartData,data])
-  console.log(coupons)
-
-  
+  const {cartData,setCartData} = useContext(CartContext)
   const {currentUser} = useContext(UserContext)
-  // Handle addToCartDiscount if user checked box for promotional coupon
-
+  const [checked,setChecked] = useState()
+  const couponCode = useMemo(()=>{return data.product.coupon?.value ? JSON.parse(data.product.coupon?.value) : ''},[data,cartData])
+  
+  // TODO, if coupon is already in cartData, set checked automaticlly on.
+  useEffect(()=>{
+    setChecked(cartData?.discountCodes.filter((discountCode)=> couponCode.discountName == discountCode.code).length  > 0)    
+  },[cartData,data])
 
   // Created an array of already set discounts
   const currentDiscountsArr = useMemo(()=>{return cartData?.discountCodes.map((discountCode)=> discountCode.code)})
 
   const handleChecked = async () =>{
     if(checked) return
+    
 
-    setCoupons(oldArr => [...oldArr, couponCode]) //Set coupon in CartContext, this is for ux purposes
+    // Avoids adding duplicate discount codes as well as adding a shipping discount if user is verifed 
     currentDiscountsArr.includes(couponCode.discountName) ? '' : currentDiscountsArr.push(couponCode.discountName)// Push non exisiting code into array, this avoids removing codes already set in the users cart
     currentUser ? currentDiscountsArr.includes('Members Rewards') ? '' : currentDiscountsArr.push('Members Rewards') : '' //If user is a customer, add the free shipping discount.
 
@@ -407,13 +405,13 @@ function ProductHeading({data}){
     <div className="flex flex-col items-start justify-between w-full mt-3 md:mt-0">
       <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
       <div className = "mt-0 ">
-        <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
+        <p className = "text-sm md:text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
       </div>
-      <p className="mt-2 text-base sm:text-base">
+      <p className="mt-1 text-base md:text-lg sm:text-base">
         {data.product?.priceRange?.maxVariantPrice?.amount < data?.product?.compareAtPriceRange?.maxVariantPrice?.amount ? 
         <span className = "flex flex-col gap-x-1">
-          <span className = "text-xl font-medium text-onBackground">
-            <span className = ' text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+          <span className = "font-medium text-onBackground">
+            <span className = 'text-base text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
               {'  '}
               {formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
             </span>
