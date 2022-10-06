@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
@@ -12,10 +12,10 @@ import { useMemo } from 'react'
 import { storefront } from '../../../utils/storefront'
 import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountCode'
 import UserContext from '../../../context/userContext'
+import { RefundsModal, SecureTransactions } from '../../modals'
 
 
 export default function ProductOverview({data,compRef}) {
-  console.log(data)
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
   const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
@@ -26,6 +26,8 @@ export default function ProductOverview({data,compRef}) {
   
   const [soldOutItems,setSoldOutItems] = useState([])
   const [currentVariant,setCurrentVariant] = useState(null)
+  const [secureTransactionModal, setSecureTransactionModal] = useState(false)
+  const [refundsModal,setRefundsModal] = useState(false)
   const didMount = useRef(false)
 
 
@@ -125,10 +127,11 @@ export default function ProductOverview({data,compRef}) {
   return (
     <>
       {data.product ?  
+      <>
         <div className="relative bg-background" ref = {compRef}>
           <div className="pb-24">
             <div className="max-w-2xl px-4 mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
-              <div className="flex flex-col w-full h-full gap-10 lg:grid lg:grid-cols-12">
+              <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
 
                 {/* Image gallery */}
                 <div className="col-span-8">
@@ -137,7 +140,7 @@ export default function ProductOverview({data,compRef}) {
                   
                   <div className={`
                   grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-                  lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 `}>
+                  lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 scrollBar`}>
                     {data.product?.media?.nodes?.map((media,index)=>(
                       <div className = {`
                       ${index === 0 ? ('lg:col-span-4 w-full') :('lg:col-span-2')}
@@ -184,12 +187,16 @@ export default function ProductOverview({data,compRef}) {
                     {/* Perks */}
                     <div className = "mt-4">
                         <div className = "flex items-center text-xs gap-x-3">
-                          <TruckIcon className = "w-5 h-5 text-primaryVariant" />
-                          <p>Free shipping for members using code &ldquo;Members Rewards&ldquo;.</p>
+                          <LockClosedIcon className = "w-5 h-5 text-onBackground/60" />
+                          <p className = "text-sm cursor-pointer text-tertiaryVariant hover:text-tertiaryVariant/70"
+                          onClick = {()=>setSecureTransactionModal(true)}
+                          >Secure transaction</p>
                         </div>
                         <div className = "flex items-center mt-2 text-xs gap-x-3">
-                          <CheckBadgeIcon className = "w-5 h-5 text-primaryVariant" />
-                          <p>A 30-day warranty is provided.</p>
+                          <CheckBadgeIcon className = "w-5 h-5 text-onBackground/60" />
+                          <p className = "text-sm cursor-pointer text-tertiaryVariant hover:text-tertiaryVariant/70"
+                          onClick = {()=>setRefundsModal(true)}
+                          >Eligible for refund or replacement within 30 days.</p>
                         </div>
                     </div>
                   </div>
@@ -198,6 +205,9 @@ export default function ProductOverview({data,compRef}) {
             </div>
           </div>
         </div>
+        <SecureTransactions secureTransactionModal={secureTransactionModal} setSecureTransactionsModal = {setSecureTransactionModal}/>
+        <RefundsModal refundsModal={refundsModal} setRefundsModal = {setRefundsModal}/>
+      </>
       :
         <div>
         
@@ -214,10 +224,10 @@ function CouponComponent({data,selectedOption}){
   // TODO, if coupon is already in cartData, set checked automaticlly on.
   const [checked,setChecked] = useState()
   useEffect(()=>{
-    // if(cartData?.discountCodes.some((discount)=> discount.code != couponCode?.discountName)) setCoupons(oldArr => [...oldArr, couponCode])
-    setChecked(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName))
+    setChecked(cartData?.discountCodes.some((discount)=> coupons.filter((storedCoupon)=> storedCoupon.discountName === discount )))
+    if(cartData?.discountCodes.some((discount)=> discount.code == couponCode?.discountName)) setCoupons(oldArr => [...oldArr, couponCode])
   },[cartData,data])
-  
+  console.log(coupons)
 
   
   const {currentUser} = useContext(UserContext)
@@ -233,7 +243,6 @@ function CouponComponent({data,selectedOption}){
     setCoupons(oldArr => [...oldArr, couponCode]) //Set coupon in CartContext, this is for ux purposes
     currentDiscountsArr.includes(couponCode.discountName) ? '' : currentDiscountsArr.push(couponCode.discountName)// Push non exisiting code into array, this avoids removing codes already set in the users cart
     currentUser ? currentDiscountsArr.includes('Members Rewards') ? '' : currentDiscountsArr.push('Members Rewards') : '' //If user is a customer, add the free shipping discount.
-    console.log(currentDiscountsArr)
 
     const {data,errors} = await storefront(addCartDiscountCode,{cartId:cartData.id,discountCodes:currentDiscountsArr})
     if(data && data?.cartDiscountCodesUpdate.userErrors.length == 0){
@@ -321,7 +330,7 @@ function GetItByComponent({data}){
       :
       <>
         <p className = "mt-2 text-sm text-onBackground/70">Fast delivery: 
-          <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxDays}`}</span>
+          <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
           <br/>
           Order within:
           <span className = "font-medium text-tertiaryVariant">{`
@@ -395,9 +404,12 @@ function ProductHeading({data}){
 
   return(
   <>
-    <div className="flex flex-col items-start justify-between w-full">
+    <div className="flex flex-col items-start justify-between w-full mt-3 md:mt-0">
       <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
-      <p className="text-base sm:text-base">
+      <div className = "mt-0 ">
+        <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
+      </div>
+      <p className="mt-2 text-base sm:text-base">
         {data.product?.priceRange?.maxVariantPrice?.amount < data?.product?.compareAtPriceRange?.maxVariantPrice?.amount ? 
         <span className = "flex flex-col gap-x-1">
           <span className = "text-xl font-medium text-onBackground">
@@ -406,7 +418,7 @@ function ProductHeading({data}){
               {formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
             </span>
           <span className = "mt-1 text-xs font-normal">
-            <span>Original</span>
+            <span>Was</span>
             {' '}
             <span className = "line-through">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span>
           </span>
@@ -417,9 +429,6 @@ function ProductHeading({data}){
       </p>
     </div>
 
-    <div className = "mt-1">
-    <p className = "text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
-    </div>
   </>
 )
 }

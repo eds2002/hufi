@@ -483,7 +483,6 @@ function CartDrawer({openCart, setOpenCart}){
   const {locale} = useContext(LocaleContext)
   const totalItems = cartData?.lines?.edges?.length ?? 0
   const [progressWidth, setProgressWidth] = useState(100)
-  console.log(cartData)
 
   useEffect(()=>{
     setProgressWidth((cartData?.cost?.subtotalAmount?.amount || 0)/75*100)
@@ -589,7 +588,7 @@ function CartDrawer({openCart, setOpenCart}){
                 </>
               :
               <>
-                <div className="flex justify-between px-4 pt-5 pb-2">
+                <div className="flex justify-between px-4 py-4 bg-surface">
                   <span className = "text-xl font-medium">Cart <span className = "text-xl text-gray-400">{totalItems}</span></span>
                   <button
                     type="button"
@@ -631,19 +630,15 @@ function CartDrawer({openCart, setOpenCart}){
                   </div>
 
                   {/* Subtotal information */}
-                  <div className = "w-full py-6">
+                  <div className = "w-full pt-6 pb-2">
                     <p className = "flex items-center justify-between">
-                      <span className = "text-base font-medium">Subtotal</span>
-                      <span className = "text-base font-medium">{formatNumber(cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</span>
-                    </p>
-                    <p className = "flex items-center justify-between text-onBackground/50">
-                      <span className = "text-sm font-medium">Shipping</span>
-                      <span className = "text-sm font-medium">{cartData?.cost.subtotalAmount.amount>=75 ? 'Free Shipping' :'Calculated at checkout'}</span>
+                      <span className = "text-lg font-medium">Subtotal</span>
+                      <span className = "text-lg font-medium">{formatNumber(cartData?.cost.subtotalAmount.amount,cartData?.cost.subtotalAmount.currencyCode,locale)}</span>
                     </p>
                   </div>
-                  <div className = "flex flex-col items-center justify-center">
+                  <div className = "flex flex-col items-center justify-center pb-8">
                     <Link href = {cartData?.checkoutUrl || ''}>
-                      <Button text = "Checkout" className = "w-full checkout-button bg-secondaryVariant hover:bg-secondary"/>
+                      <Button text = {`Checkout (${totalItems} items)`} className = "w-full checkout-button bg-secondaryVariant hover:bg-secondary"/>
                     </Link>
                       
                     <span className = "mt-2 text-xs text-neutral-400">Members get free shipping on any order.</span>
@@ -662,7 +657,6 @@ function CartDrawer({openCart, setOpenCart}){
 function CartProduct({data}){
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,coupons} = useContext(CartContext)
-  const router = useRouter()
   // const [hasCoupon, setHasCoupon] = useState(cartData.discountCodes.some(discount=> coupons.some(coupon=>coupon.)discount.code === data.node.merchandise.product.title))
 
   // NOTE, please look back and see if there is a better way of doing this.
@@ -670,7 +664,7 @@ function CartProduct({data}){
   // TODO, filter out the stored coupons, (stored coupons are added when a user clicks on apply coupon, AKA coupon container)
   // Check if the stored coupon is in the current cart (Sometimes coupons disappear randomly in cart)
   // Also check if stored coupon's first word matches the word of the product. (This seems to be the only way to do it as a of now.)
-  const currentCoupon = useMemo(()=>{return coupons.filter((coupon)=> cartData?.discountCodes.some(discount=> discount.code == coupon.discountName && coupon.discountName.split(" ")[0] == data.node.merchandise.product.title.split(" ")[0]))},[]) 
+  const currentCoupon = useMemo(()=>{return coupons.filter((coupon)=> cartData?.discountCodes.some(discount=> discount.code == coupon.discountName && coupon.discountName.split(" ")[0] == data.node.merchandise.product.title.split(" ")[0]))},[coupons]) 
 
   const handleDelete = async (data)=>{
     const newCart = await removeProduct(data,cartData)
@@ -684,16 +678,19 @@ function CartProduct({data}){
 
   return(
     <>
-    <div className = {`${currentCoupon.length >= 1 && (' py-4 ')}`}>
-      <span className = "px-4 text-xs ">
+    <div className = {`${currentCoupon.length >= 1 && (' py-4 bg-surface')}`}>
+      <div className = "mb-2 text-xs">
         {currentCoupon.length >= 1 &&
-        <>
+        <p className = "flex items-center justify-between px-4">
           <span className = "px-2 py-0.5 font-medium rounded-md bg-primaryVariant text-opacity-60">
-            {currentCoupon[0].discountAmount}% Discount applied at checkout.
+            {currentCoupon[0].discountAmount}% coupon applied.
           </span>
-        </>
+          <span className = "px-2 py-0.5 font-medium rounded-md bg-tertiaryVariant text-opacity-60">
+            {formatNumber((data.node.merchandise.priceV2.amount * (currentCoupon[0].discountAmount)/100),data.node.merchandise.priceV2.currencyCode,locale)} savings
+          </span>
+        </p>
         }
-      </span>
+      </div>
       <div className = "flex w-full max-w-xs gap-6 px-4 py-4">
         {/* IMAGE */}
         <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>

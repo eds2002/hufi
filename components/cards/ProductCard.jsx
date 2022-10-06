@@ -72,7 +72,6 @@ function ProductTextDisplay({product}){
   const calculatePercentage = (minNum, maxNum) =>{
     return ((minNum-maxNum) / maxNum * 100).toFixed(0)
   }
-  console.log(product)
   return(
     <>
     <div className = "absolute flex flex-col items-center justify-center transition-all duration-500 pointer-events-none group-hover:-translate-y-10 group-hover:opacity-0 ">

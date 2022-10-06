@@ -109,7 +109,7 @@ export default function AddToCartModal({data,setOpenModal, openModal, selectedOp
                       </Link>
                     </div>
                     <p className="mt-1 text-base sm:text-base">
-                      {data?.priceRange?.maxVariantPrice?.amount < data?.compareAtPriceRange?.maxVariantPrice?.amount ? 
+                      {parseInt(data?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
                       <span className = "flex flex-col gap-x-1">
                         <span className = "font-medium text-onBackground">
                           <span className = ' text-tertiaryVariant'>{calculatePercentage(data?.priceRange?.maxVariantPrice?.amount, data.compareAtPriceRange.maxVariantPrice.amount)}%</span>
