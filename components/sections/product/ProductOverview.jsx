@@ -29,6 +29,7 @@ export default function ProductOverview({data,compRef}) {
   const [secureTransactionModal, setSecureTransactionModal] = useState(false)
   const [refundsModal,setRefundsModal] = useState(false)
   const didMount = useRef(false)
+  let imageRef = useRef([])
 
 
   // TODO, reset to default once the data changes.
@@ -70,21 +71,24 @@ export default function ProductOverview({data,compRef}) {
       didMount.current = true
       return
     }
-
+    
     let findId;
     const query = []
-
+    
     // TODO, for each selected option the user has requested, store variable into query array
     selectedOption.forEach((option)=>{
       query.push(option.value)
     })
-
+    
     // TODO, find the id 
     data.product.variants.nodes.map((newArr, arrayIndex) =>{
       if(query.every(object=>newArr.selectedOptions.some(obj=> obj.value === object))){
         findId = arrayIndex
       }
     })
+    // imageRef.current.scrollLeft > 0
+    // imageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    imageRef.current.scrollLeft = 0
     setCurrentVariant(data.product.variants.nodes[findId].image.url)
     return(()=>{})
   },[selectedOption])
@@ -143,7 +147,7 @@ export default function ProductOverview({data,compRef}) {
                   
                   <div className={`
                   grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-                  lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 scrollBar`}>
+                  lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 scrollBar`} ref = {imageRef}>
                     {data.product?.media?.nodes?.map((media,index)=>(
                       <div className = {`
                       ${index === 0 ? ('lg:col-span-4 w-full') :('lg:col-span-2')}
@@ -151,7 +155,7 @@ export default function ProductOverview({data,compRef}) {
                       `}
                       key = {index}
                       >
-                        <img src = {(currentVariant && index == 0) ? currentVariant : media.previewImage.url} className = "object-cover w-full h-full"/>
+                        <img  src = {(currentVariant && index == 0) ? currentVariant : media.previewImage.url} className = "object-cover w-full h-full"/>
                       </div>
                     ))}
                   </div>
@@ -334,7 +338,7 @@ function GetItByComponent({data}){
           <span className = "font-medium text-tertiaryVariant">{`
             ${day != 0 ? (`${day} day${day > 1 ? 's' : ''}`) : ('')} 
             ${hour != 0 ? (`${hour} hr${hour > 1 ? 's' : ''}`) : ('')} 
-            ${minute != 0 ? (`${minute} min${minute > 1 ? 's' : ''}`) : ('')} 
+            ${day == 0 ? minute != 0 ? (`${minute} min${minute > 1 ? 's' : ''}`) : ('') : ('')}  
             ${hour == 0 ? (`${second} sec${second > 1 ? 's' : ''}`) : ('')}
             `}
           </span>
