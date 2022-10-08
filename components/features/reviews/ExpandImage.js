@@ -61,7 +61,7 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="flex flex-col w-full max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
-                  <div className = "relative md:flex-1">
+                  <div className = "relative md:flex-1 ">
                     {selectedReview?.images?.length > 1 && (
                       <div className = "absolute inset-0 z-10 flex items-center justify-between p-3 pointer-events-none">
                         <ChevronLeftIcon 
@@ -74,9 +74,9 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                         />
                       </div>
                     )}
-                    <div className = "grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory aspect-video md:aspect-square scrollBar" ref = {containerRef}>
+                    <div className = "grid grid-flow-col auto-cols-[100%] bg-red-500 snap-x snap-mandatory aspect-video md:aspect-square scrollBar" ref = {containerRef}>
                       {selectedReview?.images?.map((url)=>(
-                        <div className = "relative w-full h-full overflow-scroll snap-center" key = {url}>
+                        <div className = "relative w-full  snap-center max-h-[55vh]" key = {url}>
                           <img src = {url} className = "object-cover w-full h-full" ref = {imageRef} key = {url}/>
                         </div>
                       ))}
@@ -86,7 +86,7 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                     <div className = "flex justify-between">
                       <div className = "relative flex gap-x-4">
                         <div className = "relative rounded-full select-none w-11 h-11 bg-neutral-600">
-                          <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+                          <Image src = {profilePic} layout = 'fill' className = "rounded-full" objectFit='cover'/>
                           <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
                             <CheckIcon className = "w-3 h-3 text-background"/>
                           </div>
