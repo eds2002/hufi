@@ -1,13 +1,17 @@
 import { StarIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 
-const StarsComponent = () => {
+const StarsComponent = ({starRating}) => {
+  console.log(starRating)
   return (
-    <div>
-      {[0,1,2,3,4].map(()=>(
-        <StarIcon/>
+    <span className = "flex">
+      {[0,1,2,3,4].map((index)=>(
+        <StarIcon 
+          className = {`w-[18px] h-[18px] ${index > Math.round(starRating - 1 ) ? 'text-secondaryVariant/25' : 'text-secondaryVariant' }`}
+          key = {index}
+        />
       ))}
-    </div>
+    </span>
   )
 }
 

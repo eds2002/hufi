@@ -2,23 +2,21 @@ import { ProductFAQ, ProductFeatures, ProductImageView, ProductIncentive, Produc
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 import {Signup} from '../../components/sections'
-import { Button } from "../../components/elements";
-import Image from "next/image";
-import ErrorImg from '../../assets/404.svg'
-import Link from "next/link";
 import Head from "next/head";
 import { slugify } from "../../utils/slugify";
 import { useEffect,useState, useRef,useContext } from "react";
-import useOnScreen from "../../utils/useOnScreen";
 import { ProductStickyCart } from "../../components/features";
 import { viewMenu } from "../../graphql/queries/viewMenu";
 import { getCustomer } from "../../graphql/queries/getCustomer";
 import Layout from "../../components/global/Layout";
 import UserContext from "../../context/userContext";
+import {db} from "../../firebase/app";
+import { onSnapshot, collection, orderBy, query, Firestore, where, getDocs, setDoc } from "firebase/firestore";
 
 
 
-const Product = ({productData,pageProps})=>{
+
+const Product = ({productData,pageProps,reviewsData})=>{
   const ref = useRef(null)
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
@@ -35,6 +33,7 @@ const Product = ({productData,pageProps})=>{
           window.removeEventListener('scroll', handleScroll);
       };
   }, []);
+
   return (
     <>
       {productData &&
@@ -66,7 +65,7 @@ const Product = ({productData,pageProps})=>{
         <Layout {...pageProps}>
           <main className = "relative">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
-            <ProductOverview data = {productData} compRef = {ref}/>
+            <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
             <ProductUse data = {productData?.product?.useCases}/>
             {/* <ProductIncentive data = {productData}/> */}
             {/* <ProductShopPromise/> */}
@@ -74,7 +73,7 @@ const Product = ({productData,pageProps})=>{
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <Signup/>
-            {/* <ProductReviews/> */}
+            <ProductReviews data = {productData} reviews = {reviewsData}/>
           </main>
         </Layout>
         </>
@@ -97,11 +96,20 @@ export async function getServerSideProps(context) {
     pageProps["userData"] = userInformation || null
     pageProps["userAccess"] = cookies || null
 
-    const { req, query, res, asPath, pathname } = context;
-    const {data:product,errors} = await storefront(viewProductByHandle, {handle:query.product})
+    const { req, query:SSRQuery, res, asPath, pathname } = context;
+    const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
+
+    const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))
+    const querySnapshot = await getDocs(q)
+    const reviews = []
+    querySnapshot.forEach(doc=>{
+      reviews.push(doc.data())
+    })
+
+
     if(product.product){
       return{
-        props:{productData:product || errors, pageProps:pageProps}
+        props:{productData:product || errors, pageProps:pageProps, reviewsData:JSON.stringify(reviews)}
       }
     }else{
       return{

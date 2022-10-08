@@ -9,6 +9,7 @@ query customer($token:String!){
     lastName
     acceptsMarketing
     email
+    displayName
     orders(first:50,reverse:true){
       nodes{
         lineItems(first:50){

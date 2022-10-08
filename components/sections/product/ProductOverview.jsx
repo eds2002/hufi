@@ -13,9 +13,10 @@ import { storefront } from '../../../utils/storefront'
 import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountCode'
 import UserContext from '../../../context/userContext'
 import { RefundsModal, SecureTransactions } from '../../modals'
+import { ReviewsAccordian, ReviewsModal, StarsComponent } from '../../features'
 
 
-export default function ProductOverview({data,compRef}) {
+export default function ProductOverview({data,compRef,reviews}) {
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
   const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
@@ -28,6 +29,7 @@ export default function ProductOverview({data,compRef}) {
   const [currentVariant,setCurrentVariant] = useState(null)
   const [secureTransactionModal, setSecureTransactionModal] = useState(false)
   const [refundsModal,setRefundsModal] = useState(false)
+  const [openReviewsModal, setOpenReviewsModal] = useState(false)
   const didMount = useRef(false)
   let imageRef = useRef([])
 
@@ -147,11 +149,11 @@ export default function ProductOverview({data,compRef}) {
                   
                   <div className={`
                   grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-                  lg:grid-flow-row  lg:grid-cols-4 lg:gap-8 scrollBar`} ref = {imageRef}>
+                  lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar`} ref = {imageRef}>
                     {data.product?.media?.nodes?.map((media,index)=>(
                       <div className = {`
-                      ${index === 0 ? ('lg:col-span-4 w-full') :('lg:col-span-2')}
-                      rounded-xl relative w-full  overflow-hidden snap-center
+                      ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
+                       relative w-full  overflow-hidden snap-center
                       `}
                       key = {index}
                       >
@@ -187,21 +189,21 @@ export default function ProductOverview({data,compRef}) {
                     </div>
 
 
-
                     <DetailsComponent data = {data.product.details}/>
                     <LearnMoreComponent data = {data.product.learnmore}/>
+                    <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
                   
                     {/* Perks */}
                     <div className = "mt-4">
                         <div className = "flex items-center text-xs gap-x-3">
-                          <LockClosedIcon className = "w-5 h-5 text-onBackground/60" />
-                          <p className = "text-sm cursor-pointer text-tertiaryVariant hover:text-tertiaryVariant/70"
+                          <LockClosedIcon className = "w-5 h-5 text-onBackground/50" />
+                          <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
                           onClick = {()=>setSecureTransactionModal(true)}
                           >Secure transaction</p>
                         </div>
                         <div className = "flex items-center mt-2 text-xs gap-x-3">
-                          <CheckBadgeIcon className = "w-5 h-5 text-onBackground/60" />
-                          <p className = "text-sm cursor-pointer text-tertiaryVariant hover:text-tertiaryVariant/70"
+                          <CheckBadgeIcon className = "w-5 h-5 text-onBackground/50" />
+                          <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
                           onClick = {()=>setRefundsModal(true)}
                           >Eligible for refund or replacement within 30 days.</p>
                         </div>
@@ -214,6 +216,7 @@ export default function ProductOverview({data,compRef}) {
         </div>
         <SecureTransactions secureTransactionModal={secureTransactionModal} setSecureTransactionsModal = {setSecureTransactionModal}/>
         <RefundsModal refundsModal={refundsModal} setRefundsModal = {setRefundsModal}/>
+        <ReviewsModal openReviewsModal = {openReviewsModal} setOpenReviewsModal = {setOpenReviewsModal} data = {data}/>
       </>
       :
         <div>
@@ -331,7 +334,7 @@ function GetItByComponent({data}){
         </p>
       :
       <>
-        <p className = "mt-2 text-sm text-onBackground/70">Fast delivery: 
+        <p className = "mt-2 text-xs text-onBackground/70">Fast delivery: 
           <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
           <br/>
           Order within:
@@ -407,19 +410,23 @@ function ProductHeading({data}){
   return(
   <>
     <div className="flex flex-col items-start justify-between w-full mt-3 md:mt-0">
-      <h1 className="text-2xl font-medium text-onBackground">{data?.product?.title}</h1>
-      <div className = "mt-0 ">
-        <p className = "text-sm md:text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
+      <div className="flex items-center justify-between w-full text-2xl font-medium text-onBackground">
+        <p>{data?.product?.title}</p>
       </div>
+      {/* <div className = "mt-0 ">
+        <p className = "text-sm md:text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
+      </div> */}
       <p className="mt-1 text-base md:text-lg sm:text-base">
         {parseInt(data.product?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
         <span className = "flex flex-col gap-x-1">
           <span className = "font-medium text-onBackground">
-            <span className = 'text-base text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+            <span className = 'font-light text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
               {'  '}
               {formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
             </span>
-          <span className = "mt-1 text-xs font-normal">
+
+            {/* WAS  */}
+          <span className = "mt-0 text-xs font-normal">
             <span>Was</span>
             {' '}
             <span className = "line-through">{formatNumber(data.product.compareAtPriceRange.maxVariantPrice.amount,data.product.compareAtPriceRange.maxVariantPrice.currencyCode, locale)}</span>
@@ -430,7 +437,6 @@ function ProductHeading({data}){
       }
       </p>
     </div>
-
   </>
 )
 }
@@ -443,7 +449,7 @@ function LearnMoreComponent({data}){
         <>
         </>
       :
-        <div className = "mt-4">
+        <div className = "mt-1">
           <div className = "prose-h3">
             <div className = "w-full h-full rounded-md bg-surface">
               <div className = {`flex items-center justify-between w-full px-4 py-2 transition rounded-md cursor-pointer  ${open ? 'bg-primary' : 'bg-surface'}`}

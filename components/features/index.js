@@ -1,3 +1,6 @@
 export {default as ProductStickyCart} from './productStickyCart'
 export {default as StarsComponent} from './reviews/StarsComponent'
-export {default as ReviewsComponent} from './reviews/ReviewsComponent'
+export {default as ReviewsModal} from './reviews/ReviewsModal'
+export {default as ReviewsAccordian} from './reviews/ReviewsAccordian'
+export {default as WriteReview} from './reviews/WriteReview'
+export {default as ExpandImage} from './reviews/ExpandImage'
