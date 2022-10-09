@@ -1,8 +1,72 @@
+import dynamic from 'next/dynamic'
 export {default as ProductOverview} from './ProductOverview'
-export {default as ProductFeatures} from './ProductFeatures'
-export {default as ProductImageView} from './ProductImageView'
-export {default as ProductFAQ} from './ProductFAQ'
-export {default as ProductShopPromise} from './ProductShopPromise'
-export {default as ProductIncentive} from './ProductIncentive'
-export {default as ProductReviews} from './ProductReviews'
-export {default as ProductUse} from './ProductUse'
+
+export const ProductIncentive = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductIncentive" */
+    './ProductIncentive'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
+export const ProductFeatures = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductFeatures" */
+    './ProductFeatures'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
+export const ProductImageView = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductShopPromise" */
+    './ProductImageView'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
+export const ProductFAQ = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductFAQ" */
+    './ProductFAQ'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
+export const ProductShopPromise = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductShopPromise" */
+    './ProductShopPromise'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
+export const ProductReviews = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductReviews" */
+    './ProductReviews'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
+export const ProductUse = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductUse" */
+    './ProductUse'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)

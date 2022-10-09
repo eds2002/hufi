@@ -1,4 +1,4 @@
-import { ProductFAQ, ProductFeatures, ProductImageView, ProductIncentive, ProductOverview, ProductReviews, ProductShopPromise, ProductUse } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews, ProductUse } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 import {Signup} from '../../components/sections'
@@ -11,7 +11,7 @@ import { getCustomer } from "../../graphql/queries/getCustomer";
 import Layout from "../../components/global/Layout";
 import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
-import { onSnapshot, collection, orderBy, query, Firestore, where, getDocs, setDoc } from "firebase/firestore";
+import {collection, query, where, getDocs} from "firebase/firestore";
 
 
 

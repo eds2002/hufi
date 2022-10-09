@@ -1,18 +1,11 @@
-import { AppProps } from 'next/app'
-import Layout from '../components/global/Layout'
 import '../styles/globals.css'
-import { storefront } from '../utils/storefront'
-import {viewMenu} from '../graphql/queries/viewMenu'
 import { LocaleProvider } from '../context/localeContext'
 import { UserProvider } from '../context/userContext'
-import CartContext, { CartProvider } from '../context/cartContext'
+import { CartProvider } from '../context/cartContext'
 import NextNProgress from "nextjs-progressbar";
-import Cookies from 'cookies'
-import { getCustomer } from '../graphql/queries/getCustomer'
 import { ProductProvider } from '../context/productContext'
-import TagManager, {TagManagerArgs} from 'react-gtm-module'
+import TagManager from 'react-gtm-module'
 import { useEffect } from 'react'
-import Script from 'next/script'
 
 function MyApp({ Component, pageProps }) {
   useEffect(()=>{
@@ -44,19 +37,3 @@ function MyApp({ Component, pageProps }) {
 
 export default MyApp
 
-// MyApp.getInitialProps = async (context) =>{
-//   const cookies = context?.ctx?.req?.cookies?.userAccess
-//   let pageProps = {}
-//   try{
-//     const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
-//     const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
-//     const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
-//     pageProps["headerData"] = headerData
-//     pageProps["footerData"] = footerData
-//     pageProps["userData"] = userInformation
-//     pageProps["userAccess"] = context?.ctx?.req?.cookies?.userAccess
-//   }catch(e) {
-//     console.log(e)
-//   }
-//   return {pageProps}
-// }

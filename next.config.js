@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
+
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+  openAnalyzer: true,
+})
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -8,4 +14,13 @@ const nextConfig = {
   compress:true,
 }
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig,{
+  useFileSystemPublicRoutes: false,
+  webpack: (config, options) => {
+    if (!options.isServer) {
+      config.resolve.alias['@sentry/node'] = '@sentry/browser';
+    }
+
+    return config;
+  }
+})

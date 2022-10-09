@@ -57,8 +57,8 @@ function CollectionBox({collection,index, data, style}){
             />
             :
             <span>
-              <Skeleton animation = "wave" sx={{bgcolor:'grey.500', width:100}}/>
-              <Skeleton animation = "wave" sx={{bgcolor:'grey.500'}}/>
+              {/* <Skeleton animation = "wave" sx={{bgcolor:'grey.500', width:100}}/>
+              <Skeleton animation = "wave" sx={{bgcolor:'grey.500'}}/> */}
             </span>
           }
           <Link href = {handle}>
