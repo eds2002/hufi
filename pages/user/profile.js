@@ -13,8 +13,8 @@ import { formatNumber } from '../../utils/formatNumber'
 import LocaleContext from '../../context/localeContext'
 import { useMemo } from 'react'
 import Head from 'next/head'
-import { Listbox } from '@headlessui/react'
-import {CheckIcon} from '@heroicons/react/24/outline'
+import CartContext from '../../context/cartContext'
+import {addToShopifyCart} from '../../utils/addToShopifyCart'
 
 export default function Profile({pageProps}){
   const {currentUser,setCurrentUser} = useContext(UserContext)
@@ -31,8 +31,6 @@ export default function Profile({pageProps}){
     })
     setTab(`tab=${name}`)
   }
-
-
 
   return (
     <>
@@ -85,7 +83,7 @@ const SupportTab = ({currentUser}) =>{
         <p className = "max-w-sm mt-7 text-onBackground/60">We are here to help, whether it&apos;s a specific product or technical issue, we&apos;ll get back to you asap.</p>
       </div>
     </div>
-    {currentUser.orders.nodes.length == 0 ?
+    {currentUser?.orders?.nodes?.length == 0 ?
       <div className = "h-[50vh]">
         <div className = "flex flex-col items-center justify-center h-full px-4 mx-auto text-center max-w-7xl">
           <h1 className = "text-3xl font-medium text-center">Our support team is top notch.</h1>
@@ -152,7 +150,6 @@ function ProductListBox({order, currentUser}){
       {order.lineItems.nodes.map((product)=>(
         <>
           <div className = "flex flex-col w-full h-full p-4 rounded-md bg-surface aspect-square">
-
             <h3 className = "flex items-center justify-between mb-3 W-full">
               <span className = "flex flex-col items-start justify-center">
                 <span className = "font-medium">Purchased</span>
@@ -341,6 +338,9 @@ const OrdersTab = ({currentUser})=>{
     return months[dateNum]
   }
 
+
+  
+
   return(
     <section className = "py-24">
       <div className = "px-4 mx-auto max-w-7xl">
@@ -349,7 +349,7 @@ const OrdersTab = ({currentUser})=>{
           <p className = "max-w-sm mt-7 text-onBackground/60">View all orders you have made with us. </p>
         </div>
       </div>
-      {currentUser.orders.nodes.length == 0 ?
+      {currentUser?.orders?.nodes?.length == 0 ?
         <div className = "h-[50vh]">
           <div className = "flex flex-col items-center justify-center h-full px-4 mx-auto text-center max-w-7xl">
             <h1 className = "text-3xl font-medium text-center">It&apos;s lonesome in here.</h1>
@@ -383,6 +383,7 @@ const OrdersTab = ({currentUser})=>{
 
 function OrderInformation({order}){
   const {locale} = useContext(LocaleContext)
+  const {cartData,setOpenCart,setCartData} = useContext(CartContext)
   const {currentUser} = useContext(UserContext)
   const [expand,setExpand] = useState(false)
   const [expandShipping,setExpandShipping] = useState(false)
@@ -400,64 +401,95 @@ function OrderInformation({order}){
       day:day,
       year:year,
     }
-    
-
   }
+
+  const didRefundEnd = (month,day,year) =>{
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const monthIndex = months.findIndex(val => val === month)
+    const date = new Date(year,monthIndex,day)
+    const today = new Date()
+
+    return today > date ? true : false
+  }
+
+  const handleAddToCart = async (variant) => {
+    const responseCartData = await addToShopifyCart(cartData,variant)
+    setCartData(responseCartData)
+    setOpenCart(true)
+  }
+  
   return(
     <>
       <div className = "w-full mx-auto mb-10">
         <p className = "md:hidden"> <span className = "mb-1 text-lg font-medium">{formatDate(order.processedAt).month} {formatDate(order.processedAt).day}</span></p>
         <div className = "py-4 rounded-md shadow-xl md:pb-0 md:pt-4 bg-surface">
           <div className = "px-4 md:flex md:justify-between md:items-start">
-            <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start"><span className = "font-medium text-onSurface">Order Date:</span> <span className = "font-medium">{formatDate(order.processedAt).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</span></p>
+            <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start ">
+              <span className = "mb-2 font-medium text-onSurface ">Order Date:</span> 
+              <span className = "text-sm font-medium lg:text-base">{formatDate(order.processedAt).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</span>
+            </p>
             <div className = "hidden md:block">
-              <p className = "hidden gap-6 mb-2 text-onSurface/50 md:flex md:flex-row md:justify-between md:items-start">
+              <p className = "hidden gap-6 mb-2 text-onSurface/50 md:flex md:flex-row md:justify-between md:items-start ">
                 <span className = "font-medium text-onSurface">Order Total</span>
-                <span className = "text-tertiaryVariant">{formatNumber(order?.totalPriceV2?.amount,order.totalPriceV2.currencyCode,locale)}</span>
+                <span className = "font-medium text-onSurface">{formatNumber(order?.totalPriceV2?.amount,order.totalPriceV2.currencyCode,locale)}</span>
               </p>
-              <p className = "flex items-center justify-between gap-6 text-onSurface/50">
+              <p className = "flex items-center justify-between gap-6 text-sm text-onSurface/50 lg:text-base">
                 <span>Subtotal:</span> 
                 <span>{formatNumber(order?.subtotalPriceV2?.amount,order.subtotalPriceV2.currencyCode,locale)}</span>
               </p>
-              <p className = "flex items-center justify-between gap-6 text-onSurface/50">
+              <p className = "flex items-center justify-between gap-6 text-sm text-onSurface/50 lg:text-base">
                 <span>Shipping & Handling:</span>
                 <span>{formatNumber(order.totalShippingPriceV2.amount,order.totalShippingPriceV2.currencyCode,locale)}</span>
               </p>
               {order.shippingDiscountAllocations.length != 0 && (
-                <p className = "flex items-center justify-between gap-6 text-onSurface/50">
+                <p className = "flex items-center justify-between gap-6 text-sm text-onSurface/50 lg:text-base">
                   <span>Shipping Discount:</span>
                   <span>{formatNumber(order.shippingDiscountAllocations[0].allocatedAmount.amount * -1,order.shippingDiscountAllocations[0].allocatedAmount.currencyCode,locale)}</span>
                 </p>
               )}
-              <p className = "flex items-center justify-between gap-6 text-onSurface/50">
+              <p className = "flex items-center justify-between gap-6 text-sm text-onSurface/50 lg:text-base">
                 <span>Tax:</span>
                 <span>{formatNumber(order.totalTaxV2.amount,order.totalTaxV2.currencyCode,locale)}</span>
               </p>
             </div>
             <p className = "hidden text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start">
-              <span className = "font-medium text-onSurface">Shipped to:</span>
-              <p>
+              <span className = "mb-2 font-medium text-onSurface">Shipped to:</span>
+              <p className = "text-sm md:text-base">
                 <span>{order?.shippingAddress.firstName}</span>
                 {' '}
                 <span>{order?.shippingAddress.lastName}</span>
               </p>
-              <span>{order?.shippingAddress.address1}</span>
-              <span>{order?.shippingAddress.address2}</span>
-              <span className = "flex">
-                <span>{order?.shippingAddress.city}{' '}, </span>
+              <span className = "text-sm lg:text-base">{order?.shippingAddress.address1}</span>
+              <span className = "text-sm lg:text-base">{order?.shippingAddress.address2}</span>
+              <span className = "text-sm lg:text-base">
+                <span >{order?.shippingAddress.city}, </span>
                 <span>{order?.shippingAddress?.province} </span>
               </span>
             </p>
-            <p className = "text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start"><span className ="font-medium text-onSurface">Order #:</span> <span className = "font-medium">{order.orderNumber}</span></p>
+            <p className = "text-onSurface/50 md:flex md:flex-col md:justify-center md:items-start">
+              <span className ="mb-2 font-medium text-onSurface">Order #:</span> 
+              <span className = "text-sm font-medium lg:text-base">{order.orderNumber}</span>
+            </p>
+            <div className = "pt-6 md:pt-0">
+              {order?.successfulFulfillments[0]?.trackingInfo[0] ?
+                <Link href = {`https://t.17track.net/en#nums=${order?.successfulFulfillments[0]?.trackingInfo[0]?.number}`}>
+                  <a target="_blank"><Button text = 'Track order' CSS = 'px-4 bg-secondaryVariant hover:bg-secondary text-onSecondary py-2'/></a>
+                </Link>
+                :
+                <div className = "hidden md:block">
+                  <Button text = 'Track order' CSS = 'bg-transparent text-transparent hover:bg-transparent hover:shadow-none cursor-default'/>
+                </div>
+              }
+            </div>
           </div>
-          <h3 className = {`flex items-center justify-between px-4 py-2 text-lg font-medium transition mt-7 md:pt-2 border-b md:border-b-0 md:border-t rounded-md cursor-pointer  border-onSurface/10 hover:bg-onSurface/5 ${expand && 'bg-onSurface/5'}`}
+          <h3 className = {`flex items-center justify-between px-4 py-2 text-lg font-medium transition mt-7 md:pt-2 border-b md:border-b-0 md:border-t rounded-md cursor-pointer  border-onSurface/10 hover:bg-primary ${expand && 'bg-primary'}`}
             onClick = {()=>setExpand(!expand)}
           >
             <span>Order Items ({order.lineItems.nodes.length})</span>
             <span className = {`${expand ? 'rotate-180' : 'rotate-0'} transition`}><ChevronDownIcon className = "w-5 h-5"/></span>
           </h3>
           {expand && (
-            <div className = "divide-y">
+            <div className = "px-4 divide-y">
               {order?.lineItems?.nodes?.map((orderProduct)=>(
                 <div className = "h-full md:my-6 md:p-4 md:flex md:gap-6 md:border-onSurface/20" key = {orderProduct?.orderProduct?.variant.product.title}>
                   <div className = "flex items-center justify-start flex-1 w-full h-full gap-6">
@@ -471,17 +503,30 @@ function OrderInformation({order}){
                         <p className = "text-sm sm:text-base">{orderProduct?.variant?.product.title}</p>
                         <p className = "text-xs md:text-sm text-onSurface/50">{orderProduct?.variant?.title}</p>
                         <p className = "text-xs md:text-sm text-onSurface/50 ">Qty: <span className = "font-medium">{orderProduct?.quantity}</span></p>
-                        <p className = "text-xs md:text-sm text-onSurface/50 ">Refundable by: <br/><b>{formatDate(order?.processedAt,1).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</b></p>
+                        <p className = "text-xs md:text-sm text-onSurface/50 ">
+                          {didRefundEnd(formatDate(order?.processedAt,1).month, formatDate(order.processedAt).day, formatDate(order.processedAt).year) ? 
+                          <>
+                            <span className = "text-tertiaryVariant">Refundable by:</span> <br/><b>{formatDate(order?.processedAt,1).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</b>
+                          </>
+                          :
+                          <>
+                            <span className = "">Refundable by:</span> <br/><b>{formatDate(order?.processedAt,1).month} {formatDate(order.processedAt).day}, {formatDate(order.processedAt).year}</b>
+                          </>
+                          }
+                        </p>
                         <p className = "hidden text-sm md:block">{formatNumber(orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.amount,orderProduct?.variant?.product.compareAtPriceRange.maxVariantPrice.currencycode,locale)}</p>
                         <div className = "flex items-center mt-2 gap-x-2">
-                          <Link href = {`/product/${slugify(orderProduct?.variant?.product.title)}`}>
-                            <div className = "w-auto">
-                              <Button text = 'Buy again' CSS = 'text-xs sm:text-sm bg-secondaryVariant hover:bg-secondary text-onSecondary text-sm  w-full py-1 px-3'/>
-                            </div>
-                          </Link>
-                          <Link href = {`/support/refunds?orderNumber=${order.orderNumber}&productName=${orderProduct?.variant?.product.title}&variantTitle=${orderProduct.variant.title}`}>
-                            <span className = "text-xs cursor-pointer hover:text-onSurface/50">or refund</span>
-                          </Link>
+                          <div className = "w-auto">
+                            <Button 
+                            text = 'Buy again' 
+                            CSS = 'text-xs sm:text-sm bg-secondaryVariant hover:bg-secondary text-onSecondary text-sm  w-full py-1 px-3' 
+                            onClick = {()=>handleAddToCart(orderProduct.variant.id)}/>
+                          </div>
+                          {!didRefundEnd(formatDate(order?.processedAt,1).month, formatDate(order.processedAt).day, formatDate(order.processedAt).year) &&
+                            <Link href = {`/support/refunds?orderNumber=${order.orderNumber}&productName=${orderProduct?.variant?.product.title}&variantTitle=${orderProduct.variant.title}`}>
+                              <span className = "text-xs cursor-pointer hover:text-onSurface/50">or refund</span>
+                            </Link>
+                          }
                         </div>
                       </div>
                       <div className = "text-sm md:hidden sm:text-base">
@@ -490,15 +535,14 @@ function OrderInformation({order}){
                     </div>
                   </div>
                   <div className = "flex-col justify-center hidden gap-3 md:flex ">
-                    {/* <div>
-                      <Button text = 'Track my package' CSS = 'bg-secondary text-onSecondary px-4 py-2'/>
-                    </div> */}
                     <div className='mt-2'>
-                      <Button text = 'Write a review' CSS = 'bg-primaryVariant text-onPrimary/60 px-4 py-1'/>
+                      <Link href = {`/product/${slugify(orderProduct?.variant?.product.title)}?review=true`}>
+                        <Button text = 'Write a review' CSS = 'text-sm bg-secondaryVariant text-onSecondary px-4 py-2'/>
+                      </Link>
                     </div>
                     <div>
                     <Link href = {`/support/refunds?orderNumber=${order.orderNumber}&productName=${orderProduct?.variant?.product.title}&variantTitle=${orderProduct.variant.title}`}>
-                        <Button text = 'Request a refund' CSS = 'bg-primaryVariant text-onPrimary/60 px-4 py-1'/>
+                        <Button text = 'Request a refund' CSS = 'text-sm bg-secondaryVariant/30 text-onSecondary  px-4 py-2'/>
                       </Link>
                     </div>
                   </div>
@@ -508,14 +552,14 @@ function OrderInformation({order}){
           )}
 
 
-          <h3 className = {`flex items-center md:hidden justify-between px-4 py-2 text-lg font-medium transition border-b rounded-md cursor-pointer  border-onSurface/10 hover:bg-onSurface/5 ${expandShipping && 'bg-onSurface/5'}`}
+          <h3 className = {`flex items-center md:hidden justify-between px-4 py-2 text-lg font-medium transition border-b rounded-md cursor-pointer  border-onSurface/10 hover:bg-primary ${expandShipping && 'bg-primary'}`}
             onClick = {()=>setExpandShipping(!expandShipping)}
           >
             <span>Shipping Details</span>
             <span className = {`${expandShipping ? 'rotate-180' : 'rotate-0'} transition`}><ChevronDownIcon className = "w-5 h-5"/></span>
           </h3>
           {expandShipping && (
-          <div className = 'w-full p-4 text-sm border rounded-md border-onSurface/20 md:hidden'>
+          <div className = 'w-full p-4 text-sm rounded-md md:hidden'>
             <p>
               <span>{order?.shippingAddress.firstName}</span>
               {' '}
@@ -555,7 +599,7 @@ function OrderInformation({order}){
               </p>
               <h3 className = "flex justify-between mt-4">
                 <span className = "text-lg font-medium">Order total</span>
-                <span className = "text-lg font-medium text-tertiaryVariant">{formatNumber(order.totalPriceV2.amount,order.totalPriceV2.currencyCode,locale)}</span>
+                <span className = "text-lg font-medium text-onSurface">{formatNumber(order.totalPriceV2.amount,order.totalPriceV2.currencyCode,locale)}</span>
               </h3>
             </div>
           </div>

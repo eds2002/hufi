@@ -1,7 +1,7 @@
 import { Fragment, useState,useMemo, useContext} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
-import { ArrowRightOnRectangleIcon, Bars3Icon, Cog6ToothIcon, CubeIcon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import { ArrowRightOnRectangleIcon, Bars3Icon, Cog6ToothIcon, CubeIcon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserIcon, XMarkIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, } from '@heroicons/react/20/solid'
 import { useScrollDirection } from 'react-use-scroll-direction'
 import Link from 'next/link'
 import { useEffect } from 'react'
@@ -48,8 +48,8 @@ export default function Header({data,user}) {
             {user?.customer ? 
               <div className="relative group">
                 <p className = "text-sm font-medium cursor-pointer text-onPrimary hover:text-onBackground/70">Hi, {user.customer.firstName}</p>
-                <div className = "absolute right-0 z-40 max-w-xl py-4 rounded-lg shadow-xl opacity-0 pointer-events-none bg-surface group-hover:opacity-100 group-hover:pointer-events-auto">
-                  <div className="flex flex-col items-start justify-start gap-3 w-44">
+                <div className = "absolute right-0 z-40 max-w-xl rounded-lg shadow-xl opacity-0 pointer-events-none bg-surface group-hover:opacity-100 group-hover:pointer-events-auto">
+                  <div className="flex flex-col items-start justify-start w-56 divide-y divide-onSurface/20">
                     <Link href = "/user/profile?tab=profile">
                       <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
                         <li className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Profile <UserCircleIcon className = "w-5 h-5"/></li>
@@ -62,11 +62,11 @@ export default function Header({data,user}) {
                     </Link>
                     <Link href = "/user/profile?tab=support">
                       <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
-                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Settings <Cog6ToothIcon className = "w-5 h-5"/></a>
+                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Support <ChatBubbleBottomCenterIcon className = "w-5 h-5"/></a>
                       </div>
                     </Link>
                     <Link href = "/api/logout" >
-                      <div className = "w-full pl-4 pr-10 mt-5 rounded-md hover:bg-background">
+                      <div className = "w-full py-5 pl-4 pr-10 rounded-md cursor-pointer hover:bg-background">
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground ">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
                       </div>
                     </Link>
@@ -171,8 +171,8 @@ export default function Header({data,user}) {
                         </Link>
                       </div>
                       <div>
-                        <Link href = "/user/profile?tab=settings">
-                        <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Settings <Cog6ToothIcon className = "w-5 h-5"/></a>
+                        <Link href = "/user/profile?tab=support">
+                        <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Support <ChatBubbleBottomCenterIcon className = "w-5 h-5"/></a>
                         </Link>
                       </div>
                       <div className = "mt-10">

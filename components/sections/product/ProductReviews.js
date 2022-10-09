@@ -32,6 +32,10 @@ const ProductReviews = ({data,reviews}) => {
       setAverage(avg)
     }
   },[displayReviews])
+
+  useEffect(()=>{
+    setDisplayReviews(reviews ? JSON.parse(reviews) : null)
+  },[reviews])
   
   const handleImageClick = (index) =>{
     setSelectedReview(displayReviews[index])
@@ -91,7 +95,7 @@ const ProductReviews = ({data,reviews}) => {
               :
               <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
                 <Button 
-                    onClick = {()=>setOpenWriteReview(true)}
+                    onClick
                     text = 'Write a review' 
                     CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
                   />
@@ -190,7 +194,7 @@ const ProductReviews = ({data,reviews}) => {
             :
             <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
               <Button 
-                  onClick = {()=>setOpenWriteReview(true)}
+                  onClick
                   text = 'Write a review' 
                   CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
                 />

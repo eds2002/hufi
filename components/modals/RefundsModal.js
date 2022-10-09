@@ -1,6 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { Button } from '../elements'
+import { CloseButton } from '../features'
 
 export default function RefundsModal({refundsModal,setRefundsModal}) {
 
@@ -51,6 +52,7 @@ export default function RefundsModal({refundsModal,setRefundsModal}) {
                       onClick={()=>setRefundsModal(false)}
                     />
                   </div>
+                  <CloseButton onClick={()=>setRefundsModal(false)}/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

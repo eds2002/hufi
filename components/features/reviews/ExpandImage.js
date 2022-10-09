@@ -3,12 +3,12 @@ import Image from 'next/image'
 import { Fragment, useState } from 'react'
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import {StarsComponent} from '../'
-
 import profilePic from '../../../assets/hufiProfilePic.png'
 import { useRef } from 'react'
-import { useEffect } from 'react'
+import {CloseButton} from '../'
 
-export default function MyModal({expandImage,setExpandImage,selectedReview}) {
+
+export default function ExpandImage({expandImage,setExpandImage,selectedReview}) {
   const imageRef = useRef()
   const containerRef = useRef()
 
@@ -60,7 +60,8 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="flex flex-col w-full max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
+                <Dialog.Panel className="relative flex flex-col w-full max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
+                  {/* LEFT SIDE / TOP */}
                   <div className = "relative md:flex-1 ">
                     {selectedReview?.images?.length > 1 && (
                       <div className = "absolute inset-0 z-10 flex items-center justify-between p-3 pointer-events-none">
@@ -74,7 +75,7 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                         />
                       </div>
                     )}
-                    <div className = "grid grid-flow-col auto-cols-[100%] bg-red-500 snap-x snap-mandatory aspect-video md:aspect-square scrollBar" ref = {containerRef}>
+                    <div className = "grid grid-flow-col auto-cols-[100%] snap-x snap-mandatory aspect-video md:aspect-square scrollBar" ref = {containerRef}>
                       {selectedReview?.images?.map((url)=>(
                         <div className = "relative w-full  snap-center max-h-[55vh]" key = {url}>
                           <img src = {url} className = "object-cover w-full h-full" ref = {imageRef} key = {url}/>
@@ -82,7 +83,9 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                       ))}
                     </div>
                   </div>
-                  <div className = "p-6 md:flex-1">
+
+                  {/* RIGHT SIDE / BOTTOM */}
+                  <div className = "flex flex-col justify-center p-6 md:flex-1">
                     <div className = "flex justify-between">
                       <div className = "relative flex gap-x-4">
                         <div className = "relative rounded-full select-none w-11 h-11 bg-neutral-600">
@@ -108,6 +111,7 @@ export default function MyModal({expandImage,setExpandImage,selectedReview}) {
                       )}
                     </div>
                   </div>
+                  <CloseButton onClick = {()=>setExpandImage(false)}/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

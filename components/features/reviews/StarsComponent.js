@@ -2,7 +2,6 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 
 const StarsComponent = ({starRating}) => {
-  console.log(starRating)
   return (
     <span className = "flex">
       {[0,1,2,3,4].map((index)=>(

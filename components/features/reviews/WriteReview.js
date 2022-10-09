@@ -10,6 +10,7 @@ import Image from 'next/image'
 import {v4} from 'uuid'
 import { useContext } from 'react';
 import UserContext from '../../../context/userContext';
+import CloseButton from '../CloseButton';
 
 export default function WriteReview({openWriteReview, setOpenWriteReview,productTitle}) {
   const {currentUser} = useContext(UserContext)
@@ -233,6 +234,7 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
                       onClick = {()=>handleSubmit()}
                     />
                   </div>
+                  <CloseButton onClick = {()=>setOpenWriteReview(false)}/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

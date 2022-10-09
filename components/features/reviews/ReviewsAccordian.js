@@ -21,6 +21,11 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
   const [average,setAverage] = useState(0)
   const [expandImage,setExpandImage] = useState(false)
   const [selectedReview,setSelectedReview] = useState(null)
+
+  useEffect(()=>{
+    setDisplayReviews(reviews ? JSON.parse(reviews) : null)
+  },[reviews])
+
   useEffect(()=>{
     if(displayReviews.length != 0){
       const filter = displayReviews.flatMap(review => review.rating)
@@ -122,7 +127,7 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
               <>
                 <div className = "pt-4 w-max">
                   {currentUser ? 
-                    <Button text = 'Write review' CSS = 'px-4 py-2 bg-secondaryVariant hover:bg-secondary text-onSecondary' onClick = {()=>setOpenWriteReview(true)}/>
+                    <Button text = 'Write review' CSS = 'px-4 py-1 bg-secondaryVariant hover:bg-secondary text-onSecondary' onClick = {()=>setOpenWriteReview(true)}/>
                   :
                     <Link href = {`/login?redirect=${currentProduct}`}>
                       <Button text = 'Write review' CSS = 'bg-secondaryVariant hover:bg-secondary text-onSecondary py-1'/>

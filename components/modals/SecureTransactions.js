@@ -1,9 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { Button } from '../elements'
+import { CloseButton } from '../features'
 
-export default function SecureTransactions({secureTransactionModal,setSecureTransactionsModal}) {
-
+function SecureTransactions({secureTransactionModal,setSecureTransactionsModal}) {
   return (
     <>
       <Transition appear show={secureTransactionModal} as={Fragment}>
@@ -31,7 +31,7 @@ export default function SecureTransactions({secureTransactionModal,setSecureTran
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <Dialog.Panel className="relative w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                   <h3
                     className="text-3xl font-medium leading-6 text-gray-900"
                   >
@@ -51,6 +51,7 @@ export default function SecureTransactions({secureTransactionModal,setSecureTran
                       onClick={()=>setSecureTransactionsModal(false)}
                     />
                   </div>
+                  <CloseButton onClick = {()=>setSecureTransactionsModal(false)}/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -60,3 +61,5 @@ export default function SecureTransactions({secureTransactionModal,setSecureTran
     </>
   )
 }
+
+export default SecureTransactions

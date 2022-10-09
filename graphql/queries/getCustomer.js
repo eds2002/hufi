@@ -12,10 +12,18 @@ query customer($token:String!){
     displayName
     orders(first:50,reverse:true){
       nodes{
+        statusUrl
+        successfulFulfillments{
+          trackingInfo{
+            url
+            number
+					}
+        }
         lineItems(first:50){
           nodes{
             quantity
             variant{
+              id
               product{
                 title
                 productType

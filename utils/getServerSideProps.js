@@ -7,6 +7,7 @@ import {getCustomer} from '../graphql/queries/getCustomer'
   const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
   const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
   const {data:userInformation,errors} = await storefront(getCustomer,{token:cookies || "randomletters"})
+  console.log(errors)
   pageProps["headerData"] = headerData || null
   pageProps["footerData"] = footerData || null
   pageProps["userData"] = userInformation || null

@@ -11,6 +11,7 @@ import Head from 'next/head'
 import { viewMenu } from '../graphql/queries/viewMenu'
 import { getCustomer } from '../graphql/queries/getCustomer'
 import Layout from '../components/global/Layout'
+import { red } from '@mui/material/colors'
 
 const Login = ({pageProps}) => {
   const router = useRouter()
@@ -30,7 +31,7 @@ const Login = ({pageProps}) => {
       type:"password",
     },
   ])
-
+  const [redirect,setRedirect] = useState(router.query?.redirect)
   const [values, setValues] = useState({})
 
   const onChange =  (e) =>{
@@ -51,7 +52,7 @@ const Login = ({pageProps}) => {
 
       const {code} = await response.json()
       if(code == 302){
-        Router.push('/')
+      Router.push(redirect ? `/${redirect}` : `/`)
       }
     }else{
       alert('Sorry, issue logging in.')
