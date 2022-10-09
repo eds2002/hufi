@@ -6,11 +6,16 @@ import {StarsComponent} from '../'
 import profilePic from '../../../assets/hufiProfilePic.png'
 import { useRef } from 'react'
 import {CloseButton} from '../'
+import { useEffect } from 'react'
 
 
 export default function ExpandImage({expandImage,setExpandImage,selectedReview}) {
   const imageRef = useRef()
   const containerRef = useRef()
+  const [expand,setExpand] = useState(false)
+  useEffect(()=>{
+    setExpand(false)
+  },[expandImage])
 
   const handleClick = (direction)=>{
     const width = imageRef?.current?.width
@@ -60,9 +65,9 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="relative flex flex-col w-full max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
+                <Dialog.Panel className="relative flex flex-col w-full h-[80vh] md:h-full  max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
                   {/* LEFT SIDE / TOP */}
-                  <div className = "relative md:flex-1 ">
+                  <div className = {`relative md:flex-1 ${expand ? 'h-full' : 'h-[50%]'} md:h-full w-full`}>
                     {selectedReview?.images?.length > 1 && (
                       <div className = "absolute inset-0 z-10 flex items-center justify-between p-3 pointer-events-none">
                         <ChevronLeftIcon 
@@ -75,9 +80,13 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                         />
                       </div>
                     )}
-                    <div className = "grid grid-flow-col auto-cols-[100%] snap-x snap-mandatory aspect-video md:aspect-square scrollBar" ref = {containerRef}>
+                    <div 
+                      className = "grid grid-flow-col auto-cols-[100%] snap-x snap-mandatory  scrollBar overflow-scroll h-full cursor-pointer w-full" 
+                      ref = {containerRef}
+                      onClick = {()=>setExpand(!expand)}
+                    >
                       {selectedReview?.images?.map((url)=>(
-                        <div className = "relative w-full  snap-center max-h-[55vh]" key = {url}>
+                        <div className = "relative w-full h-full overflow-hidden snap-center" key = {url}>
                           <img src = {url} className = "object-cover w-full h-full" ref = {imageRef} key = {url}/>
                         </div>
                       ))}
@@ -85,7 +94,7 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                   </div>
 
                   {/* RIGHT SIDE / BOTTOM */}
-                  <div className = "flex flex-col justify-center p-6 md:flex-1">
+                  <div className = {`${expand ? 'hidden' : 'flex'} flex-col justify-center p-6 md:flex-1`}>
                     <div className = "flex justify-between">
                       <div className = "relative flex gap-x-4">
                         <div className = "relative rounded-full select-none w-11 h-11 bg-neutral-600">

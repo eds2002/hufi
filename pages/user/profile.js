@@ -493,7 +493,7 @@ function OrderInformation({order}){
               {order?.lineItems?.nodes?.map((orderProduct)=>(
                 <div className = "h-full md:my-6 md:p-4 md:flex md:gap-6 md:border-onSurface/20" key = {orderProduct?.orderProduct?.variant.product.title}>
                   <div className = "flex items-center justify-start flex-1 w-full h-full gap-6">
-                    <Link href = {`product/${slugify(orderProduct?.variant?.product.title)}`}>
+                    <Link href = {`/product/${slugify(orderProduct?.variant?.product.title)}`}>
                       <div className = "relative my-6 overflow-hidden rounded-md cursor-pointer w-28 h-28 md:h-36 md:w-36 ">
                         <Image src = {orderProduct?.variant?.image.url} alt={orderProduct?.variant?.image.altText} layout = 'fill'/>
                       </div>
