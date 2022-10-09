@@ -2,6 +2,7 @@ import { Transition,Dialog,Tab } from "@headlessui/react"
 import { Fragment,useState } from "react"
 import { XMarkIcon,UserCircleIcon,CubeIcon, ChatBubbleBottomCenterIcon,ArrowRightOnRectangleIcon,ChevronRightIcon,ChevronLeftIcon} from "@heroicons/react/20/solid"
 import Link from "next/link"
+import { slugify } from "../../../utils/slugify"
 export default function MobileNav({open,setOpen,data,user}){
   return(
     <Transition.Root show={open} as={Fragment}>

@@ -5,7 +5,7 @@ export const AddToCartModal = dynamic(
     /*webpackChunkName: "AddToCartModal"*/
     './AddToCartModal'
   ),{
-    loading:()=><h1>Loading...</h1>,
+    // loading:()=><h1>Loading...</h1>,
   }
 )
 export const FirstTimeModal = dynamic(
@@ -13,7 +13,7 @@ export const FirstTimeModal = dynamic(
     /*webpackChunkName: "FirstTimeModal" */
     './FirstTimeBuyer'
   ),{
-    loading: () => <h1>Loading...</h1>,
+    // loading: () => <h1>Loading...</h1>,
     ssr:false,
   }
 )
@@ -23,7 +23,7 @@ export const SecureTransactions = dynamic(
     /*webpackChunkName: "FirstTimeModal" */
     './SecureTransactions'
   ),{
-    loading: () => <h1>Loading...</h1>,
+    // loading: () => <h1>Loading...</h1>,
     ssr:false,
   }
 )

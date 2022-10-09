@@ -7,7 +7,6 @@ import { useState,useRef,useEffect } from "react";
 
 
 export default function Collections({data, style}) {
-  const [handle,setHandle] = useState()
   return (
     <>
         {data && (
