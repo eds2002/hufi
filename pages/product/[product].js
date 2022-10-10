@@ -17,6 +17,9 @@ import {collection, query, where, getDocs} from "firebase/firestore";
 
 
 const Product = ({productData,pageProps,reviewsData})=>{
+  useEffect(()=>{
+    console.log("pleasee",productData)
+  },[])
   const ref = useRef(null)
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)

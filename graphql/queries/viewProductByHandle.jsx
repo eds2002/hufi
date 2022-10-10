@@ -7,6 +7,13 @@ query Product($handle: String!) {
     id
     title
     totalInventory
+    collections(first:10){
+      nodes{
+        id
+        handle
+        title
+      }
+    }
     seo{
       title
       description

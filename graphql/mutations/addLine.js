@@ -35,6 +35,13 @@ mutation cartLinesAdd($cartId: ID!, $quantity:Int,$variantId:ID!) {
                     value
                     type
                   }
+                  collections(first:5){
+                    nodes{
+                      id
+                      title
+                      handle
+                    }
+                  }
                 }
                 image{
                   url

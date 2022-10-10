@@ -64,12 +64,12 @@ export default function Home({data,collections,productData,pageProps}) {
         </Head>
         <Layout {...pageProps}>
           <Hero data = {data}/>
-          <HorizontalProducts data = {productData}/>
+          <HorizontalProducts data = {productData} text = 'Trending in our store.'/>
           <CollectionSubCol data = {collections}/>
           {/* Display only this part when a user is present or if user is not present */}
           {currentUser != null ? (
             <>
-              {!hasPurchased && (
+              {hasPurchased == true && (
                 <>
                   <FirstTimeModal openModal={openModal} setOpenModal={setOpenModal} isUserSignedAndQualified = {true}/>
                   <div className = "fixed inset-0 z-20 flex items-center justify-start pointer-events-none select-none">

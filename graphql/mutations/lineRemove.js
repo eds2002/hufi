@@ -25,6 +25,13 @@ mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
                     value
                     type
                   }
+                  collections(first:5){
+                    nodes{
+                      id
+                      title
+                      handle
+                    }
+                  }
                 }
                 image{
                   url

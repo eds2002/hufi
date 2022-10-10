@@ -31,6 +31,13 @@ mutation updateLine($cartId:ID!, $lineId:ID!, $amount: Int!){
                     value
                     type
                   }
+                  collections(first:5){
+                    nodes{
+                      id
+                      title
+                      handle
+                    }
+                  }
                 }
                 image{
                   url

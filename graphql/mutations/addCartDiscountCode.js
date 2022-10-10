@@ -37,6 +37,13 @@ mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes:[String!]!) {
                     value
                     type
                   }
+                  collections(first:5){
+                    nodes{
+                      id
+                      title
+                      handle
+                    }
+                  }
                 }
                 image{
                   url

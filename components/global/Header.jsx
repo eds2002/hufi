@@ -1,37 +1,20 @@
 import { Fragment, useState,useMemo, useContext} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
-import { ArrowRightOnRectangleIcon, Bars3Icon, Cog6ToothIcon, CubeIcon, MagnifyingGlassIcon, MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserIcon, XMarkIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline'
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, } from '@heroicons/react/20/solid'
-import { useScrollDirection } from 'react-use-scroll-direction'
+import { ArrowRightOnRectangleIcon, Bars3Icon, CubeIcon, UserCircleIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { useEffect } from 'react'
 import { useRef } from 'react'
 import Image from 'next/image'
-import { Button } from '../elements'
 import CartContext from '../../context/cartContext'
-import LocaleContext from '../../context/localeContext'
-import {formatNumber} from '../../utils/formatNumber'
-import {removeProduct} from '../../utils/removeProduct'
-import { updateCart } from '../../utils/updateCart'
 import { slugify } from '../../utils/slugify'
-import UserContext from '../../context/userContext'
-import { storefront } from '../../utils/storefront'
-import { cartBuyerIdentity } from '../../graphql/mutations/cartBuyerIdentity'
-import { createCheckout } from '../../graphql/mutations/createCheckout'
-import { applyCheckoutDiscount } from '../../graphql/mutations/applyCheckoutDiscount'
-import { useRouter } from 'next/router'
 import { CartDrawer } from '.'
 import MobileNav from './mobilenav/MobileNav'
-
+import useSWR from 'swr'
 
 
 
 
 export default function Header({data,user}) {
-  const {isScrollingDown,scrollDirection} = useScrollDirection()
   const [open, setOpen] = useState(false)
-  const [displayTopNav, setDisplayTopNav] = useState(true)
-  const [scrolling,setScrolling] = useState()
   const [scrollPos,setScrollPos] = useState(0)
   const {openCart,setOpenCart,cartData,viewedCart,setViewedCart} = useContext(CartContext)
 

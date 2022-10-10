@@ -6,6 +6,8 @@ import { slugify } from "../../../utils/slugify"
 import { formatNumber } from "../../../utils/formatNumber"
 import { MinusIcon,PlusIcon,TrashIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
+import {removeProduct} from '../../../utils/removeProduct'
+import {updateCart} from '../../../utils/updateCart'
 
 export default function CartProduct({data}){
   const {locale} = useContext(LocaleContext)

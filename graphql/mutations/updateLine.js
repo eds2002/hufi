@@ -25,6 +25,13 @@ mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
                     value
                     type
                   }
+                  collections(first:5){
+                    nodes{
+                      id
+                      title
+                      handle
+                    }
+                  }
                 }
                 image{
                   url

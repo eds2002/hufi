@@ -287,7 +287,7 @@ function GetItByComponent({data}){
   const [hour,setHour] = useState(0)
   const [minute,setMinute] = useState(0)
   const [second,setSecond] = useState(0)
-  const dates = data.product.deliveryBusinessDays?.value ? JSON.parse(data.product.deliveryBusinessDays.value) : null
+  const dates = data?.product?.deliveryBusinessDays?.value ? JSON.parse(data?.product?.deliveryBusinessDays?.value) : null
 
   
   // Time variables
