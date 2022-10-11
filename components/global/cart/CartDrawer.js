@@ -16,10 +16,11 @@ import { storefront } from "../../../utils/storefront"
 import { viewCollectionProducts } from "../../../graphql/queries/viewCollectionProducts"
 import { deliveredDate } from "../../../utils/deliveredDate"
 import { slugify } from "../../../utils/slugify"
+import { addToShopifyCart } from "../../../utils/addToShopifyCart"
 
 export default function CartDrawer({openCart, setOpenCart,Fragment}){
-  const {cartData,setViewedCart,setCheckout,checkout} = useContext(CartContext)
-  const {currentUser,currentUserACCESS} = useContext(UserContext)
+  const {cartData,setViewedCart,setCartData} = useContext(CartContext)
+  const {currentUser} = useContext(UserContext)
   const {locale} = useContext(LocaleContext)
   const totalItems = cartData?.lines?.edges?.length ?? 0
   const [progressWidth, setProgressWidth] = useState(100)
@@ -64,7 +65,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
     return ((minNum-maxNum) / maxNum * 100).toFixed(0)
   }
 
-  const handleAddToCart = async (variantId) =>{
+  const handleAddToCart = async (product) =>{
+    const responseCartData = await addToShopifyCart(cartData,product.variants.nodes[0].id)
+    setViewedCart(false)
+    setOpenCart(true)
+    setCartData(responseCartData)
   }
 
   return(
@@ -248,10 +253,14 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                                         </p>
                                         <div className = "mt-3">
                                         {product.options.length === 1 && product.options[0].name === "Title" ? 
-                                          <Button text = 'Add to cart' CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'/>
+                                          <Button 
+                                            text = 'Add to cart' 
+                                            CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                            onClick = {()=>handleAddToCart(product)}
+                                          />
                                         :
                                           <Link href = {`/product/${slugify(product?.title)}`}>
-                                            <Button text = 'View Options' CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'/>
+                                            <Button text = 'View all options' CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'/>
                                           </Link>
                                         }
                                         </div>

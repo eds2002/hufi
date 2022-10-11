@@ -49,6 +49,10 @@ query viewCollection($handle:String!, $amount:Int){
           value
           type
         }
+        shortDesc:metafield(namespace:"product",key:"short_description"){
+          value
+          type
+        }
       }
     }
   }

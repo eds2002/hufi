@@ -38,13 +38,15 @@ export default function ProductOverview({data,compRef,reviews}) {
   useEffect(()=>{
     setSelectedOption(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
     setCurrentVariant(null)
-    setSelectedProduct(selectedOption)
+    didMount.current = false;
+    imageRef.current.scrollLeft = 0
     return(()=>{})
   },[data?.product])
-
-
+  
+  
   
   // TODO, this is for the sticky cart
+  setSelectedProduct(selectedOption)
   
 
   // FUNCTION TODO, change old array to new array with a value the user has selected
@@ -145,7 +147,7 @@ export default function ProductOverview({data,compRef,reviews}) {
                   
                   <div className={`
                   grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-                  lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar`} ref = {imageRef}>
+                  lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar rounded-md`} ref = {imageRef}>
                     {data.product?.media?.nodes?.map((media,index)=>(
                       <div className = {`
                       ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}

@@ -23,11 +23,16 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
   const [recommended,setRecommended] = useState({products:{nodes:productRecommendations.collectionByHandle.products.nodes.filter(product => product.title != productData.product.title)}})
+
   const ref = useRef(null)
   const handleScroll = () => {
       const position = window.pageYOffset;
       setEnableStickCart(position > 1000);
   };
+
+  useEffect(()=>{
+    setRecommended({products:{nodes:productRecommendations.collectionByHandle.products.nodes.filter(product => product.title != productData.product.title)}})
+  },[productData])
 
   useEffect(() => {
       window.addEventListener('scroll', handleScroll, { passive: true });
@@ -35,7 +40,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
       return () => {
           window.removeEventListener('scroll', handleScroll);
       };
-  }, []);
+  }, [productData.product]);
 
   return (
     <>
