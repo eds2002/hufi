@@ -6,7 +6,7 @@ const ProductImageView = ({data}) => {
     <section className = "w-full mx-auto md:px-4 max-w-7xl">
       {(data?.product?.mediaOne?.reference?.image?.url && data?.product?.mediaOneText?.value) && (
         <div className = "flex flex-col w-full h-full md:flex-row">
-          <div className = "md:flex-1 h-[50vh] md:h-[80vh] relative">
+          <div className = "md:flex-1 h-[50vh] md:h-[80vh] relative bg-surface">
             <Image src = {data?.product?.mediaOne.reference.image.url} layout='fill' objectFit='cover' priority/>
           </div>
           <div className = "flex items-center justify-center md:justify-start py-14 md:flex-1">
@@ -21,7 +21,7 @@ const ProductImageView = ({data}) => {
       )}
       {(data?.product?.mediaTwo?.reference?.image?.url && data?.product?.mediaTwoText?.value) && (
         <div className = "flex flex-col md:flex-row-reverse ">
-          <div className = "md:flex-1 h-[50vh] md:h-[80vh] relative">
+          <div className = "md:flex-1 h-[50vh] md:h-[80vh] relative bg-surface">
             <Image src = {data?.product?.mediaTwo.reference.image.url} layout='fill' objectFit='cover' priority/>
           </div>
           <div className = "flex items-center justify-center md:justify-end py-14 md:flex-1">
@@ -36,7 +36,7 @@ const ProductImageView = ({data}) => {
       )}  
       {(data?.product?.mediaThree?.reference?.image?.url && data?.product?.mediaThreeText?.value) && (  
         <div className = "flex flex-col md:flex-row">
-          <div className = "md:flex-1 h-[50vh] md:h-[80vh]  relative">
+          <div className = "md:flex-1 h-[50vh] md:h-[80vh] bg-surface relative">
             <Image src = {data?.product?.mediaThree.reference.image.url} layout='fill' objectFit='cover' priority/>
           </div>
           <div className = "flex items-center justify-center md:justify-start py-14 md:flex-1">

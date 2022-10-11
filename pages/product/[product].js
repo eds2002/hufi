@@ -1,4 +1,4 @@
-import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews, ProductUse,ProductRecommended } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 import {HorizontalProducts, Signup} from '../../components/sections'
@@ -13,7 +13,6 @@ import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
 import { productByTag } from "../../graphql/queries/productByTag";
-import { useMemo } from "react";
 
 
 
