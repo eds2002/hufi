@@ -1,7 +1,7 @@
-import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews, ProductUse } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews, ProductUse,ProductRecommended } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
-import {Signup} from '../../components/sections'
+import {HorizontalProducts, Signup} from '../../components/sections'
 import Head from "next/head";
 import { slugify } from "../../utils/slugify";
 import { useEffect,useState, useRef,useContext } from "react";
@@ -13,26 +13,21 @@ import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
 import { productByTag } from "../../graphql/queries/productByTag";
+import { useMemo } from "react";
 
 
 
 
 const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
-  const ref = useRef(null)
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
+  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations.products.nodes.filter(product => product.title != productData.product.title)}})
+  const ref = useRef(null)
   const handleScroll = () => {
       const position = window.pageYOffset;
       setEnableStickCart(position > 1000);
   };
-
-  const test = async () =>{
-    if(productData?.product?.tags[0]){
-      const t = await storefront(productByTag, {tag:`query:${productData.product.tags[0]}`})
-    }
-  }
-  test()
 
   useEffect(() => {
       window.addEventListener('scroll', handleScroll, { passive: true });
@@ -74,7 +69,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
           <main className = "relative">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
-            <ProductUse data = {productData?.product?.useCases}/>
+            {recommended.products.nodes.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <Signup/>
@@ -103,7 +98,7 @@ export async function getServerSideProps(context) {
 
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
-    let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(productByTag, {tag:`query:${product?.product?.tags[0]}`})
+    let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(productByTag, {tag:`query:tag:${product?.product?.tags[0]}`})
 
     const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))
     const querySnapshot = await getDocs(q)

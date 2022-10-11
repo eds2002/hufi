@@ -11,6 +11,15 @@ export const ProductIncentive = dynamic(
   }
 )
 
+export const ProductRecommended = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductIncentive" */
+    './ProductRecommended'
+  ),{
+    ssr:false,
+  }
+)
+
 export const ProductFeatures = dynamic(
   ()=> import(
     /*webpackChunkName: "ProductFeatures" */

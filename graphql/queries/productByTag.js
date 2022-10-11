@@ -1,8 +1,8 @@
 const gql = String.raw
 
 export const productByTag = gql`
-query ProductByTag{
-  products(query:"tag:Watches", first:10){
+query ProductByTag($tag:String!){
+  products(query:$tag, first:10){
     nodes{
      id
       title
@@ -11,6 +11,7 @@ query ProductByTag{
         title
         description
       }
+      tags
       compareAtPriceRange{
         maxVariantPrice{
           amount
