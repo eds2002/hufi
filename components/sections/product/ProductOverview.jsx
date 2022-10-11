@@ -36,18 +36,15 @@ export default function ProductOverview({data,compRef,reviews}) {
 
   // TODO, reset to default once the data changes.
   useEffect(()=>{
-    if(!didMount.current){
-      didMount.current = true
-      return
-    }
     setSelectedOption(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
     setCurrentVariant(null)
+    setSelectedProduct(selectedOption)
     return(()=>{})
-  },[data])
+  },[data?.product])
+
 
   
   // TODO, this is for the sticky cart
-  setSelectedProduct(selectedOption)
   
 
   // FUNCTION TODO, change old array to new array with a value the user has selected
@@ -73,7 +70,7 @@ export default function ProductOverview({data,compRef,reviews}) {
       didMount.current = true
       return
     }
-    
+        
     let findId;
     const query = []
     
@@ -88,13 +85,12 @@ export default function ProductOverview({data,compRef,reviews}) {
         findId = arrayIndex
       }
     })
-    // imageRef.current.scrollLeft > 0
-    // imageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+
+    
     imageRef.current.scrollLeft = 0
     setCurrentVariant(data.product.variants.nodes[findId].image.url)
     return(()=>{})
-  },[selectedOption])
-
+  },[selectedOption[0].value])
 
 
   // FUNCTION TODO, add to cart
@@ -121,7 +117,7 @@ export default function ProductOverview({data,compRef,reviews}) {
     setCartData(responseCartData)
   }
 
-  // TODO, on mount, set the data for variants that are sold out.
+  // TODO, on data change, set the data for variants that are sold out.
   useEffect(()=>{
     const soldOutVariants = data.product.variants.nodes.filter((currentArr)=>{
       if(currentArr.quantityAvailable === 0){
@@ -130,7 +126,7 @@ export default function ProductOverview({data,compRef,reviews}) {
     })
     setSoldOutItems(soldOutVariants.map((variant)=>variant.selectedOptions[0].value))
     return(()=>{})
-  },[])
+  },[data?.product])
 
 
   return (
@@ -166,8 +162,6 @@ export default function ProductOverview({data,compRef,reviews}) {
                 {/* RIGHT SIDE */}
                 <div className = "col-span-4">
                   <div className = "sticky top-[104px]">
-
-                    {/* Product Title & Pricing */}
                     <ProductHeading data = {data}/>
 
                     {/* Product Information */}
@@ -179,14 +173,7 @@ export default function ProductOverview({data,compRef,reviews}) {
                         <GetItByComponent data = {data}/>
                       </form>
                     </div>
-
-                    {/* PRODUCT DESCRIPTION */}
-                    <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
-                      <div
-                        className="prose-h1:mb-6 prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
-                        dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
-                      />
-                    </div>
+                    <Description data = {data}/>
 
 
                     <DetailsComponent data = {data.product.details}/>
@@ -224,6 +211,17 @@ export default function ProductOverview({data,compRef,reviews}) {
         </div>
       }
     </>
+  )
+}
+
+function Description({data}){
+  return(
+    <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
+      <div
+        className="prose-h1:mb-6 prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
+        dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
+      />
+</div>
   )
 }
 
@@ -378,7 +376,13 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                       ${option.name === "Color" ? 
                       (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
                       :
-                      (`${soldOutItems?.includes(value) ? 'bg-gray-300 ring-black/60 cursor-default' : `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant bg-primary text-onPrimary' : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full`)
+                      (`${soldOutItems?.includes(value) ? 
+                          'bg-gray-300 ring-black/60 cursor-default' 
+                        : 
+                          `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 
+                              'ring-primaryVariant bg-primary text-onPrimary' 
+                            : 
+                              'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full`)
                       }
                       text-sm
                     `}

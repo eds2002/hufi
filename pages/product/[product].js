@@ -12,11 +12,12 @@ import Layout from "../../components/global/Layout";
 import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
+import { productByTag } from "../../graphql/queries/productByTag";
 
 
 
 
-const Product = ({productData,pageProps,reviewsData})=>{
+const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
   const ref = useRef(null)
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
@@ -25,6 +26,13 @@ const Product = ({productData,pageProps,reviewsData})=>{
       const position = window.pageYOffset;
       setEnableStickCart(position > 1000);
   };
+
+  const test = async () =>{
+    if(productData?.product?.tags[0]){
+      const t = await storefront(productByTag, {tag:`query:${productData.product.tags[0]}`})
+    }
+  }
+  test()
 
   useEffect(() => {
       window.addEventListener('scroll', handleScroll, { passive: true });
@@ -67,9 +75,6 @@ const Product = ({productData,pageProps,reviewsData})=>{
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
             <ProductUse data = {productData?.product?.useCases}/>
-            {/* <ProductIncentive data = {productData}/> */}
-            {/* <ProductShopPromise/> */}
-            {/* <ProductFeatures data = {productData}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <Signup/>
@@ -98,6 +103,7 @@ export async function getServerSideProps(context) {
 
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
+    let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(productByTag, {tag:`query:${product?.product?.tags[0]}`})
 
     const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))
     const querySnapshot = await getDocs(q)
@@ -109,7 +115,12 @@ export async function getServerSideProps(context) {
 
     if(product.product){
       return{
-        props:{productData:product || errors, pageProps:pageProps, reviewsData:JSON.stringify(reviews)}
+        props:{
+          productData:product || errors, 
+          pageProps:pageProps, 
+          reviewsData:JSON.stringify(reviews),
+          productRecommendations:productRecommedations || null
+        }
       }
     }else{
       return{
@@ -123,7 +134,7 @@ export async function getServerSideProps(context) {
     return{
       redirect: {
         permanent: false,
-        destination: "/404"
+        destination: `/404?${e.code}`
       }
     }
   }

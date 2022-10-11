@@ -14,6 +14,7 @@ query Product($handle: String!) {
         title
       }
     }
+    tags
     seo{
       title
       description
