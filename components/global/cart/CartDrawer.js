@@ -42,7 +42,7 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
       return
     }
     const getRecommendedCartProducts = async () =>{
-      const {data,errors} = await storefront(viewCollectionProducts,{handle:collectionHandle,amount:5})
+      const {data,errors} = await storefront(viewCollectionProducts,{handle:collectionHandle,amount:10})
       if(data.collectionByHandle && !errors){
         setCartUpsell(data.collectionByHandle)
       }

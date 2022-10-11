@@ -13,6 +13,7 @@ import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
 import { productByTag } from "../../graphql/queries/productByTag";
+import { viewCollectionProducts } from "../../graphql/queries/viewCollectionProducts";
 
 
 
@@ -21,7 +22,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
-  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations.products.nodes.filter(product => product.title != productData.product.title)}})
+  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations.collectionByHandle.products.nodes.filter(product => product.title != productData.product.title)}})
   const ref = useRef(null)
   const handleScroll = () => {
       const position = window.pageYOffset;
@@ -97,7 +98,8 @@ export async function getServerSideProps(context) {
 
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
-    let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(productByTag, {tag:`query:tag:${product?.product?.tags[0]}`})
+    const collectionHandle = product.product.collections.nodes[0].title ?? null
+    let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(viewCollectionProducts, {handle:collectionHandle,amount:10})
 
     const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))
     const querySnapshot = await getDocs(q)
