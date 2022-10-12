@@ -11,6 +11,7 @@ import {v4} from 'uuid'
 import { useContext } from 'react';
 import UserContext from '../../../context/userContext';
 import CloseButton from '../CloseButton';
+import { aliReviews } from '../../../constants/reviews';
 
 export default function WriteReview({openWriteReview, setOpenWriteReview,productTitle}) {
   const {currentUser} = useContext(UserContext)
@@ -59,6 +60,13 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
       const downloadedUrls = []
       createReviewDoc(downloadedUrls)
     }
+  }
+
+  const addReviews = async () =>{
+    const reviewsRef = collection(db,"reviews")
+    aliReviews.forEach(async (review) =>{
+      await setDoc(doc(reviewsRef),review)
+    })
   }
 
   const createReviewDoc = async (downloadUrls) => {
