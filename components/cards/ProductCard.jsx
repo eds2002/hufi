@@ -28,9 +28,9 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "overflow-hidden rounded-lg w-52 bg-background">
+      <div className = "overflow-hidden rounded-lg w-44 bg-background">
         <ProductImage product = {product}/>
-        <div className = "px-2 pt-1 pb-4 " id = "container" onClick = {(e)=>handleContainerClick(e,product.handle)}>
+        <div className = "" id = "container" onClick = {(e)=>handleContainerClick(e,product.handle)}>
           <ProductTextDisplay product={product}/>
           <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} enable = {true}/>
         </div>
@@ -42,7 +42,7 @@ export default function ProductCard({product}){
 
 function ProductImage({product}){
   return(
-    <div className = "relative overflow-hidden rounded-md cursor-pointer w-52 h-44 bg-neutral-200">
+    <div className = "relative overflow-hidden rounded-md cursor-pointer w-44 h-44 bg-neutral-200">
       <Link href = {`/product/${product?.handle}`}>
         <div className = "absolute inset-0 overflow-hidden ">
           <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
