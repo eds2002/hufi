@@ -25,7 +25,7 @@ export default function ProductCard({product}){
         <ProductImage product = {product}/>
         <div className = "" id = "container">
           <ProductTextDisplay product={product}/>
-          <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} enable = {true}/>
+          {/* <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} enable = {true}/> */}
         </div>
       </div>
       <AddToCartModal data = {selectedProduct} setOpenModal = {setOpenModal} openModal = {openModal} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption}/> 
