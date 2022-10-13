@@ -334,7 +334,7 @@ function GetItByComponent({data}){
   return(
   <>
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
-        <p className = "flex items-center px-4 text-base text-onBackground/70">
+        <p className = "flex items-center px-4 text-base md:block md:text-sm text-onBackground/70">
           <QuestionMarkCircleIcon className = "w-5 h-5 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/>
           <span className = "mr-1">Delivered by</span>
           <span className = "font-medium text-onBackground">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>

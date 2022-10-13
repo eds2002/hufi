@@ -39,7 +39,7 @@ function DeliveryModal({deliveryModal,setDeliveryModal}) {
                   </h3>
                   <div className="mt-4">
                     <p className="text-base text-gray-500">
-                      Unknown shipping times are annoying. We love to provide an estimate on shipping times accoridng to our suppliers. This date is our estimate onto when your package may arrive. Usually packages take around 7-10 business days to arrive. 
+                      Unknown shipping times are annoying. We love to provide an estimate on shipping times according to our suppliers. This date is our estimate onto when your package may arrive. Usually packages take around 7-10 business days to arrive. 
                     </p>
                   </div>
 
