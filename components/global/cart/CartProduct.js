@@ -1,20 +1,21 @@
 import { useContext,useState, useEffect } from "react"
 import CartContext from "../../../context/cartContext"
 import LocaleContext from "../../../context/localeContext"
-import Link from "next/link"
 import { slugify } from "../../../utils/slugify"
 import { formatNumber } from "../../../utils/formatNumber"
 import { MinusIcon,PlusIcon,TrashIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
 import {removeProduct} from '../../../utils/removeProduct'
 import {updateCart} from '../../../utils/updateCart'
+import { useRouter } from "next/router"
 
 export default function CartProduct({data}){
   const {locale} = useContext(LocaleContext)
-  const {cartData,setCartData,coupons} = useContext(CartContext)
+  const {cartData,setCartData,coupons,setOpenCart} = useContext(CartContext)
   const [cartCoupons,setCartCoupons] = useState([])
   const [currentCoupon,setCurrentCoupon] = useState(data?.node?.merchandise?.product?.coupon?.value ? JSON.parse(data?.node?.merchandise?.product?.coupon?.value) : [])
   const [isCouponApplied,setIsCouponApplied] = useState()
+  const router = useRouter()
 
   useEffect(()=>{
     setCartCoupons(cartData?.discountCodes?.map((discount)=>discount.code))
@@ -37,6 +38,11 @@ export default function CartProduct({data}){
     setCartData(newCart)
   }
 
+  const handleRedirect = (link) =>{
+    router.push(link)
+    setOpenCart(false)
+  }
+
   return(
     <>
     <div className = {`${(isCouponApplied && currentCoupon) && (' ')} py-4`}>
@@ -51,19 +57,17 @@ export default function CartProduct({data}){
       </div>
       <div className = "flex w-full max-w-xs gap-6 px-4 pb-2">
         {/* IMAGE */}
-        <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
-          <div className = "relative w-20 h-20 rounded-md cursor-pointer flex-0"> 
-            <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
-            <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-secondary text-onSecondary">{data.node.quantity}</span>
-          </div>
-        </Link>
+        <div className = "relative w-20 h-20 rounded-md cursor-pointer flex-0" onClick = {()=>handleRedirect(`/product/${slugify(data?.node?.merchandise?.product.title)}`)}> 
+          <Image src = {data.node.merchandise.image.url} alt = {data.node.merchandise.image.altText} layout = 'fill' objectFit='cover' className = "rounded-md"/>
+          <span className = "absolute top-[-10px] right-[-10px] flex items-center justify-center w-6 h-6 text-sm font-medium rounded-full bg-secondary text-onSecondary">{data.node.quantity}</span>
+        </div>
         <div className = "items-start flex-1 w-full h-full">
           <div className = "grid grid-rows-1 gap-1">
             {/* TITLE & PRICE */}
             <p className = "flex items-center justify-between w-full gap-3 ">
-              <Link href = {`/product/${slugify(data.node.merchandise.product.title)}`}>
-                <span className = "font-medium">{data.node.merchandise.product.title}</span>
-              </Link>
+              <span className = "font-medium" onClick = {()=>handleRedirect(`/product/${slugify(data.node.merchandise.product.title)}`)}>
+                {data.node.merchandise.product.title}
+              </span>
               <span className = "font-medium">
               {isCouponApplied && currentCoupon  ? 
                 <p className = "flex items-center ">

@@ -17,6 +17,7 @@ import { viewCollectionProducts } from "../../../graphql/queries/viewCollectionP
 import { deliveredDate } from "../../../utils/deliveredDate"
 import { slugify } from "../../../utils/slugify"
 import { addToShopifyCart } from "../../../utils/addToShopifyCart"
+import { useRouter } from "next/router"
 
 export default function CartDrawer({openCart, setOpenCart,Fragment}){
   const {cartData,setViewedCart,setCartData} = useContext(CartContext)
@@ -26,6 +27,7 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
   const [progressWidth, setProgressWidth] = useState(100)
   const [cartUpsell,setCartUpsell] = useState(null)
   const [cartUpsellRow2, setCartUpsellRow2] = useState(null)
+  const router = useRouter()
 
   useEffect(()=>{
     setProgressWidth((cartData?.cost?.subtotalAmount?.amount || 0)/75*100)
@@ -61,6 +63,7 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
     getGeneralProducts()
   },[cartData])
 
+
   const calculatePercentage = (minNum, maxNum) =>{
     return ((minNum-maxNum) / maxNum * 100).toFixed(0)
   }
@@ -70,6 +73,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
     setViewedCart(false)
     setOpenCart(true)
     setCartData(responseCartData)
+  }
+
+  const handleRedirect = (link) =>{
+    router.push(link)
+    setOpenCart(false)
   }
 
   return(
@@ -144,7 +152,7 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                       </button>
                     </div>
                     {cartData?.lines?.edges?.map((product)=>(
-                        <CartProduct data = {product} key = {product.id}/>
+                      <CartProduct data = {product} key = {product.id}/>
                     ))}
                     <div className = "">
                       <div className = "flex items-center h-full p-4 bg-surface center gap-x-3">
@@ -177,10 +185,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                                   {/* Display all products that are not equal to the cart line product title */}
                                   {!cartData?.lines?.edges.filter(cartLines => cartLines?.node?.merchandise?.product?.title === product.title).length >= 1 && (
                                     <div className = 'w-full text-ellipsis'>
-                                      <div className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square">
-                                        <Link href = {`/product/${slugify(product?.title)}`}>
-                                          <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
-                                        </Link>
+                                      <div 
+                                        className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square"
+                                        onClick={()=>handleRedirect(`/product/${product?.handle}`)}
+                                      >
+                                        <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
                                       </div>
                                       <h5 className = "mt-3 text-sm font-medium truncate whitespace-nowrap text-ellipsis">{product.title}</h5>
                                       <p className = "text-sm">
@@ -200,9 +209,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                                         <GetItByComponent data = {product}/>
                                       </p>
                                       <div className = "mt-3">
-                                        <Link href = {`/product/${slugify(product?.title)}`}>
-                                          <Button text = 'View options' CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'/>
-                                        </Link>
+                                        <Button 
+                                          text = 'View options' 
+                                          CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                          onClick={()=>handleRedirect(`/product/${product?.handle}`)}  
+                                        />
                                       </div>
                                     </div>
                                   )}
@@ -229,10 +240,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                                     {/* 2nd step, filter out any products that are already added to the cart. */}
                                     {!cartData?.lines?.edges.filter(cartLines => cartLines?.node?.merchandise?.product?.title === product.title).length >= 1 && (
                                       <div className = 'w-full '>
-                                        <div className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square">
-                                          <Link href = {`/product/${slugify(product?.title)}`}>
-                                            <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
-                                          </Link>
+                                        <div 
+                                          className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square"
+                                          onClick = {()=>handleRedirect(`/product/${product?.handle}`)}
+                                        >
+                                          <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
                                         </div>
                                         <h5 className = "mt-3 text-sm font-medium truncate whitespace-nowrap text-ellipsis">{product.title}</h5>
                                         <p className = "text-sm">
@@ -259,9 +271,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                                             onClick = {()=>handleAddToCart(product)}
                                           />
                                         :
-                                          <Link href = {`/product/${slugify(product?.title)}`}>
-                                            <Button text = 'View all options' CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'/>
-                                          </Link>
+                                          <Button 
+                                            text = 'View all options' 
+                                            CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                            onClick={()=>handleRedirect(`/product/${product?.handle}`)}
+                                          />
                                         }
                                         </div>
                                       </div>

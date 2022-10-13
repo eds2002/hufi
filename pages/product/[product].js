@@ -103,7 +103,7 @@ export async function getServerSideProps(context) {
 
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
-    const collectionHandle = product.product.collections.nodes[0].title ?? null
+    const collectionHandle = product?.product?.collections?.nodes[0]?.title ?? null
     let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(viewCollectionProducts, {handle:collectionHandle,amount:10})
 
     const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))

@@ -17,11 +17,12 @@ const ProductReviews = ({data,reviews}) => {
   const [currentPagination,setCurrentPagination] = useState(1)
   const [startFrom,setStartFrom] = useState(1)
   const [displayLimit,setDisplayLimit] = useState(10)
-  const [paginationArray] = useState(Array.from(Array(Math.ceil(displayReviews.length / displayLimit)).keys()))
+  const [paginationArray,setPaginationArray] = useState(Array.from(Array(Math.ceil(displayReviews.length / displayLimit)).keys()))
   const [average,setAverage] = useState(0)
   const [expandImage,setExpandImage] = useState(false)
   const [selectedReview,setSelectedReview] = useState(null)
   const {currentUser} = useContext(UserContext)
+
   
   
   useEffect(()=>{
@@ -30,6 +31,7 @@ const ProductReviews = ({data,reviews}) => {
       const sumsOfRating = filter.reduce((a,b)=> a+b, 0)
       const avg = (sumsOfRating / filter.length )
       setAverage(avg)
+      setPaginationArray(Array.from(Array(Math.ceil(displayReviews.length / displayLimit)).keys()))
     }
   },[displayReviews])
 

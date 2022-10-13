@@ -19,18 +19,11 @@ export default function ProductCard({product}){
   const [selectedOption, setSelectedOption] = useState(product?.options?.map((option)=>{return({name:option.name,value:option.values[0]})}))  
   const [getItByData,setGetItByData] = useState({data:{product}})
 
-  const handleContainerClick = (e,product) =>{
-    if(e.target.id === "container"){
-      router.push(`/product/${product}`)
-    }
-  }
-
-
   return(
     <>
       <div className = "overflow-hidden rounded-lg w-44 bg-background">
         <ProductImage product = {product}/>
-        <div className = "" id = "container" onClick = {(e)=>handleContainerClick(e,product.handle)}>
+        <div className = "" id = "container">
           <ProductTextDisplay product={product}/>
           <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} enable = {true}/>
         </div>
@@ -61,7 +54,7 @@ function ProductTextDisplay({product}){
   return(
     <>
     {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
-      <span className = 'text-xs bg-tertiaryVariant py-0.5 px-1 rounded-sm '>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}% off</span>
+      <span className = 'text-xs font-medium bg-tertiaryVariant py-0.5 px-1 rounded-sm '>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}% off</span>
       :
       <span className = "py-0.5 px-1">&nbsp;</span>
     }

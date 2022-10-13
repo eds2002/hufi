@@ -92,7 +92,7 @@ export default function ProductOverview({data,compRef,reviews}) {
     imageRef.current.scrollLeft = 0
     setCurrentVariant(data.product.variants.nodes[findId].image.url)
     return(()=>{})
-  },[selectedOption[0].value])
+  },[selectedOption])
 
 
   // FUNCTION TODO, add to cart
@@ -361,8 +361,8 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
           {/* TODO, avoid rendering products with no options / variants */}
           {option.name != "Title" && (
             <h3 className = "text-base font-medium" id = {option.name}>
-              <span>{option.name}: </span>
-              <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span>
+              <span>{option.name}</span>
+              {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
             </h3>
           )}
   
