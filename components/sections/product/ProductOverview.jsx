@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
@@ -12,8 +12,8 @@ import { useMemo } from 'react'
 import { storefront } from '../../../utils/storefront'
 import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountCode'
 import UserContext from '../../../context/userContext'
-import { RefundsModal, SecureTransactions } from '../../modals'
-import { ReviewsAccordian, ReviewsModal, StarsComponent } from '../../features'
+import { RefundsModal, SecureTransactions, DeliveryModal } from '../../modals'
+import { ReviewsAccordian, ReviewsModal } from '../../features'
 
 
 export default function ProductOverview({data,compRef,reviews}) {
@@ -137,7 +137,7 @@ export default function ProductOverview({data,compRef,reviews}) {
       <>
         <div className="relative bg-background" ref = {compRef}>
           <div className="pb-24">
-            <div className="max-w-2xl px-4 mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div className="max-w-2xl mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
 
                 {/* Image gallery */}
@@ -171,32 +171,36 @@ export default function ProductOverview({data,compRef,reviews}) {
                       <form name = "productInformation" >
                         <CouponComponent data = {data} selectedOption = {selectedOption}/>
                         <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
-                        <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
                         <GetItByComponent data = {data}/>
+                        <div className = "px-4 mt-4">
+                          <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
+                        </div>
                       </form>
                     </div>
-                    <Description data = {data}/>
+                    <div className = "px-4">
+                      <Description data = {data}/>
 
 
-                    <DetailsComponent data = {data.product.details}/>
-                    <LearnMoreComponent data = {data.product.learnmore}/>
-                    <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
-                  
-                    {/* Perks */}
-                    <div className = "mt-4">
-                        <div className = "flex items-center text-xs gap-x-3">
-                          <LockClosedIcon className = "w-5 h-5 text-onBackground/50" />
-                          <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
-                          onClick = {()=>setSecureTransactionModal(true)}
-                          >Secure transaction</p>
-                        </div>
-                        <div className = "flex items-center mt-2 text-xs gap-x-3">
-                          <CheckBadgeIcon className = "w-5 h-5 text-onBackground/50" />
-                          <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
-                          onClick = {()=>setRefundsModal(true)}
-                          >Eligible for refund or replacement within 30 days.</p>
-                        </div>
+                      <DetailsComponent data = {data.product.details}/>
+                      <LearnMoreComponent data = {data.product.learnmore}/>
+                      <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
+                      {/* Perks */}
+                      <div className = "mt-4">
+                          <div className = "flex items-center text-xs gap-x-3">
+                            <LockClosedIcon className = "w-5 h-5 text-onBackground/50" />
+                            <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
+                            onClick = {()=>setSecureTransactionModal(true)}
+                            >Secure transaction</p>
+                          </div>
+                          <div className = "flex items-center mt-2 text-xs gap-x-3">
+                            <CheckBadgeIcon className = "w-5 h-5 text-onBackground/50" />
+                            <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
+                            onClick = {()=>setRefundsModal(true)}
+                            >Eligible for refund or replacement within 30 days.</p>
+                          </div>
+                      </div>
                     </div>
+                  
                   </div>
                 </div>
               </div>
@@ -259,7 +263,7 @@ function CouponComponent({data,selectedOption}){
   return(
     <>
     {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
-      <div className = "flex items-center w-full mb-1 gap-x-3">
+      <div className = "flex items-center w-full px-4 mb-1 gap-x-3">
         <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
         onClick = {()=>handleChecked()}
         >
@@ -287,6 +291,7 @@ function GetItByComponent({data}){
   const [hour,setHour] = useState(0)
   const [minute,setMinute] = useState(0)
   const [second,setSecond] = useState(0)
+  const [deliveryModal,setDeliveryModal] = useState(false)
   const dates = data?.product?.deliveryBusinessDays?.value ? JSON.parse(data?.product?.deliveryBusinessDays?.value) : null
 
   
@@ -329,12 +334,14 @@ function GetItByComponent({data}){
   return(
   <>
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
-        <p className = "mt-2 text-xs text-onBackground/70">Get it by
-          <span className = "font-medium text-onBackground/70">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
+        <p className = "flex items-center px-4 text-base text-onBackground/70">
+          <QuestionMarkCircleIcon className = "w-5 h-5 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/>
+          <span className = "mr-1">Delivered by</span>
+          <span className = "font-medium text-onBackground">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
         </p>
       :
       <>
-        <p className = "mt-2 text-xs text-onBackground/70">Fast delivery: 
+        <p className = "px-4 text-base text-onBackground/70">Fast delivery: 
           <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
           <br/>
           Order within:
@@ -348,29 +355,30 @@ function GetItByComponent({data}){
         </p>
       </>
       }
+      <DeliveryModal deliveryModal = {deliveryModal} setDeliveryModal = {setDeliveryModal}/>
   </>
   )
 }
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
   return(
-    <>
+    <div className = "">
       {data.product.options.map((option,index)=>(
         <div key = {index} className = "">
           {/* Options title */}
           {/* TODO, avoid rendering products with no options / variants */}
           {option.name != "Title" && (
-            <h3 className = "text-base font-medium" id = {option.name}>
+            <h3 className = "px-4 text-base font-medium" id = {option.name}>
               <span>{option.name}</span>
               {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
             </h3>
           )}
   
           {/* Options Values */}
-          <div className = "flex flex-wrap items-center gap-3 ">
+          <div className = "flex flex-wrap items-center gap-3 px-4 overflow-x-scroll scrollBar">
             {/* TODO, avoid rendering products with no options / variants */}
             {option.name != "Title" && (
-              <div className = "flex flex-wrap items-center gap-3 mt-2 mb-4">
+              <div className = "flex items-center gap-3 px-1 mt-2 mb-4 md:flex-wrap">
                 {option.values.map((value,key)=>(
                   <>
                     <p className = 
@@ -379,14 +387,14 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                       (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
                       :
                       (`${soldOutItems?.includes(value) ? 
-                          'bg-gray-300 ring-black/60 cursor-default' 
+                          'bg-gray-300 ring-black/60 cursor-default w-max' 
                         : 
                           `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 
-                              'ring-primaryVariant bg-primary text-onPrimary' 
+                              'ring-primaryVariant bg-primary w-max' 
                             : 
-                              'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full`)
+                              'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full w-max`)
                       }
-                      text-sm
+                      text-sm mt-1
                     `}
                     style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
                     onClick = {(e)=>handleVariantChange(option.name,value)}
@@ -402,7 +410,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
           </div>
         </div>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -415,7 +423,7 @@ function ProductHeading({data}){
 
   return(
   <>
-    <div className="flex flex-col items-start justify-between w-full mt-3 md:mt-0">
+    <div className="flex flex-col items-start justify-between w-full px-4 mt-3 md:mt-0">
       <div className="flex items-center justify-between w-full text-2xl font-medium text-onBackground">
         <p>{data?.product?.title}</p>
       </div>

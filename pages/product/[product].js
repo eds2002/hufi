@@ -12,7 +12,6 @@ import Layout from "../../components/global/Layout";
 import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
-import { productByTag } from "../../graphql/queries/productByTag";
 import { viewCollectionProducts } from "../../graphql/queries/viewCollectionProducts";
 
 
@@ -22,7 +21,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
-  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations.collectionByHandle.products.nodes.filter(product => product.title != productData.product.title)}})
+  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter(product => product.title != productData.product.title)}})
 
   const ref = useRef(null)
   const handleScroll = () => {
@@ -31,7 +30,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
   };
 
   useEffect(()=>{
-    setRecommended({products:{nodes:productRecommendations.collectionByHandle.products.nodes.filter(product => product.title != productData.product.title)}})
+    setRecommended({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter(product => product.title != productData.product.title)}})
   },[productData])
 
   useEffect(() => {
@@ -74,7 +73,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
           <main className = "relative">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
-            {recommended.products.nodes.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
+            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <Signup/>
@@ -103,7 +102,7 @@ export async function getServerSideProps(context) {
 
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
-    const collectionHandle = product?.product?.collections?.nodes[0]?.title ?? null
+    const collectionHandle = slugify(product?.product?.collections?.nodes[0]?.title) ?? null
     let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(viewCollectionProducts, {handle:collectionHandle,amount:10})
 
     const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))

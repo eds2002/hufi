@@ -11,7 +11,7 @@ export default function HorizontalProducts({data:{products},text}) {
       </div>
       <div className="w-full px-4 mx-auto overflow-scroll max-w-7xl scrollBar">
         <div className = "grid grid-flow-col auto-cols-[40%] sm:auto-cols-[25%] md:auto-cols-[20%] lg:auto-cols-[15%] snap-mandatory snap-x gap-10">
-          {products.nodes.map((product,key)=>(
+          {products?.nodes?.map((product,key)=>(
             <>
               {key > 10 ?
                 ''

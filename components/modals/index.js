@@ -20,13 +20,23 @@ export const FirstTimeModal = dynamic(
 
 export const SecureTransactions = dynamic(
   ()=> import(
-    /*webpackChunkName: "FirstTimeModal" */
+    /*webpackChunkName: "SecureTransactions" */
     './SecureTransactions'
   ),{
     // loading: () => <h1>Loading...</h1>,
     ssr:false,
   }
 )
+export const DeliveryModal = dynamic(
+  ()=> import(
+    /*webpackChunkName: "DeliveryModal" */
+    './DeliveryModal'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
 
 
 
