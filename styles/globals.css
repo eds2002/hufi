@@ -38,3 +38,22 @@ a {
   scroll-behavior: smooth
 }
 
+.blockHead {
+  height: 16px;
+  display: inline-block;
+  line-height: 16px;
+  position: relative;
+  @apply select-none px-1 text-xs font-medium flex items-center justify-center rounded-bl-sm rounded-tl-sm bg-black text-onSecondary pr-2
+}
+
+.blockHead:after {
+  border-left: 4px solid;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  display: inline-block;
+  content: '';
+  position: absolute;
+  top:0;
+  @apply select-none text-black -right-1
+  }
+

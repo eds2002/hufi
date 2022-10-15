@@ -147,21 +147,21 @@ export default function ProductOverview({data,compRef,reviews}) {
                   <div className = "sticky top-[104px]">
                     <ProductHeading data = {data}/>
 
+                    <CouponComponent data = {data} selectedOption = {selectedOption}/>
+                    <Description data = {data}/>
                     {/* Product Information */}
                     <div className="mt-4 lg:col-span-5">
                       <form name = "productInformation" >
-                        <CouponComponent data = {data} selectedOption = {selectedOption}/>
                         <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
                         <GetItByComponent data = {data}/>
-                        <div className = "px-4 mt-4">
+                        <div className = "px-4 mt-4 mb-10">
                           <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
                         </div>
                       </form>
                     </div>
                     <div className = "px-4">
-                      <Description data = {data}/>
 
-
+                      <ProductDetailsComponent data = {data.product.useCases}/>
                       <DetailsComponent data = {data.product.details}/>
                       <LearnMoreComponent data = {data.product.learnmore}/>
                       <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
@@ -215,7 +215,6 @@ function ImageCarousel({data, imageRef, currentVariant}){
       setImagePos(imageRef.current.scrollLeft / imageRef.current.clientWidth)
     }
   })
-  console.log(expandPos)
 
   useEffect(()=>{
     (async ()=>{
@@ -317,7 +316,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
 
 function Description({data}){
   return(
-    <div className="p-4 mt-10 overflow-hidden rounded-md bg-surface">
+    <div className="px-4 mt-4 overflow-hidden rounded-md">
       <div
         className="prose-h1:mb-6 prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
@@ -358,7 +357,10 @@ function CouponComponent({data,selectedOption}){
   return(
     <>
     {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
-      <div className = "flex items-center w-full px-4 mb-1 gap-x-3">
+      <div className = "flex items-center w-full px-4 mt-4 gap-x-3 ">
+        <div className = "blockHead">
+          <span className = "">Coupon</span>
+        </div>
         <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
         onClick = {()=>handleChecked()}
         >
@@ -457,7 +459,7 @@ function GetItByComponent({data}){
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
   return(
-    <div className = "">
+    <div className = "mt-4">
       {data.product.options.map((option,index)=>(
         <div key = {index} className = "">
           {/* Options title */}
@@ -594,7 +596,7 @@ function DetailsComponent({data}){
         <>
         </>
       :
-        <div className = "mt-10">
+        <div className = "mt-1">
           <div className = "prose-h3">
             <div className = "w-full h-full rounded-md bg-surface">
               <div className = {`flex items-center justify-between w-full px-4 py-2 transition rounded-md cursor-pointer ${open ? 'bg-primary' : 'bg-surface'}`}
@@ -612,6 +614,46 @@ function DetailsComponent({data}){
                     className="prose-p:mb-4 prose-p:text-sm prose-li:font-light prose-h1:hidden prose-li:text-onSurface prose-li:list-item prose-li:mb-4 prose-li:text-sm"
                     dangerouslySetInnerHTML={{ __html: data.value }}
                   />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      }
+    </>
+  )
+}
+
+function ProductDetailsComponent({data}){
+  const [open, setOpen] = useState(false)
+  const useCasesJSON = data ? JSON.parse(data.value) : null
+  console.log(useCasesJSON)
+  return(
+    <>
+      {useCasesJSON === null ?
+        <>
+        </>
+      :
+        <div className = "mt-1">
+          <div className = "prose-h3">
+            <div className = "w-full h-full rounded-md bg-surface">
+              <div className = {`flex items-center justify-between w-full px-4 py-2 transition rounded-md cursor-pointer ${open ? 'bg-primary' : 'bg-surface'}`}
+              onClick = {()=>setOpen(!open)}
+              >
+                <h3 className="block font-medium text-onSurface">
+                  Details
+                </h3>
+                <ChevronDownIcon className = {`w-5 h-5 ${open ? 'rotate-180' : 'rotate-0'}`}/>
+              </div>
+              {open && (
+                <div className = "flex justify-between w-full h-full p-4 gap-x-6">
+                 {useCasesJSON.map((useCase)=>(
+                  <div className = "flex flex-col items-center justify-start w-full max-w-xs">
+                    <Image src = {useCase.svg} width = {40} height = {40}/>
+                    <h3 className = "mt-4 text-sm font-medium text-center text-onSurface">{useCase.heading}</h3>
+                    {/* <p className = "text-sm text-center text-onSurface/70">{useCase.paragraph}</p> */}
+                  </div>
+                 ))}
                 </div>
               )}
             </div>

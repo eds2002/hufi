@@ -46,6 +46,7 @@ export default function ExpandImage({expandImage,setExpandImage,data,expandPos,s
                    <h3 className = "text-2xl font-medium">Media ({data.product.media.nodes.length})</h3>
                   </div>
                   <div className = "flex flex-col h-full lg:flex-row-reverse">  
+                    {/* Media Carousel */}
                     <div className = "w-full h-full p-4 mt-4">
                       <div className = " grid grid-flow-col auto-cols-[100%] h-full overflow-scroll snap-x snap-mandatory scrollBar rounded-md " ref = {containerRef}>
                         {data.product.media.nodes.map((media)=>(
@@ -58,13 +59,14 @@ export default function ExpandImage({expandImage,setExpandImage,data,expandPos,s
                                 src = {media.sources[0].url}
                                 controls
                                 poster = {media.previewImage.url}
-                                className = "object-cover w-full h-full snap-center"
+                                className = "snap-center"
                               />
                             )}
                           </>
                         ))}
                       </div>
                     </div>
+                    {/* Display all media  */}
                     <div className = "flex gap-3 p-6 overflow-x-scroll overflow-y-hidden rounded-md flex-nowrap scrollBar lg:flex-col">
                       {data.product.media.nodes.map((media,index)=>(
                           <>

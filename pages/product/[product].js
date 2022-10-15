@@ -73,12 +73,12 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
           <main className = "relative">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
-            <ProductUse data = {productData?.product?.useCases}/>
+            {/* <ProductUse data = {productData?.product?.useCases}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <Signup/>
-            <ProductReviews data = {productData} reviews = {reviewsData}/>
             {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
+            <ProductReviews data = {productData} reviews = {reviewsData}/>
           </main>
         </Layout>
         </>
