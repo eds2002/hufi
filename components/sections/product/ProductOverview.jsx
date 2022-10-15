@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon, QuestionMarkCircleIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
@@ -14,6 +14,8 @@ import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountC
 import UserContext from '../../../context/userContext'
 import { RefundsModal, SecureTransactions, DeliveryModal } from '../../modals'
 import { ReviewsAccordian, ReviewsModal } from '../../features'
+import { useCallback } from 'react'
+import ExpandImage from './ProductExpandImage'
 
 
 export default function ProductOverview({data,compRef,reviews}) {
@@ -130,36 +132,15 @@ export default function ProductOverview({data,compRef,reviews}) {
     return(()=>{})
   },[data?.product])
 
-
   return (
     <>
       {data.product ?  
       <>
         <div className="relative bg-background" ref = {compRef}>
           <div className="pb-24">
-            <div className="max-w-2xl mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div className="max-w-2xl mx-auto sm:mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
-
-                {/* Image gallery */}
-                <div className="col-span-8">
-                  <h2 className="sr-only">Images</h2>
-
-                  
-                  <div className={`
-                  grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-                  lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar rounded-md`} ref = {imageRef}>
-                    {data.product?.media?.nodes?.map((media,index)=>(
-                      <div className = {`
-                      ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                       relative w-full  overflow-hidden snap-center
-                      `}
-                      key = {index}
-                      >
-                        <img  src = {(currentVariant && index == 0) ? currentVariant : media.previewImage.url} className = "object-cover w-full h-full"/>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <ImageCarousel data = {data} imageRef = {imageRef} currentVariant = {currentVariant}/>
 
                 {/* RIGHT SIDE */}
                 <div className = "col-span-4">
@@ -216,6 +197,120 @@ export default function ProductOverview({data,compRef,reviews}) {
         
         </div>
       }
+    </>
+  )
+}
+
+function ImageCarousel({data, imageRef, currentVariant}){
+  const [imagePos,setImagePos] = useState(0)
+  const [amountOfDots] = useState(data.product.media.nodes.length || 0)
+  const [expandImage, setExpandImage] = useState(false)
+  const [expandType,setExpandType] = useState("Photos")
+  const [expandPos,setExpandPos] = useState(0)
+  const containerRef = useRef()
+
+  // Figure out the current position of image, only set the image pos when number is a whole number.
+  const handleScroll = useCallback(()=>{
+    if(Number.isInteger(imageRef.current.scrollLeft / imageRef.current.clientWidth)){
+      setImagePos(imageRef.current.scrollLeft / imageRef.current.clientWidth)
+    }
+  })
+  console.log(expandPos)
+
+  useEffect(()=>{
+    (async ()=>{
+      try{
+        // TODO, wait a second for setting the scroll position.
+        // Ref doesn't load fast enough to scroll
+        await new Promise((resolve)=>setTimeout(() => {
+          resolve();
+        }, 5)); 
+        containerRef.current.scrollLeft = expandPos * containerRef.current.clientWidth
+      }catch(e){
+        console.log(e)
+      }
+    })()
+  },[expandPos, containerRef.current])
+
+  useEffect(()=>{
+    imageRef.current.scrollLeft = imagePos * imageRef.current.clientWidth
+  },[imagePos])
+
+
+  useEffect(()=>{
+    const div = imageRef.current
+    div.addEventListener("scroll",handleScroll)
+  },[handleScroll])
+
+  const handleExpandClick = (filterType,index) =>{
+    setExpandType(filterType)
+    setExpandPos(index)
+    setExpandImage(true)
+  }
+
+
+  return(
+    <>
+      <div className="relative col-span-8">
+        <h2 className="sr-only">Images</h2>
+        <div 
+          className={`
+            grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
+            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer`} 
+          ref = {imageRef}
+        >
+          {data.product?.media?.nodes?.map((media,index)=>(
+            <>
+              {media?.image ? (
+                <div className = {`
+                ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
+                  relative w-full  overflow-hidden snap-center md:rounded-md
+                `}
+                key = {index}
+                onClick = {()=>handleExpandClick("Photos",index)}
+                >
+                  <img  src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} className = "object-cover w-full h-full"/>
+                </div>
+              )
+              :
+              (
+                <>
+                  <div className = {`
+                  ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
+                    relative w-full  overflow-hidden snap-center md:rounded-md
+                  `}
+                  key = {index}
+                  onClick = {()=>handleExpandClick("Videos",index)}
+                  >
+                    <img
+                      className = "object-cover w-full h-full"
+                      src = {media?.previewImage?.url}
+                    />
+                    <div className = "absolute inset-0 z-20 flex items-center justify-center ">
+                      <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background/40 backdrop-blur-md">
+                        <PlayIcon className = "w-12 h-12 text-secondary"/>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )
+              }
+            </>
+          ))}
+        </div>
+        <div className = "absolute bottom-0 left-0 right-0 flex items-center justify-center mb-4 lg:hidden">
+          <div className = "flex p-2 rounded-full cursor-pointer bg-black/25 backdrop-blur-xl">
+            {Array.from(Array(amountOfDots), (_,i)=>i).map((v,index)=>(
+              <div 
+                key = {index}
+                className = {`w-2 h-2 mx-1 ${index == imagePos ? 'bg-white' : 'bg-white/30'} rounded-full transition-colors`}  
+                onClick = {()=>setImagePos(index)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      <ExpandImage expandImage={expandImage} setExpandImage = {setExpandImage} data = {data} currentImage = {imagePos} setExpandPos = {setExpandPos} expandPos = {expandPos} containerRef = {containerRef}/>
     </>
   )
 }
@@ -334,8 +429,8 @@ function GetItByComponent({data}){
   return(
   <>
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
-        <p className = "flex items-center px-4 text-base md:block md:text-sm text-onBackground/70">
-          <QuestionMarkCircleIcon className = "w-5 h-5 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/>
+        <p className = "flex items-center px-4 text-sm md:flex text-onBackground/70">
+          <span><QuestionMarkCircleIcon className = "w-4 h-4 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/></span>
           <span className = "mr-1">Delivered by</span>
           <span className = "font-medium text-onBackground">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
         </p>

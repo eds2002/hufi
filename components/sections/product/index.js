@@ -79,3 +79,13 @@ export const ProductUse = dynamic(
     ssr:false,
   }
 )
+
+export const ProductExpandImage = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductExpandImage" */
+    './ProductExpandImage'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)

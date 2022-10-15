@@ -40,10 +40,22 @@ query Product($handle: String!) {
 			}
     }
     descriptionHtml
-    media(first: 3) {
+    media(first: 4) {
       nodes{
-        previewImage{
-          url
+        ...on MediaImage{
+          image{
+            url
+            altText
+          }
+        }
+        ... on Video{
+					sources{
+            url
+          }
+          previewImage{
+            url
+            altText
+          }
         }
       }
     }

@@ -1,4 +1,4 @@
-import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews,ProductFeatures, ProductIncentive, ProductUse } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 import {HorizontalProducts, Signup} from '../../components/sections'
@@ -73,11 +73,12 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
           <main className = "relative">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
-            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
+            <ProductUse data = {productData?.product?.useCases}/>
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <Signup/>
             <ProductReviews data = {productData} reviews = {reviewsData}/>
+            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
           </main>
         </Layout>
         </>
