@@ -648,7 +648,7 @@ function ProductDetailsComponent({data}){
               {open && (
                 <div className = "flex justify-between w-full h-full p-4 gap-x-6">
                  {useCasesJSON.map((useCase)=>(
-                  <div className = "flex flex-col items-center justify-start w-full max-w-xs">
+                  <div className = "flex flex-col items-center justify-start w-full max-w-xs" key = {useCase.heading}>
                     <Image src = {useCase.svg} width = {40} height = {40}/>
                     <h3 className = "mt-4 text-sm font-medium text-center text-onSurface">{useCase.heading}</h3>
                     {/* <p className = "text-sm text-center text-onSurface/70">{useCase.paragraph}</p> */}
