@@ -35,7 +35,7 @@ export default function ProductCard({product}){
 
 function ProductImage({product}){
   return(
-    <div className = "relative overflow-hidden rounded-sm cursor-pointer w-[86vw] sm:w-80 bg-neutral-200 aspect-square select-none ">
+    <div className = "relative overflow-hidden rounded-sm cursor-pointer w-[80vw] sm:w-80 bg-neutral-200 aspect-square select-none ">
       <Link href = {`/product/${product?.handle}`}>
         <div className = "absolute inset-0 overflow-hidden ">
           <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
