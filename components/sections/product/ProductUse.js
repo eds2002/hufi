@@ -2,7 +2,6 @@ import Image from 'next/image'
 import React from 'react'
 
 const ProductUse = ({data}) => {
-  console.log(data)
   const dataJSON = data?.value ? JSON.parse(data.value) : undefined
   return (
     <>

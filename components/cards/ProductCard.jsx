@@ -21,7 +21,7 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "overflow-hidden rounded-lg w-44 bg-background">
+      <div className = "px-4 rounded-sm select-none bg-background">
         <ProductImage product = {product}/>
         <div className = "" id = "container">
           <ProductTextDisplay product={product}/>
@@ -35,7 +35,7 @@ export default function ProductCard({product}){
 
 function ProductImage({product}){
   return(
-    <div className = "relative overflow-hidden rounded-md cursor-pointer w-44 h-44 bg-neutral-200">
+    <div className = "relative overflow-hidden rounded-sm cursor-pointer w-[86vw] sm:w-80 bg-neutral-200 aspect-square select-none ">
       <Link href = {`/product/${product?.handle}`}>
         <div className = "absolute inset-0 overflow-hidden ">
           <Image src = {product?.media.nodes[0].previewImage.url} layout = 'fill' objectFit = 'cover'/>
@@ -53,14 +53,17 @@ function ProductTextDisplay({product}){
   }
   return(
     <>
-    {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
+    {/* {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
       <span className = 'text-xs font-medium bg-tertiaryVariant py-0.5 px-1 rounded-sm '>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}% off</span>
       :
       <span className = "py-0.5 px-1">&nbsp;</span>
-    }
+    } */}
     <div className = "overflow-hidden">
-      <span className = "text-base font-medium truncate text-ellipsis whitespace-nowrap">{product?.title}</span>
-      <p className="text-sm ">
+      <Link href = {`${product?.handle}`}>
+        <p className = "mt-4 text-base font-medium truncate text-ellipsis whitespace-nowrap">{product?.title}</p>
+      </Link>
+      <p className = "text-base text-onBackground/50">{product.shortDesc?.value ?? <span>&nbsp;</span>}</p>
+      <p className="text-sm mt-0.5 font-medium">
         {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
           <span className = "flex flex-col ">
             <span className = " text-onBackground">
@@ -75,7 +78,6 @@ function ProductTextDisplay({product}){
           </>
         }
       </p>
-      <p className = "text-xs text-onBackground/60">{product.shortDesc?.value ?? <span>&nbsp;</span>}</p>
     </div>
     </>
   )

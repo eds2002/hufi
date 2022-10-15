@@ -177,7 +177,7 @@ export default function ProductOverview({data,compRef,reviews}) {
                             <CheckBadgeIcon className = "w-5 h-5 text-onBackground/50" />
                             <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
                             onClick = {()=>setRefundsModal(true)}
-                            >Eligible for refund or replacement within 30 days.</p>
+                            >30-Day Money Back Guarantee.</p>
                           </div>
                       </div>
                     </div>
@@ -627,7 +627,6 @@ function DetailsComponent({data}){
 function ProductDetailsComponent({data}){
   const [open, setOpen] = useState(false)
   const useCasesJSON = data ? JSON.parse(data.value) : null
-  console.log(useCasesJSON)
   return(
     <>
       {useCasesJSON === null ?

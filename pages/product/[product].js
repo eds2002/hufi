@@ -76,8 +76,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             {/* <ProductUse data = {productData?.product?.useCases}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
-            <Signup/>
-            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'We think you might also like'}/>)}
+            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'You might also like'}/>)}
             <ProductReviews data = {productData} reviews = {reviewsData}/>
           </main>
         </Layout>
