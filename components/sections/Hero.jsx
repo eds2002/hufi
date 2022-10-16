@@ -13,12 +13,11 @@ const Hero = ({data}) => {
   },[])
   return (
     <section className="relative bg-background">
-      <div className = "relative z-20 flex items-center justify-center w-full h-[50vh] md:h-screen px-4 mx-auto max-w-7xl">
-        <div className="flex flex-col items-center justify-center max-w-sm sm:max-w-7xl" >
+      <div className = "relative z-20 flex items-end justify-start w-full h-[75vh] md:h-[80vh] px-8 py-16 mx-auto">
+        <div className="flex flex-col items-start justify-start max-w-sm sm:max-w-7xl" >
           <div className = {`prose  
               prose-h1:text-4xl prose-h1:font-semibold prose-h1:sm:text-5xl prose-h1:md:text-6xl prose-h1:my-0 prose-h1:text-background
-              prose-p:text-center prose-p:lg:text-lg prose-p:sm:text-base prose-p:mt-2 prose-p:text-background/90
-              prose-h1:text-center
+              prose-p:lg:text-lg prose-p:sm:text-base prose-p:mt-2 prose-p:text-background/90 prose-p:max-w-xs
               prose-a:hidden
               `} ref = {textRef}>
             <div

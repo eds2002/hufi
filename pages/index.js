@@ -12,7 +12,7 @@ import { getCustomer } from '../graphql/queries/getCustomer'
 import CollectionSubCol from '../components/sections/collection/CollectionSubCol'
 import { FirstTimeModal } from '../components/modals'
 import Layout from '../components/global/Layout'
-import { Hero, HorizontalProducts} from '../components/sections'
+import { Hero, HorizontalProducts, Signup} from '../components/sections'
 
 export default function Home({data,collections,productData,pageProps}) {
   const {currentUser,setCurrentUser} = useContext(UserContext)
@@ -66,6 +66,7 @@ export default function Home({data,collections,productData,pageProps}) {
           <Hero data = {data}/>
           <HorizontalProducts data = {productData} text = 'Our newest arrivals'/>
           <CollectionSubCol data = {collections}/>
+          <Signup/>
           {/* Display only this part when a user is present or if user is not present */}
           {currentUser != null ? (
             <>

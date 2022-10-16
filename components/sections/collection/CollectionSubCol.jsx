@@ -22,6 +22,7 @@ const CollectionSubCol = ({data}) => {
                 ${collectionSet.style.type === "TwoRow" && (`grid md:grid-cols-2  w-full h-screen gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "Header" && (`h-[80vh]`)}
+                ${collectionSet.style.type === "Squared" && (`grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 max-w-7xl mx-auto`)}
                 overflow-scroll 
               `}>
                 {collectionSet.collectionTitles.map((set,index)=>(
@@ -31,9 +32,6 @@ const CollectionSubCol = ({data}) => {
             </div> 
           </>
         ))}
-        <div className = "px-4 mx-auto max-w-7xl">
-          <Signup/>
-        </div>
       </div>
     </section>
   )
@@ -51,28 +49,31 @@ function CollectionBox({set,index,collectionSet}){
     <div className = {`
       ${collectionSet.style.type === "Default" && (`${index === 0 && ('md:row-span-2 col-span-1')}`)}
       ${collectionSet.style.type === "Row" && (`col-span-1`)}
-      relative w-full h-full rounded-md overflow-hidden aspect-square`}> 
-        <Image src = {set?.collections?.nodes[0]?.image?.url} layout = 'fill' objectFit='cover' className = 'object-cover w-full h-full'/>
+      relative w-full h-full  overflow-hidden aspect-square`}> 
+        <Image src = {set?.collections?.nodes[0]?.image?.url} layout = 'fill' objectFit='cover' className = 'object-cover w-full h-full select-none '/>
         <div className = "absolute inset-0 bg-black/40 mix-blend-darken"/>
-          <div className="relative flex flex-col items-start justify-end w-full h-full p-8 mx-auto sm:p-12 max-w-7xl">
+          <div className={`
+            ${collectionSet.style.type === "Squared" && ('p-4 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+            ${collectionSet.style.type === "Default" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+            ${collectionSet.style.type === "TwoRow" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+            ${collectionSet.style.type === "Banner" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+            ${collectionSet.style.type === "Row" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+          `}>
             {/* FORMAT HTML */}
             <div className = {`w-full max-w-xs
-            prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90
-            prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white
-            prose-a:hidden
+            ${collectionSet.style.type === "Squared" && ('prose-h6:text-xs prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-base prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
+            ${collectionSet.style.type === "Default" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
+            ${collectionSet.style.type === "TwoRow" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
+            ${collectionSet.style.type === "Banner" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
+            ${collectionSet.style.type === "Row" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
             `}
             >
-              {set?.collections?.nodes[0]?.descriptionHtml ? 
+              {set?.collections?.nodes[0]?.descriptionHtml && (
                 <div
                   dangerouslySetInnerHTML={{__html: set.collections.nodes[0]?.descriptionHtml}}
                   ref = {aRef}
                 />
-                :
-                <span>
-                  {/* <Skeleton animation = "wave" sx={{bgcolor:'grey.500', width:100}}/>
-                  <Skeleton animation = "wave" sx={{bgcolor:'grey.500'}}/> */}
-                </span>
-              }
+              )}
               <Link href = {handle}>
                 <Button text = "Shop" CSS = ' mt-3 w-24 py-1 bg-background text-onBackground' tag = 'view-collection-btn'/>
               </Link>

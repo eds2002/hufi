@@ -21,7 +21,7 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "px-4 rounded-sm select-none bg-background">
+      <div className = "px-4 py-4 rounded-sm select-none bg-background">
         <ProductImage product = {product}/>
         <div className = "" id = "container">
           <ProductTextDisplay product={product}/>
