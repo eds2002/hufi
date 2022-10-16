@@ -25,6 +25,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
 
 
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
+  const [price,setPrice] = useState(data?.product?.variants?.nodes[0].priceV2?.amount || 0)
   
   
   const [soldOutItems,setSoldOutItems] = useState([])
@@ -42,6 +43,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
     setCurrentVariant(null)
     didMount.current = false;
     imageRef.current.scrollLeft = 0
+    setPrice(data?.product?.variants?.nodes[0].priceV2?.amount || 0)
     return(()=>{})
   },[data?.product])
   
@@ -93,6 +95,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
     
     imageRef.current.scrollLeft = 0
     setCurrentVariant(data.product.variants.nodes[findId].image.url)
+    setPrice(data.product.variants.nodes[findId].priceV2.amount)
     return(()=>{})
   },[selectedOption])
 
@@ -145,7 +148,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                 {/* RIGHT SIDE */}
                 <div className = "col-span-4">
                   <div className = "sticky top-[104px]">
-                    <ProductHeading data = {data}/>
+                    <ProductHeading data = {data} price = {price}/>
                     <CouponComponent data = {data} selectedOption = {selectedOption}/>
                     <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
                     <GetItByComponent data = {data}/>
@@ -504,7 +507,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
   )
 }
 
-function ProductHeading({data}){
+function ProductHeading({data,price}){
   const {locale} =  useContext(LocaleContext)
 
   const calculatePercentage = (minNum, maxNum) =>{
@@ -526,7 +529,7 @@ function ProductHeading({data}){
           <span className = "font-medium text-onBackground">
             <span className = 'font-light text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
               {'  '}
-              {formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
+              {formatNumber(price,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
             </span>
 
             {/* WAS  */}
@@ -537,7 +540,7 @@ function ProductHeading({data}){
           </span>
         </span>
         :
-        <span>{formatNumber(data.product.priceRange.maxVariantPrice.amount,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+        <span>{formatNumber(price,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
       }
       </p>
     </div>
@@ -629,10 +632,10 @@ function ProductDetailsComponent({data}){
         <div className = "mt-4">
           <div className = "prose-h3">
             <div className = "w-full h-full rounded-md">
-              <div className = "flex justify-between w-full h-full p-4 gap-x-6">
+              <div className = "flex justify-between w-full h-full pb-4 gap-x-6">
                 {useCasesJSON.map((useCase)=>(
-                <div className = "flex flex-col items-center justify-start w-full max-w-xs" key = {useCase.heading}>
-                  <Image src = {useCase.svg} width = {40} height = {40}/>
+                <div className = "flex flex-col items-center justify-start w-full max-w-xs pointer-events-none select-none" key = {useCase.heading}>
+                  <Image src = {useCase.svg} width = {40} height = {40} priority/>
                   <h3 className = "mt-4 text-sm font-medium text-center text-onSurface">{useCase.heading}</h3>
                   {/* <p className = "text-sm text-center text-onSurface/70">{useCase.paragraph}</p> */}
                 </div>

@@ -64,6 +64,10 @@ query Product($handle: String!) {
       nodes{
         quantityAvailable
         id
+        priceV2{
+          amount
+          currencyCode
+        }
         image{
 					url
           altText
