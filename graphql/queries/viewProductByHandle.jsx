@@ -7,6 +7,7 @@ query Product($handle: String!) {
     id
     title
     totalInventory
+    handle
     collections(first:10){
       nodes{
         id
@@ -171,6 +172,10 @@ query Product($handle: String!) {
       value
       type
 		}
+    crossSell:metafield(namespace:"product",key:"cross_sell"){
+      value
+      type
+    }
   }
 }
 `

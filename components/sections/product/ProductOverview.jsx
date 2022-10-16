@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon, QuestionMarkCircleIcon, PlayIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon, QuestionMarkCircleIcon, PlayIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
@@ -13,12 +13,12 @@ import { storefront } from '../../../utils/storefront'
 import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountCode'
 import UserContext from '../../../context/userContext'
 import { RefundsModal, SecureTransactions, DeliveryModal } from '../../modals'
-import { ReviewsAccordian, ReviewsModal } from '../../features'
+import { ReviewsAccordian, ReviewsModal,CrossSellComponent } from '../../features'
 import { useCallback } from 'react'
 import ExpandImage from './ProductExpandImage'
 
 
-export default function ProductOverview({data,compRef,reviews}) {
+export default function ProductOverview({data,compRef,reviews,crossSell}) {
   const {locale} = useContext(LocaleContext)
   const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
   const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
@@ -146,21 +146,14 @@ export default function ProductOverview({data,compRef,reviews}) {
                 <div className = "col-span-4">
                   <div className = "sticky top-[104px]">
                     <ProductHeading data = {data}/>
-
                     <CouponComponent data = {data} selectedOption = {selectedOption}/>
-                    <Description data = {data}/>
-                    {/* Product Information */}
-                    <div className="mt-4 lg:col-span-5">
-                      <form name = "productInformation" >
-                        <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
-                        <GetItByComponent data = {data}/>
-                        <div className = "px-4 mt-4 mb-10">
-                          <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
-                        </div>
-                      </form>
+                    <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
+                    <GetItByComponent data = {data}/>
+                    <div className = "px-4 mt-4 mb-10">
+                      <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
                     </div>
+                    <Description data = {data}/>
                     <div className = "px-4">
-
                       <ProductDetailsComponent data = {data.product.useCases}/>
                       <DetailsComponent data = {data.product.details}/>
                       <LearnMoreComponent data = {data.product.learnmore}/>
@@ -180,8 +173,8 @@ export default function ProductOverview({data,compRef,reviews}) {
                             >30-Day Money Back Guarantee.</p>
                           </div>
                       </div>
+                      <CrossSellComponent data = {data} crossSell = {crossSell} selectedOption = {selectedOption}/>
                     </div>
-                  
                   </div>
                 </div>
               </div>
@@ -431,7 +424,7 @@ function GetItByComponent({data}){
   return(
   <>
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
-        <p className = "flex items-center px-4 text-sm md:flex text-onBackground/70">
+        <p className = "flex items-center px-4 mt-4 text-sm md:flex text-onBackground/70">
           <span><QuestionMarkCircleIcon className = "w-4 h-4 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/></span>
           <span className = "mr-1">Delivered by</span>
           <span className = "font-medium text-onBackground">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
@@ -633,28 +626,18 @@ function ProductDetailsComponent({data}){
         <>
         </>
       :
-        <div className = "mt-1">
+        <div className = "mt-4">
           <div className = "prose-h3">
-            <div className = "w-full h-full rounded-md bg-surface">
-              <div className = {`flex items-center justify-between w-full px-4 py-2 transition rounded-md cursor-pointer ${open ? 'bg-primary' : 'bg-surface'}`}
-              onClick = {()=>setOpen(!open)}
-              >
-                <h3 className="block font-medium text-onSurface">
-                  Details
-                </h3>
-                <ChevronDownIcon className = {`w-5 h-5 ${open ? 'rotate-180' : 'rotate-0'}`}/>
-              </div>
-              {open && (
-                <div className = "flex justify-between w-full h-full p-4 gap-x-6">
-                 {useCasesJSON.map((useCase)=>(
-                  <div className = "flex flex-col items-center justify-start w-full max-w-xs" key = {useCase.heading}>
-                    <Image src = {useCase.svg} width = {40} height = {40}/>
-                    <h3 className = "mt-4 text-sm font-medium text-center text-onSurface">{useCase.heading}</h3>
-                    {/* <p className = "text-sm text-center text-onSurface/70">{useCase.paragraph}</p> */}
-                  </div>
-                 ))}
+            <div className = "w-full h-full rounded-md">
+              <div className = "flex justify-between w-full h-full p-4 gap-x-6">
+                {useCasesJSON.map((useCase)=>(
+                <div className = "flex flex-col items-center justify-start w-full max-w-xs" key = {useCase.heading}>
+                  <Image src = {useCase.svg} width = {40} height = {40}/>
+                  <h3 className = "mt-4 text-sm font-medium text-center text-onSurface">{useCase.heading}</h3>
+                  {/* <p className = "text-sm text-center text-onSurface/70">{useCase.paragraph}</p> */}
                 </div>
-              )}
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -662,3 +645,4 @@ function ProductDetailsComponent({data}){
     </>
   )
 }
+

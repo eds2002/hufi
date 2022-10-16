@@ -22,6 +22,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
   const [recommended,setRecommended] = useState({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter(product => product.title != productData.product.title)}})
+  const [crossSell, setCrossSell] = useState()
 
   const ref = useRef(null)
   const handleScroll = () => {
@@ -40,6 +41,23 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
           window.removeEventListener('scroll', handleScroll);
       };
   }, [productData.product]);
+
+  useEffect(()=>{
+    const crossSellJSON = productData?.product?.crossSell?.value ? JSON.parse(productData.product.crossSell.value) : null
+    if(crossSellJSON){
+      (async ()=>{
+        let productsQueryArr = []
+        for(let product of crossSellJSON.products){
+          const {data,errors} = await storefront(viewProductByHandle, {handle:product})
+          productsQueryArr.push(data)
+        }
+        crossSellJSON.products = productsQueryArr
+        setCrossSell(crossSellJSON)
+      })()
+    }else{
+      setCrossSell(null)
+    }
+  },[productData.product.id])
 
   return (
     <>
@@ -72,7 +90,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
         <Layout {...pageProps}>
           <main className = "relative">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
-            <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData}/>
+            <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData} crossSell = {crossSell}/>
             {/* <ProductUse data = {productData?.product?.useCases}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>

@@ -46,8 +46,10 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
     }
     const getRecommendedCartProducts = async () =>{
       const {data,errors} = await storefront(viewCollectionProducts,{handle:collectionHandle,amount:10})
-      if(data.collectionByHandle && !errors){
+      if(data.collectionByHandle && !errors && data.collectionByHandle){
         setCartUpsell(data.collectionByHandle)
+      }else{
+        setCartUpsell(null)
       }
     }
 
@@ -234,54 +236,106 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                               <div className = "grid grid-flow-col auto-cols-[50%] gap-5">
                                 {cartUpsellRow2?.products?.nodes?.map((product)=>(
                                   <>
-                                  {/* Display all products, filter out products that are already included in the first upsell row */}
-                                  {cartUpsell?.products?.nodes?.every((upsell)=> upsell.title != product.title) && (
+                                    {/* Step 1, check if firstCartUpsell row is valid */}
+                                    {cartUpsell ? 
                                     <>
-                                    {/* 2nd step, filter out any products that are already added to the cart. */}
-                                    {!cartData?.lines?.edges.filter(cartLines => cartLines?.node?.merchandise?.product?.title === product.title).length >= 1 && (
-                                      <div className = 'w-full '>
-                                        <div 
-                                          className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square"
-                                          onClick = {()=>handleRedirect(`/product/${product?.handle}`)}
-                                        >
-                                          <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
-                                        </div>
-                                        <h5 className = "mt-3 text-sm font-medium truncate whitespace-nowrap text-ellipsis">{product.title}</h5>
-                                        <p className = "text-sm">
-                                        {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
-                                          <span className = "flex flex-col gap-x-1">
-                                            <span className = "font-medium text-onBackground">
-                                              <span className = 'font-light text-tertiaryVariant'>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
-                                                {'  '}
-                                                {formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}
+                                      {/* Step two is first upsell is valid*/}
+                                      {/* Display all products, filter out products that are already included in the first upsell row */}
+                                      {cartUpsell?.products?.nodes?.every((upsell)=> upsell.title != product.title) && (
+                                        <>
+                                        {/* 2nd step, filter out any products that are already added to the cart. */}
+                                        {!cartData?.lines?.edges.filter(cartLines => cartLines?.node?.merchandise?.product?.title === product.title).length >= 1 && (
+                                          <div className = 'w-full '>
+                                            <div 
+                                              className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square"
+                                              onClick = {()=>handleRedirect(`/product/${product?.handle}`)}
+                                            >
+                                              <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
+                                            </div>
+                                            <h5 className = "mt-3 text-sm font-medium truncate whitespace-nowrap text-ellipsis">{product.title}</h5>
+                                            <p className = "text-sm">
+                                            {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
+                                              <span className = "flex flex-col gap-x-1">
+                                                <span className = "font-medium text-onBackground">
+                                                  <span className = 'font-light text-tertiaryVariant'>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+                                                    {'  '}
+                                                    {formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}
+                                                  </span>
                                               </span>
-                                          </span>
-                                        :
-                                          <span>{formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
-                                        }
-                                        </p>
-                                        <p className = "text-xs text-onSurface/70">
-                                          <GetItByComponent data = {product}/>
-                                        </p>
-                                        <div className = "mt-3">
-                                        {product.options.length === 1 && product.options[0].name === "Title" ? 
-                                          <Button 
-                                            text = 'Add to cart' 
-                                            CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
-                                            onClick = {()=>handleAddToCart(product)}
-                                          />
-                                        :
-                                          <Button 
-                                            text = 'View all options' 
-                                            CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
-                                            onClick={()=>handleRedirect(`/product/${product?.handle}`)}
-                                          />
-                                        }
-                                        </div>
-                                      </div>
-                                    )}
+                                            :
+                                              <span>{formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+                                            }
+                                            </p>
+                                            <p className = "text-xs text-onSurface/70">
+                                              <GetItByComponent data = {product}/>
+                                            </p>
+                                            <div className = "mt-3">
+                                            {product.options.length === 1 && product.options[0].name === "Title" ? 
+                                              <Button 
+                                                text = 'Add to cart' 
+                                                CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                                onClick = {()=>handleAddToCart(product)}
+                                              />
+                                            :
+                                              <Button 
+                                                text = 'View all options' 
+                                                CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                                onClick={()=>handleRedirect(`/product/${product?.handle}`)}
+                                              />
+                                            }
+                                            </div>
+                                          </div>
+                                        )}
+                                        </>
+                                      )}
                                     </>
-                                  )}
+                                    :
+                                    <>
+                                      {/* Step 2 if first upsell is not valid, filter out any products that are already added to the cart. */}
+                                      {!cartData?.lines?.edges.filter(cartLines => cartLines?.node?.merchandise?.product?.title === product.title).length >= 1 && (
+                                        <div className = 'w-full '>
+                                          <div 
+                                            className = "relative w-full h-32 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square"
+                                            onClick = {()=>handleRedirect(`/product/${product?.handle}`)}
+                                          >
+                                            <Image src = {product.media.nodes[0].previewImage.url} layout = 'fill'/> 
+                                          </div>
+                                          <h5 className = "mt-3 text-sm font-medium truncate whitespace-nowrap text-ellipsis">{product.title}</h5>
+                                          <p className = "text-sm">
+                                          {parseInt(product?.priceRange?.maxVariantPrice?.amount) < parseInt(product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
+                                            <span className = "flex flex-col gap-x-1">
+                                              <span className = "font-medium text-onBackground">
+                                                <span className = 'font-light text-tertiaryVariant'>{calculatePercentage(product?.priceRange?.maxVariantPrice?.amount, product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+                                                  {'  '}
+                                                  {formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}
+                                                </span>
+                                            </span>
+                                          :
+                                            <span>{formatNumber(product.priceRange.maxVariantPrice.amount,product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+                                          }
+                                          </p>
+                                          <p className = "text-xs text-onSurface/70">
+                                            <GetItByComponent data = {product}/>
+                                          </p>
+                                          <div className = "mt-3">
+                                          {product.options.length === 1 && product.options[0].name === "Title" ? 
+                                            <Button 
+                                              text = 'Add to cart' 
+                                              CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                              onClick = {()=>handleAddToCart(product)}
+                                            />
+                                          :
+                                            <Button 
+                                              text = 'View all options' 
+                                              CSS = 'text-xs bg-secondaryVariant hover:bg-secondary w-full px-2 py-1 text-onSecondary w-max'
+                                              onClick={()=>handleRedirect(`/product/${product?.handle}`)}
+                                            />
+                                          }
+                                          </div>
+                                        </div>
+                                      )}
+                                    </>
+                                    }
                                   </>
                                 ))}
                               </div>
