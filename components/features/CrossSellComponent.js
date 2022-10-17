@@ -42,16 +42,24 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
     setCurrentVariant(data.product.variants.nodes[findId])
   },[selectedProduct])
   
-
   useEffect(()=>{
     let total = parseInt(data?.product?.priceRange?.maxVariantPrice?.amount)
     if(selectedProducts){
-      selectedProducts?.forEach((data)=>{
-        total = parseInt(data?.product?.priceRange?.maxVariantPrice?.amount) + total
-      })
+      // NOTE, maybe theres a better way of doing this.
+      // TODO, if selected products contains a userSelectedId property, total the amount by the variant id number,
+      // else, go by the default and total up the mininum variant price.
+      if(selectedProducts?.every(data => data.product.userSelectedId)){
+        selectedProducts?.forEach((data)=>{
+          total += parseInt(data.product.variants.nodes.filter((variant)=> variant.id === data.product.userSelectedId)[0].priceV2.amount)
+        })
+      }else{
+        selectedProducts?.forEach((data)=>{
+          total = parseInt(data?.product?.priceRange?.minVariantPrice?.amount) + total
+        })
+      }
       setTotal(total)
     }
-  },[selectedProducts])
+  },[selectedProducts, expand])
 
   useEffect(()=>{
     setSelectedProducts(crossSell?.products)
@@ -124,7 +132,14 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               {/* CROSSSELL PRODUCTS */}
               <div className = "flex mt-3 gap-x-3">
                 {crossSell?.products?.map((data)=>(
-                  <CrossSellCards data = {data} currencyCode = {currencyCode} locale = {locale} selectedProducts = {selectedProducts} setSelectedProducts = {setSelectedProducts} key = {data?.product?.id}/>
+                  <CrossSellCards 
+                    data = {data} 
+                    currencyCode = {currencyCode} 
+                    locale = {locale} 
+                    selectedProducts = {selectedProducts} 
+                    setSelectedProducts = {setSelectedProducts} 
+                    key = {data?.product?.id}  
+                  />
                 ))}
               </div>
 
@@ -177,14 +192,13 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
   )
 }
 
-function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedProducts}){
+function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedProducts, total, setTotal}){
   const router = useRouter()
   const [optionsContainer,setOptionsContainer] = useState(false)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
   const [soldOutItems,setSoldOutItems] = useState([])
   const [variantImage,setVariantImage] = useState('/hufiOG.png')
   const [variantPrice, setVariantPrice] = useState(data.product.variants.nodes[0].priceV2.amount || 0)
-
 
   // TODO, check if items are sold out or not
   useEffect(()=>{
@@ -197,9 +211,10 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
     return(()=>{})
   },[data?.product])
 
-  // Handle changing the selected variant id
-  useEffect(()=>{
 
+  // Handle changing the selected variant id
+
+  useEffect(()=>{
     let findId
     const query = []
     
@@ -223,6 +238,7 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
     setVariantImage(data.product.variants.nodes[findId].image.url)
     // Set the adjusted price
     setVariantPrice(data.product.variants.nodes[findId].priceV2.amount)
+    return(()=>{})
   },[selectedOption])
 
 

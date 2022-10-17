@@ -54,6 +54,6 @@ a {
   content: '';
   position: absolute;
   top:0;
-  @apply select-none text-black -right-1
+  @apply select-none text-white right-0 rotate-180
   }
 

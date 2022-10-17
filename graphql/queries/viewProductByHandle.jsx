@@ -39,6 +39,10 @@ query Product($handle: String!) {
         amount
         currencyCode
 			}
+      minVariantPrice{
+        amount
+        currencyCode
+      }
     }
     descriptionHtml
     media(first: 4) {

@@ -6,10 +6,12 @@ export default function HorizontalProducts({data:{products},text}) {
 
   const handleLeft = () =>{
     if(overflowRef.current.scrollLeft === 0) return
-    overflowRef.current.scrollLeft = overflowRef.current.clientWidth - overflowRef.current.scrollLeft
+    overflowRef.current.scrollLeft = overflowRef.current.scrollLeft - overflowRef.current.clientWidth
   }
+
+
   const handleRight = () =>{
-    overflowRef.current.scrollLeft = overflowRef.current.clientWidth + overflowRef.current.scrollLeft
+    overflowRef.current.scrollLeft = overflowRef.current.scrollLeft + overflowRef.current.clientWidth
   }
 
   return (
