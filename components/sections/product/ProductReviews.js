@@ -80,6 +80,41 @@ const ProductReviews = ({data,reviews}) => {
             <p className = "mt-2 text-lg font-medium text-onBackground/70">{startFrom + currentPagination * displayLimit - displayLimit}-{(currentPagination * displayLimit) > displayReviews.length ? displayReviews.length : currentPagination * displayLimit } of {displayReviews.length} Reviews</p>
           </>
         )}
+
+        {/* Reviews with media */}
+        {displayReviews.length > 0 && (
+          <div className = "mt-7">
+            <h3 className = "text-2xl font-medium">Images</h3>
+            <div className = "flex h-full mt-3 overflow-scroll flex-nowrap gap-x-3 scrollBar">
+              {displayReviews.map((review,index)=>(
+                <>
+                  {review.images.length > 0 && (
+                    <div onClick = {()=>handleImageClick(index)}>
+                      <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md w-72 h-44 aspect-video">
+                        <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/>
+                        <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
+                          <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
+                            <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+                            <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+                              <CheckIcon className = "w-3 h-3 text-background"/>
+                            </div>
+                          </div>
+                          <div className = "flex flex-col items-start justify-center flex-1 w-full h-full my-auto overflow-hidden truncate text-ellipsis">
+                            <p className = "overflow-hidden text-sm truncate text-onSecondary whitespace-nowrap text-ellipsis">{review.reviewTitle}</p>
+                            <p className = "text-xs text-onSecondary/60">{review.reviewer}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ))}
+            </div>
+          </div>
+        )}
+
+
+        {/* Reviews & Questions */}
         <div className = "flex items-center justify-between mt-7">
           <div className = ""> 
             <p className = "cursor-pointer relative py-1 after:absolute after:left-0 after:right-0 after:bg-onBackground after:h-0.5 after:rounded-full after:bottom-0">Reviews</p>
@@ -107,6 +142,8 @@ const ProductReviews = ({data,reviews}) => {
             )}
           </div>
         </div>
+
+
         {displayReviews.length > 0 ? 
         <>
           <div className = "divide-y">

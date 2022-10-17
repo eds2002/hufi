@@ -87,7 +87,7 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                     >
                       {selectedReview?.images?.map((url)=>(
                         <div className = "relative w-full h-full overflow-hidden snap-center" key = {url}>
-                          <img src = {url} className = "object-cover w-full h-full" ref = {imageRef} key = {url}/>
+                          <img src = {url} className = {`${expand ? 'object-contain' : 'object-cover'} w-full h-full`} ref = {imageRef} key = {url}/>
                         </div>
                       ))}
                     </div>
