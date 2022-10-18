@@ -371,10 +371,10 @@ const OrdersTab = ({currentUser})=>{
             </div>
           :
           <>
-            {currentUser?.orders?.nodes.map((order)=>(
-              <div className = "divide-y divide-onBackground/20">  
-                {order?.lineItems?.nodes?.map((product)=>(
-                  <OrderProduct product = {product} order = {order} setViewOrder = {setViewOrder}/>
+            {currentUser?.orders?.nodes.map((order,index)=>(
+              <div className = "divide-y divide-onBackground/20" key = {index}>  
+                {order?.lineItems?.nodes?.map((product,index)=>(
+                  <OrderProduct product = {product} order = {order} setViewOrder = {setViewOrder} key = {index}/>
                 ))}
               </div>
             ))}
@@ -422,7 +422,7 @@ function OrderDetails({order}){
           <div>
             <div className = "mb-7">
             {order.lineItems.nodes.map((product,index)=>(
-              <div className = "py-4">
+              <div className = "py-4" key = {product.variant.product.title}>
                 <p className = "mb-1 text-sm text-onBackground/50">Shipment {index + 1} of {order.lineItems.nodes.length} </p>
                 <div className = "flex w-full h-full gap-x-3">
                   <div className = "relative w-32 h-32 bg-gray-200 cursor-pointer">
@@ -436,7 +436,7 @@ function OrderDetails({order}){
                     <div className = "text-sm text-onBackground/50">
                       <p>{product.variant.product.productType}</p>
                       {product.variant.title.split("/").map((val)=>(
-                        <p>{val}</p>
+                        <p key = {val}>{val}</p>
                       ))}
                     </div>
                   </div>
@@ -537,7 +537,7 @@ function OrderProduct({product,order,setViewOrder}){
           <div className = "mt-3 text-sm text-onBackground/70">
             <p>{product.variant.product.productType}</p>
             {product.variant.title.split("/").map((val)=>(
-              <p>{val}</p>
+              <p key = {val}>{val}</p>
             ))}
           </div>
         </div>
