@@ -13,17 +13,24 @@ query customer($token:String!){
     orders(first:50,reverse:true){
       nodes{
         statusUrl
+        financialStatus
         successfulFulfillments{
           trackingInfo{
             url
             number
 					}
         }
+        originalTotalPrice{
+          amount
+          currencyCode
+        }
+        customerUrl
         lineItems(first:50){
           nodes{
             quantity
             variant{
               id
+              title
               product{
                 title
                 productType
@@ -41,6 +48,17 @@ query customer($token:String!){
                     currencyCode
                   }
                 }
+                priceRange{
+                  maxVariantPrice{
+                    amount
+                    currencyCode
+									}
+                  minVariantPrice{
+                    amount
+                    currencyCode
+                  }
+                }
+                
               }
               title
               image{

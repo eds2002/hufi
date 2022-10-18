@@ -6,7 +6,7 @@ import { Input } from "../elements"
 
 export default function Footer({data}) {
   return (
-    <footer className="bg-primary1">
+    <footer className="">
       <div className="px-4 py-12 mx-auto overflow-hidden max-w-7xl sm:px-6 lg:px-8">
         <div className = "grid grid-cols-1 gap-3 lg:grid-cols-4 md:grid-cols-3">
           {data?.menu?.items.map((menu)=>(
