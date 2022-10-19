@@ -310,6 +310,7 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
           layout = 'fill'
           onClick = {()=>handleRedirect(`/product/${data?.product?.handle}`)}
         />
+        <CheckBox handleChecked={handleChecked} selectedProducts = {selectedProducts} data = {data}/>
       </div>
 
       {/* PRODUCT INFORMATION */}
@@ -338,7 +339,7 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
       
       {/* Displays the products options */}
       {optionsContainer && (
-        <div className = "absolute inset-0 z-20 flex items-center overflow-scroll bg-surface">
+        <div className = "absolute inset-0 z-20 flex items-center overflow-scroll bg-surface ">
           <CloseButton padding = {2} onClick = {()=>setOptionsContainer(false)}/>
           <div className = "flex items-center w-full h-full gap-2">
             <div className = "relative flex-1 w-32 h-full overflow-hidden rounded-md bg-surface ">
@@ -355,8 +356,6 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
           </div>
         </div>
       )}
-
-     <CheckBox handleChecked={handleChecked} selectedProducts = {selectedProducts} data = {data}/>
     </div>
     </>
   )
@@ -364,7 +363,7 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
   return(
-    <div className = "h-full divide-y ">
+    <div className = "h-full divide-y">
       {data.product.options.map((option,index)=>(
         <div key = {index} className = "">
           {/* Options title */}
@@ -418,7 +417,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
 
 function CheckBox({handleChecked, selectedProducts, data}){
   return(
-    <div className = {`absolute inset-0 z-10 p-2 ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent' : 'bg-white/50'} pointer-events-none`}>
+    <div className = {`absolute -top-2 -right-2 z-10  ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent' : 'bg-white/50'} pointer-events-none`}>
       <div 
         className = {`w-5 h-5 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-secondaryVariant ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-secondary' : 'bg-neutral-200'} flex items-center justify-center`}
         onClick = {()=>handleChecked(data.product.id)}

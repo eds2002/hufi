@@ -434,11 +434,11 @@ function GetItByComponent({data}){
         </p>
       :
       <>
-        <p className = "px-4 text-base text-onBackground/70">Fast delivery: 
+        <p className = "px-4 text-sm text-onBackground/70">Fast delivery: 
           <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
           <br/>
           Order within:
-          <span className = "font-medium text-tertiaryVariant">{`
+          <span className = "font-medium text-primaryVariant2">{`
             ${day != 0 ? (`${day} day${day > 1 ? 's' : ''}`) : ('')} 
             ${hour != 0 ? (`${hour} hr${hour > 1 ? 's' : ''}`) : ('')} 
             ${day == 0 ? minute != 0 ? (`${minute} min${minute > 1 ? 's' : ''}`) : ('') : ('')}  
