@@ -417,9 +417,9 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
 
 function CheckBox({handleChecked, selectedProducts, data}){
   return(
-    <div className = {`absolute -top-2 -right-2 z-10  ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent' : 'bg-white/50'} pointer-events-none`}>
+    <div className = {`absolute -inset-0 z-10  ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent pointer-events-none' : 'bg-white/70 inset-0 pointer-events-auto'}`}>
       <div 
-        className = {`w-5 h-5 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-secondaryVariant ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-secondary' : 'bg-neutral-200'} flex items-center justify-center`}
+        className = {`w-5 h-5 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-secondaryVariant ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-secondary' : 'bg-surface'} flex items-center justify-center`}
         onClick = {()=>handleChecked(data.product.id)}
       >
         {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && <CheckIcon className = "w-4 h-4 text-white"/>}
