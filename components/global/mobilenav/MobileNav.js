@@ -90,11 +90,6 @@ export default function MobileNav({open,setOpen,data,user}){
                     <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Orders <CubeIcon className = "w-5 h-5"/></a>
                     </Link>
                   </div>
-                  <div>
-                    <Link href = "/user/profile?tab=support">
-                    <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Support <ChatBubbleBottomCenterIcon className = "w-5 h-5"/></a>
-                    </Link>
-                  </div>
                   <div className = "mt-10">
                     <Link href = "/api/logout">
                       <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>

@@ -19,7 +19,7 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
 
   const handleClick = (direction)=>{
     const width = imageRef?.current?.width
-    containerRef.current.scrollLeft = direction === 'left' ? width * -1 : width
+    containerRef.current.scrollLeft = direction === 'left' ? containerRef.current.scrollLeft + width * -1 : containerRef.current.scrollLeft + width
   }
 
 
@@ -65,7 +65,7 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="relative flex flex-col w-full h-[80vh] md:h-full  max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
+                <Dialog.Panel className="relative flex flex-col w-full h-[80vh] md:h-[50vh]  max-w-3xl overflow-hidden transition-all transform shadow-xl bg-background rounded-2xl md:flex-row">
                   {/* LEFT SIDE / TOP */}
                   <div className = {`relative md:flex-1 ${expand ? 'h-full' : 'h-[50%]'} md:h-full w-full`}>
                     {selectedReview?.images?.length > 1 && (

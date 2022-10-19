@@ -45,11 +45,6 @@ export default function Header({data,user}) {
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Orders <CubeIcon className = "w-5 h-5"/></a>
                       </div>
                     </Link>
-                    <Link href = "/user/profile?tab=support">
-                      <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
-                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Support <ChatBubbleBottomCenterIcon className = "w-5 h-5"/></a>
-                      </div>
-                    </Link>
                     <Link href = "/api/logout" >
                       <div className = "w-full py-5 pl-4 pr-10 rounded-md cursor-pointer hover:bg-background">
                         <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground ">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>

@@ -1,4 +1,5 @@
 import { useRouter } from "next/router"
+import React from "react"
 import Image from "next/image"
 import { useContext, useState, useEffect } from "react"
 import { formatNumber } from "../../utils/formatNumber"
@@ -21,7 +22,13 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
   const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
   const [currentVariant,setCurrentVariant] = useState('/hufiOG.png')
 
+  // TODO, this use state is used to trigger the get prices useEffect
+  // NOTE, This is such a bad way of updating the prices in the button but it seems like 
+  // the only way. If there is another way that is less ugly please fix.
+  const [variantHasChanged,setVariantHasChanged] = useState(false)
 
+
+  // TODO, sets current variant of current product. 
   useEffect(()=>{
     let findId
     const query = []
@@ -42,6 +49,8 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
     setCurrentVariant(data.product.variants.nodes[findId])
   },[selectedProduct])
   
+
+  // TODO, get total prices of cross sell products.
   useEffect(()=>{
     let total = parseInt(data?.product?.priceRange?.maxVariantPrice?.amount)
     if(selectedProducts){
@@ -59,23 +68,27 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
       }
       setTotal(total)
     }
-  },[selectedProducts, expand])
+  },[selectedProducts, expand,variantHasChanged])
 
+
+  // TODO, runs when the crosssell data changes, this prevents displaying the same upsell when redirecting to another page.
   useEffect(()=>{
     setSelectedProducts(crossSell?.products)
   },[crossSell])
 
 
+
+  // TODO, handles redirects
   const handleRedirect = (link) =>{
     router.push(link)
   }
 
+  // TODO, handles add to cart once user has decided to purchase products.
   const handleAddToCart = async () =>{
     const variantIds = []
     variantIds.push(currentVariant.id)
 
-
-    crossSell.products.forEach((data)=>{
+    selectedProducts.forEach((data)=>{
       if(data.product.userSelectedId){
         variantIds.push(data.product.userSelectedId)
       }else{
@@ -130,7 +143,7 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               </div>
 
               {/* CROSSSELL PRODUCTS */}
-              <div className = "flex mt-3 gap-x-3">
+              <div className = "relative flex mt-3 gap-x-3">
                 {crossSell?.products?.map((data)=>(
                   <CrossSellCards 
                     data = {data} 
@@ -138,6 +151,8 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
                     locale = {locale} 
                     selectedProducts = {selectedProducts} 
                     setSelectedProducts = {setSelectedProducts} 
+                    variantHasChanged = {variantHasChanged}
+                    setVariantHasChanged = {setVariantHasChanged}
                     key = {data?.product?.id}  
                   />
                 ))}
@@ -192,7 +207,7 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
   )
 }
 
-function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedProducts, total, setTotal}){
+const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedProducts, setVariantHasChanged, variantHasChanged}) => {
   const router = useRouter()
   const [optionsContainer,setOptionsContainer] = useState(false)
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
@@ -200,7 +215,7 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
   const [variantImage,setVariantImage] = useState('/hufiOG.png')
   const [variantPrice, setVariantPrice] = useState(data.product.variants.nodes[0].priceV2.amount || 0)
 
-  // TODO, check if items are sold out or not
+  // TODO, checks if items are sold out or not
   useEffect(()=>{
     const soldOutVariants = data.product.variants.nodes.filter((currentArr)=>{
       if(currentArr.quantityAvailable === 0){
@@ -212,8 +227,7 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
   },[data?.product])
 
 
-  // Handle changing the selected variant id
-
+  // TODO, Handle changing the selected variant id
   useEffect(()=>{
     let findId
     const query = []
@@ -238,6 +252,9 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
     setVariantImage(data.product.variants.nodes[findId].image.url)
     // Set the adjusted price
     setVariantPrice(data.product.variants.nodes[findId].priceV2.amount)
+
+    // Rerenders the get pricing useEffect at top component.
+    setVariantHasChanged(!variantHasChanged)
     return(()=>{})
   },[selectedOption])
 
@@ -277,7 +294,7 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
 
   return(
     <>
-    <div className = "relative flex-1 w-full p-4 overflow-hidden rounded-md bg-surface">
+    <div className = "flex-1 w-full p-4 overflow-hidden rounded-md bg-surface">
       {/* IMAGE CONTAINER */}
       <div 
         className = "relative w-full bg-gray-200 cursor-pointer select-none aspect-square"
@@ -323,12 +340,13 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
       {optionsContainer && (
         <div className = "absolute inset-0 z-20 flex items-center overflow-scroll bg-surface">
           <CloseButton padding = {2} onClick = {()=>setOptionsContainer(false)}/>
-          <div className = "flex flex-col w-full h-full p-4">
-            <div className = "relative overflow-hidden bg-gray-200 rounded-md aspect-square">
+          <div className = "flex items-center w-full h-full gap-2">
+            <div className = "relative flex-1 w-32 h-full overflow-hidden rounded-md bg-surface ">
               <Image 
                 src = {variantImage || ""} 
                 layout = 'fill' 
-                objectFit="cover"  
+                objectFit="contain"  
+                className=""
               />
             </div>
             <div className = "flex-1 h-full overflow-scroll scrollBar">
@@ -346,23 +364,23 @@ function CrossSellCards({data,currencyCode,locale,selectedProducts, setSelectedP
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
   return(
-    <div className = "h-full divide-y">
+    <div className = "h-full divide-y ">
       {data.product.options.map((option,index)=>(
         <div key = {index} className = "">
           {/* Options title */}
           {/* TODO, avoid rendering products with no options / variants */}
           {option.name != "Title" && (
-            <h3 className = "mt-2 text-base font-medium " id = {option.name}>
-              <span>{option.name}</span>
-              {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
+            <h3 className = "px-2 mt-2 text-sm font-medium " id = {option.name}>
+              <span>{option.name}: </span>
+              <span className = "font-normal text-onSurface/50">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span>
             </h3>
           )}
   
           {/* Options Values */}
-          <div className = "flex flex-wrap items-center gap-3 overflow-x-scroll scrollBar">
+          <div className = "flex items-center gap-3 overflow-x-scroll scrollBar">
             {/* TODO, avoid rendering products with no options / variants */}
             {option.name != "Title" && (
-              <div className = "flex items-center gap-3 px-1 mt-1 mb-4 md:flex-wrap">
+              <div className = "flex flex-wrap items-center gap-3 px-2 mt-1 mb-4">
                 {option.values.map((value,key)=>(
                   <>
                     <p className = 
@@ -376,9 +394,9 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                           `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 
                               'ring-primaryVariant bg-primary w-max' 
                             : 
-                              'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full w-max`)
+                              'ring-neutral-400'}`} px-2 py-1 ring-2 cursor-pointer rounded-full w-max`)
                       }
-                      text-sm mt-1
+                      text-xs mt-1
                     `}
                     style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
                     onClick = {(e)=>handleVariantChange(option.name,value)}
@@ -405,7 +423,7 @@ function CheckBox({handleChecked, selectedProducts, data}){
         className = {`w-5 h-5 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-secondaryVariant ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-secondary' : 'bg-neutral-200'} flex items-center justify-center`}
         onClick = {()=>handleChecked(data.product.id)}
       >
-        {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && <CheckIcon className = "w-3 h-3 text-white"/>}
+        {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && <CheckIcon className = "w-4 h-4 text-white"/>}
       </div>
     </div>
   )

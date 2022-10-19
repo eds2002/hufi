@@ -118,11 +118,16 @@ export async function getServerSideProps(context) {
     pageProps["userData"] = userInformation || null
     pageProps["userAccess"] = cookies || null
 
+
+    // Fetching request product
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
+
+    // Getting product recommendations
     const collectionHandle = slugify(product?.product?.collections?.nodes[0]?.title) ?? null
     let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(viewCollectionProducts, {handle:collectionHandle,amount:10})
 
+    // Getting reviews from firebase.
     const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))
     const querySnapshot = await getDocs(q)
     const reviews = []
@@ -130,7 +135,7 @@ export async function getServerSideProps(context) {
       reviews.push(doc.data())
     })
 
-
+    // Data validating
     if(product.product){
       return{
         props:{
@@ -149,6 +154,7 @@ export async function getServerSideProps(context) {
       }
     }
   }catch(e){
+    console.log(e)
     return{
       redirect: {
         permanent: false,
