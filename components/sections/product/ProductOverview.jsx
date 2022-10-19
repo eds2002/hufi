@@ -268,7 +268,6 @@ function ImageCarousel({data, imageRef, currentVariant}){
                     src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
                     layout='fill' 
                     objectFit='cover' 
-                    priority
                   />
                 </div>
               )
