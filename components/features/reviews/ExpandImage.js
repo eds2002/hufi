@@ -86,8 +86,14 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                       onClick = {()=>setExpand(!expand)}
                     >
                       {selectedReview?.images?.map((url)=>(
-                        <div className = "relative w-full h-full overflow-hidden snap-center" key = {url}>
-                          <img src = {url} className = {`${expand ? 'object-contain' : 'object-cover'} w-full h-full`} ref = {imageRef} key = {url}/>
+                        <div className = "relative w-full h-full overflow-hidden select-none snap-center" key = {url}>
+                          <Image 
+                            src = {url} 
+                            className = {`${expand ? 'object-contain' : 'object-cover'} w-full h-full`} 
+                            ref = {imageRef} 
+                            key = {url}  
+                            layout ='fill'
+                          />
                         </div>
                       ))}
                     </div>

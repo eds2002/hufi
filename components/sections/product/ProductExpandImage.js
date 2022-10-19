@@ -48,7 +48,7 @@ export default function ExpandImage({expandImage,setExpandImage,data,expandPos,s
                   <div className = "flex flex-col h-full lg:flex-row-reverse">  
                     {/* Media Carousel */}
                     <div className = "w-full h-full p-4 mt-4">
-                      <div className = " grid grid-flow-col auto-cols-[100%] h-full overflow-scroll snap-x snap-mandatory scrollBar rounded-md " ref = {containerRef}>
+                      <div className = " grid grid-flow-col auto-cols-[100%] h-full overflow-scroll snap-x snap-mandatory scrollBar rounded-md aspect-square" ref = {containerRef}>
                         {data.product.media.nodes.map((media)=>(
                           <>
                             {media?.image && (

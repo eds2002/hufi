@@ -251,20 +251,25 @@ function ImageCarousel({data, imageRef, currentVariant}){
         <div 
           className={`
             grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer`} 
+            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer w-full h-full`} 
           ref = {imageRef}
         >
           {data.product?.media?.nodes?.map((media,index)=>(
             <>
               {media?.image ? (
                 <div className = {`
-                ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                  relative w-full  overflow-hidden snap-center md:rounded-md
+                ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
+                  relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
                 `}
                 key = {index}
                 onClick = {()=>handleExpandClick("Photos",index)}
                 >
-                  <img  src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} className = "object-cover w-full h-full"/>
+                  <Image 
+                    src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
+                    layout='fill' 
+                    objectFit='cover' 
+                    priority
+                  />
                 </div>
               )
               :
@@ -272,14 +277,15 @@ function ImageCarousel({data, imageRef, currentVariant}){
                 <>
                   <div className = {`
                   ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                    relative w-full  overflow-hidden snap-center md:rounded-md
+                    relative w-full  overflow-hidden snap-center md:rounded-md h-full aspect-square
                   `}
                   key = {index}
                   onClick = {()=>handleExpandClick("Videos",index)}
                   >
-                    <img
+                    <Image
                       className = "object-cover w-full h-full"
                       src = {media?.previewImage?.url}
+                      layout='fill'
                     />
                     <div className = "absolute inset-0 z-20 flex items-center justify-center ">
                       <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background/40 backdrop-blur-md">
