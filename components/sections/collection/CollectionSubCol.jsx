@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { useRef,useEffect,useState } from 'react'
 import Link from 'next/link'
 import { Button } from '../../elements'
-import { Skeleton } from '@mui/material'
 import Signup from '../Signup'
 
 const CollectionSubCol = ({data}) => {

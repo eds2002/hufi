@@ -6,12 +6,10 @@ import loginBackground from '../assets/login.svg'
 import { storefront } from '../utils/storefront'
 import { createUserAccessToken } from '../graphql/mutations/createUserAccessToken'
 import Router, { useRouter } from 'next/router'
-import { getCookie } from 'cookies-next'
 import Head from 'next/head'
 import { viewMenu } from '../graphql/queries/viewMenu'
 import { getCustomer } from '../graphql/queries/getCustomer'
 import Layout from '../components/global/Layout'
-import { red } from '@mui/material/colors'
 
 const Login = ({pageProps}) => {
   const router = useRouter()

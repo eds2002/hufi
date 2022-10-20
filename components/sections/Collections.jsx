@@ -1,7 +1,5 @@
 import { Button } from "../elements";
-import { slugify } from "../../utils/slugify";
 import Link from "next/link";
-import { Skeleton } from "@mui/material";
 import Image from "next/image";
 import { useState,useRef,useEffect } from "react";
 
