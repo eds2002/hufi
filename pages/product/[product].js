@@ -71,7 +71,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             <meta name = "description" content = {productData.product.seo.description}/>
             <meta name = "keywords" content = {productData.product.seoTags?.value.split(",")}/>
 
-            <meta property="og:title" content="Hufi"/>
+            <meta property="og:title" content={productData.product.title}/>
             <meta property="og:description" content={productData.product.seo.description}/>
             <meta property="og:url" content={`https://www.hufistore.com/product/${slugify(productData.product.title)}`}/>
             <meta property="og:locale" content="en_US"/>
@@ -83,7 +83,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             {/* <!-- Twitter --> */}
             <meta property="twitter:card" content="summary_large_image"/>
             <meta property="twitter:url" content={`https://www.hufistore.com/product/${slugify(productData.product.title)}`}/>
-            <meta property="twitter:title" content="Hufi"/>
+            <meta property="twitter:title" content={productData.product.title}/>
             <meta property="twitter:description" content={productData.product.seo.description}/>
             <meta property="twitter:image" content={productData.product.media.nodes[0].image.url}/>
         </Head>
