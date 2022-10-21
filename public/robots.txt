@@ -1,4 +1,4 @@
 User-Agent: *
 Allow: /
 
-Sitemap: http://localhost:3000/api/my-sitemap
+Sitemap: https://www.hufistore.com/api/my-sitemap
