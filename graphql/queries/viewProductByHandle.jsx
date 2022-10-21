@@ -184,6 +184,10 @@ query Product($handle: String!) {
       value
       type
     }
+    seoTags:metafield(namespace:"product",key:"seo_tags"){
+      value
+      type
+    }
   }
 }
 `

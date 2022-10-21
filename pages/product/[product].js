@@ -67,15 +67,15 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             <meta charSet='UTF-8'/>
             <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
             <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
-            <title>Hufi - {productData.product.title}</title>
+            <title>{productData.product.title} - Hufi</title>
             <meta name = "description" content = {productData.product.seo.description}/>
-            <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
+            <meta name = "keywords" content = {productData.product.seoTags?.value.split(",")}/>
 
             <meta property="og:title" content="Hufi"/>
             <meta property="og:description" content={productData.product.seo.description}/>
             <meta property="og:url" content={`https://www.hufistore.com/product/${slugify(productData.product.title)}`}/>
             <meta property="og:locale" content="en_US"/>
-            <meta property="og:image" content="https://www.hufistore.com/hufiOG.png"/>
+            <meta property="og:image" content={productData.product.media.nodes[0].image.url}/>
             <meta property="og:type" content="website"/>
             <meta property="og:site_name" content="Hufi"/>
 
@@ -85,7 +85,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             <meta property="twitter:url" content={`https://www.hufistore.com/product/${slugify(productData.product.title)}`}/>
             <meta property="twitter:title" content="Hufi"/>
             <meta property="twitter:description" content={productData.product.seo.description}/>
-            <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
+            <meta property="twitter:image" content={productData.product.media.nodes[0].image.url}/>
         </Head>
         <Layout {...pageProps}>
           <main className = "relative">
