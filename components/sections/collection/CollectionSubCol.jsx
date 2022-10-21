@@ -20,7 +20,7 @@ const CollectionSubCol = ({data}) => {
                 ${collectionSet.style.type === "Row" && (`grid grid-flow-col auto-cols-[95%] sm:auto-cols-[48%] lg:auto-cols-[32%] w-full h-[50vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "TwoRow" && (`grid md:grid-cols-2  w-full h-screen gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
-                ${collectionSet.style.type === "Header" && (`h-[80vh]`)}
+                ${collectionSet.style.type === "Header" && (`h-[70vh]`)}
                 ${collectionSet.style.type === "Squared" && (`grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 max-w-7xl mx-auto`)}
                 overflow-scroll 
               `}>
@@ -57,6 +57,7 @@ function CollectionBox({set,index,collectionSet}){
             ${collectionSet.style.type === "TwoRow" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
             ${collectionSet.style.type === "Banner" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
             ${collectionSet.style.type === "Row" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+            ${collectionSet.style.type === "Header" && ('pl-8 pb-12 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
           `}>
             {/* FORMAT HTML */}
             <div className = {`w-full max-w-xs
@@ -65,6 +66,7 @@ function CollectionBox({set,index,collectionSet}){
             ${collectionSet.style.type === "TwoRow" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
             ${collectionSet.style.type === "Banner" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
             ${collectionSet.style.type === "Row" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
+            ${collectionSet.style.type === "Header" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
             `}
             >
               {set?.collections?.nodes[0]?.descriptionHtml && (
