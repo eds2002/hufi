@@ -78,6 +78,7 @@ const CollectionProducts = ({data,filters}) => {
                   px-4 py-1.5 text-xs  transition rounded-full cursor-pointer sm:text-sm hover:text-onSurface/60 flex items-center` 
                 }
                 onClick = {()=>setFiltersModal(true)}
+                key = {tag}
               >
                 {tag}
                 {selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) && (
@@ -105,12 +106,12 @@ const CollectionProducts = ({data,filters}) => {
             <>
               <div className = "flex items-center justify-center w-full h-full grid-cols-1 py-16 sm:grid-cols-2 lg:col-span-3 ">
                 <div className = "max-w-xs text-center">
-                  <h3 className = "font-medium">We couldn't find what you were looking for.</h3>
+                  <h3 className = "font-medium">We couldn&apos;t find what you were looking for.</h3>
                   <p className = "text-onBackground/60">Showing you all products</p>
                 </div>
               </div>
               {data.collectionByHandle.products.nodes.map((product)=>(
-                <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                <ProductCard product={product} data = {data.collectionByHandle.products} key = {product.title}/>
               ))}
             </>
             :

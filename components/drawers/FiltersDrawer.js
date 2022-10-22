@@ -107,7 +107,7 @@ export default function FiltersDrawer({filtersModal,setFiltersModal,tags,allFilt
                       {/* Radio options */}
                       <div className = "">
                         {filtersByTags.map((obj)=>(
-                          <Disclosure>
+                          <Disclosure key = {obj.tag}>
                             {({ open }) => (
                               <>
                                 <Disclosure.Button className={` ${open ? 'bg-surface' : 'bg-background border-b '} flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-onBackground  focus:outline-none focus-visible:ring  focus-visible:ring-opacity-75`}>
@@ -120,7 +120,7 @@ export default function FiltersDrawer({filtersModal,setFiltersModal,tags,allFilt
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-onBackground">
                                   {obj.tagFilters.map((filter)=>(
-                                    <div className = "flex gap-3 px-2 my-2">
+                                    <div className = "flex gap-3 px-2 my-2" key = {filter}>
                                       {/* TAG NAMES */}
                                       <div 
                                         className = {`relative w-4 h-4 border rounded-sm cursor-pointer border-onBackground ${selectedFilters?.some(selected => selected?.userSelected?.includes(filter)) ? 'bg-secondaryVariant' : 'bg-transparent'}`}
