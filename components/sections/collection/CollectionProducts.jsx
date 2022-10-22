@@ -67,29 +67,29 @@ const CollectionProducts = ({data,filters}) => {
     <section className = "bg-background">
       {/* FILTERS NAV */}
       <nav className = "flex items-center justify-between w-full gap-6 px-4 py-6 mx-auto max-w-7xl">
-        <div className = "flex items-center justify-start flex-1">
-          <p className = "hidden mr-5 text-xs sm:text-sm text-onBackground/60 sm:block">Filter by</p>
           {tags.length != 0 && (
-            <div className = {`
-            fixed left-0 right-0 z-10 flex items-center justify-start max-w-xs gap-3 px-4 py-2 mx-auto overflow-scroll rounded-full bottom-7 bg-onBackground/5 backdrop-blur-md w-min 
-            sm:relative sm:flex sm:flex-1 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:bottom-0 sm:max-w-none`}>
-              {tags.map((tag)=>(
-                <p 
-                  className = {`${selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) ? 'bg-primary' : 'bg-neutral-300'}
-                    px-4 py-1.5 text-xs  transition rounded-full cursor-pointer sm:text-sm hover:text-onSurface/60 flex items-center` 
-                  }
-                  onClick = {()=>setFiltersModal(true)}
-                  key = {tag}
-                >
-                  {tag}
-                  {selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) && (
-                    <p className = "flex items-center justify-center w-2 h-2 p-2.5 ml-2 text-xs rounded-full bg-primaryVariant2">{selectedFilters[selectedFilters.findIndex(selectedFilter => selectedFilter.tag === tag)].userSelected.length}</p>
-                  )}
-                </p>
-              ))}
+            <div className = "flex items-center justify-start flex-1">
+              <p className = "hidden mr-5 text-xs sm:text-sm text-onBackground/60 sm:block">Filter by</p>
+              <div className = {`
+              fixed left-0 right-0 z-10 flex items-center justify-start max-w-xs gap-3 px-4 py-2 mx-auto overflow-scroll rounded-full bottom-7 bg-onBackground/5 backdrop-blur-md w-min 
+              sm:relative sm:flex sm:flex-1 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:bottom-0 sm:max-w-none`}>
+                {tags.map((tag)=>(
+                  <p 
+                    className = {`${selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) ? 'bg-primary' : 'bg-neutral-300'}
+                      px-4 py-1.5 text-xs  transition rounded-full cursor-pointer sm:text-sm hover:text-onSurface/60 flex items-center` 
+                    }
+                    onClick = {()=>setFiltersModal(true)}
+                    key = {tag}
+                  >
+                    {tag}
+                    {selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) && (
+                      <p className = "flex items-center justify-center w-2 h-2 p-2.5 ml-2 text-xs rounded-full bg-primaryVariant2">{selectedFilters[selectedFilters.findIndex(selectedFilter => selectedFilter.tag === tag)].userSelected.length}</p>
+                    )}
+                  </p>
+                ))}
+              </div>
             </div>
           )}
-        </div>
         <div className = "items-center hidden h-full text-sm text-onBackground/50 sm:flex">
           <p>Sort by:</p>
           <select className = "font-medium outline-none">
@@ -126,8 +126,10 @@ const CollectionProducts = ({data,filters}) => {
                     </>
                     :
                     <>
-                      {filterBy.every((filter)=>product.tags.some((tag)=> tag.split(":")[1] === filter)) && 
-                        <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                      {product.tags.every((tag)=> filterBy.some(filter=> filter === tag.split(":")[1])) && 
+                        <>
+                          <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                        </>
                       }
                     </>
                   }
