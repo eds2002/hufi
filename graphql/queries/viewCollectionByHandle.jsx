@@ -68,6 +68,13 @@ query viewCollection($handle:String!, $amount:Int){
         priceRange{
           maxVariantPrice{
             amount
+            currencyCode
+          }
+        }
+        compareAtPriceRange{
+          maxVariantPrice{
+            amount
+            currencyCode
           }
         }
         media(first:1){
@@ -79,6 +86,10 @@ query viewCollection($handle:String!, $amount:Int){
           }
         }
         shortDesc:metafield(namespace:"product",key:"short_description"){
+          value
+          type
+        }
+        coupon:metafield(namespace:"product",key:"coupon"){
           value
           type
         }

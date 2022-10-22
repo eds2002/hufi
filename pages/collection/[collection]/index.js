@@ -13,9 +13,11 @@ import { useRouter } from 'next/router';
 import Layout from '../../../components/global/Layout';
 import { viewMenu } from '../../../graphql/queries/viewMenu';
 import { getCustomer } from '../../../graphql/queries/getCustomer';
+import { viewCollectionProducts } from '../../../graphql/queries/viewCollectionProducts';
 
 const CollectionPage = ({collectionData, urlFilters,subCollections,collectionName,pageProps}) => {
   const router = useRouter()
+  console.log(collectionData)
   return (
     <>
       {collectionData && subCollections &&
@@ -49,7 +51,7 @@ const CollectionPage = ({collectionData, urlFilters,subCollections,collectionNam
           <div className = "sticky z-20 py-2 text-2xl font-medium bg-surface top-16">
             <p className = "px-4 mx-auto max-w-7xl">{collectionData.collectionByHandle.title}</p>
           </div>
-          <CollectionSubCol data = {subCollections}/>
+          <CollectionSubCol data = {subCollections} productData = {collectionData.collectionByHandle.products}/>
         </main>
       </Layout>
       </>
@@ -81,9 +83,17 @@ export async function getServerSideProps(context) {
     for(const [index,set] of subCollectionsJSON.entries()){
       const queryData = []
       for(const value of set.collectionTitles){
-        const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
-        queryData.push(collection)
+        // Style types with the value "Products" will use a different query.
+        if(set.style.type === "Products"){
+          // const {data:collectionProducts, errors:collectionProductsErrors} = await storefront(viewCollectionProducts,{handle:slugify(value), amount:10})
+          // queryData.push(collectionProducts)
+        }else{
+          const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
+          queryData.push(collection)
+        }
       }
+
+      // Change collection titles to it's received data.
       subCollectionsJSON[index].collectionTitles = queryData
     }
     return{

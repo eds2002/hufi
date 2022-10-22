@@ -41,8 +41,10 @@ const SubCollectionPage = ({collectionData, urlFilters,pageProps}) => {
           <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
         </Head>
         <Layout {...pageProps}>
-          <CollectionBanner data = {collectionData}/>
-          <CollectionProducts data = {collectionData} filters = {urlFilters}/>
+          <div className = "h-full">
+            <CollectionBanner data = {collectionData}/>
+            <CollectionProducts data = {collectionData} filters = {urlFilters}/>
+          </div>
         </Layout>
       </>
       }

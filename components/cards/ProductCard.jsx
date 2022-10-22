@@ -21,11 +21,10 @@ export default function ProductCard({product}){
 
   return(
     <>
-      <div className = "px-4 py-4 rounded-sm select-none bg-background">
+      <div className = "px-4 py-4 mx-auto rounded-sm select-none bg-background">
         <ProductImage product = {product}/>
         <div className = "" id = "container">
           <ProductTextDisplay product={product}/>
-          {/* <ActionsContainer product = {product} setOpenModal = {setOpenModal} setSelectedProduct = {setSelectedProduct}  selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} enable = {true}/> */}
         </div>
       </div>
       <AddToCartModal data = {selectedProduct} setOpenModal = {setOpenModal} openModal = {openModal} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption}/> 
