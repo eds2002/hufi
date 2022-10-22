@@ -124,7 +124,7 @@ export default function FiltersDrawer({filtersModal,setFiltersModal,tags,allFilt
                                       {/* TAG NAMES */}
                                       <div 
                                         className = {`relative w-4 h-4 border rounded-sm cursor-pointer border-onBackground ${selectedFilters?.some(selected => selected?.userSelected?.includes(filter)) ? 'bg-secondaryVariant' : 'bg-transparent'}`}
-                                        onClick = {()=>handleFilterClick(filter,obj.tag)}  
+                                        onClick = {()=>handleFilterClick(filter,obj.tag,obj)}  
                                       >
                                         <span className = "absolute inset-0 flex items-center justify-center text-onSecondary">
                                           {selectedFilters?.some(selected => selected?.userSelected?.includes(filter)) && (

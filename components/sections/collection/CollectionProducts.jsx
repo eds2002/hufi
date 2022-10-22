@@ -59,9 +59,7 @@ const CollectionProducts = ({data,filters}) => {
     })
     setFilterBy(filters)
   },[selectedFilters])
-
-
-
+  
   return (
     <>
     <section className = "bg-background">
@@ -104,7 +102,7 @@ const CollectionProducts = ({data,filters}) => {
       <div className = "w-full px-4 mx-auto max-w-7xl"> 
         <div className = "flex gap-10 mx-auto max-w-7xl">
           <div className = "grid w-full h-full grid-cols-1 gap-10 pb-32 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3" ref ={productsRef}>
-            {isEmpty ? 
+          {isEmpty ? 
             <>
               <div className = "flex items-center justify-center w-full h-full grid-cols-1 py-16 sm:grid-cols-2 lg:col-span-3 ">
                 <div className = "max-w-xs text-center">
@@ -120,19 +118,16 @@ const CollectionProducts = ({data,filters}) => {
             <>
               {data.collectionByHandle.products.nodes.map((product)=>(
                 <>
-                  {selectedFilters.every(selected=> selected.userSelected.length === 0) ?
-                    <>
-                      <ProductCard product={product} data = {data.collectionByHandle.products}/>
-                    </>
-                    :
-                    <>
-                      {product.tags.every((tag)=> filterBy.some(filter=> filter === tag.split(":")[1])) && 
-                        <>
-                          <ProductCard product={product} data = {data.collectionByHandle.products}/>
-                        </>
-                      }
-                    </>
-                  }
+                  {product.tags.length === 0 && ''}
+                  <>
+                    {selectedFilters.every(selected=> selected.userSelected.length === 0) ?
+                        <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                      :
+                      <>
+                        {filterBy.every(filter=> product.tags.some((tag)=> tag.split(":")[1] === filter)) && <ProductCard product={product} data = {data.collectionByHandle.products}/>}
+                      </>
+                    }
+                  </>
                 </>
               ))}
             </>
