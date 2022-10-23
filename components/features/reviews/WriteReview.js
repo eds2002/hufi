@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { collection,setDoc,doc } from 'firebase/firestore';
 import { db } from '../../../firebase/app';
-import { PaperAirplaneIcon, PhotoIcon, StarIcon, VideoCameraIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { PhotoIcon, StarIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { Fragment, useState } from 'react'
 import { Button } from '../../elements'
 import { countries } from '../../../constants/countryAndStates'
@@ -12,6 +12,7 @@ import { useContext } from 'react';
 import UserContext from '../../../context/userContext';
 import CloseButton from '../CloseButton';
 import { aliReviews } from '../../../constants/reviews';
+import { slugify } from '../../../utils/slugify';
 
 export default function WriteReview({openWriteReview, setOpenWriteReview,productTitle}) {
   const {currentUser} = useContext(UserContext)
@@ -49,7 +50,7 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
       const storage = getStorage()
       const downloadedUrls = []
       await Promise.all(images.map(async (image)=>{
-        const storageRef = ref(storage, `reviewImages/${image.original[0].name + v4()}`)
+        const storageRef = ref(storage, `${slugify(productTitle)}/${image.original[0].name + v4()}`)
         let blob = await fetch(image.previewImg).then(r => r.blob())
         const snapshot = await uploadBytes(storageRef, blob)
         const urls = await getDownloadURL(snapshot.ref)
