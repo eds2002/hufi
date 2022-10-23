@@ -12,7 +12,7 @@ const Hero = ({data}) => {
     setHandle(tagHandle)
   },[])
   return (
-    <section className="relative bg-background">
+    <section className="relative">
       <div className = "relative z-20 flex items-end justify-start w-full h-[75vh] md:h-[80vh] px-8 py-16 mx-auto">
         <div className="flex flex-col items-start justify-start max-w-sm sm:max-w-7xl" >
           <div className = {`prose  

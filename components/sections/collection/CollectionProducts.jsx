@@ -69,11 +69,11 @@ const CollectionProducts = ({data,filters}) => {
             <div className = "flex items-center justify-start flex-1">
               <p className = "hidden mr-5 text-xs sm:text-sm text-onBackground/60 sm:block">Filter by</p>
               <div className = {`
-              fixed left-0 right-0 z-10 flex items-center justify-start max-w-xs gap-3 px-4 py-2 mx-auto overflow-scroll rounded-full bottom-7 bg-onBackground/5 backdrop-blur-md w-min 
+              fixed left-0 right-0 z-10 flex items-center justify-start max-w-xs gap-3 px-4 py-2 mx-auto overflow-scroll rounded-full bottom-7 bg-onBackground/20 backdrop-blur-md w-min 
               sm:relative sm:flex sm:flex-1 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:bottom-0 sm:max-w-none`}>
                 {tags.map((tag)=>(
                   <p 
-                    className = {`${selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) ? 'bg-primary' : 'bg-neutral-300'}
+                    className = {`${selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) ? 'bg-primary' : 'bg-neutral-200'}
                       px-4 py-1.5 text-xs  transition rounded-full cursor-pointer sm:text-sm hover:text-onSurface/60 flex items-center` 
                     }
                     onClick = {()=>setFiltersModal(true)}

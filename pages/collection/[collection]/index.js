@@ -1,23 +1,14 @@
 import { storefront } from '../../../utils/storefront';
 import { viewCollectionByHandle } from '../../../graphql/queries/viewCollectionByHandle';
-import { CollectionBanner, CollectionProducts, CollectionSubCol } from '../../../components/sections/collection';
+import { CollectionSubCol } from '../../../components/sections/collection';
 import { allCollections } from '../../../graphql/queries/allCollections';
-import { Signup } from '../../../components/sections';
-import ErrorImg from '../../../assets/404.svg'
-import Link from 'next/link';
-import { Button } from '../../../components/elements';
-import Image from 'next/image';
 import Head from 'next/head';
 import { slugify } from '../../../utils/slugify';
-import { useRouter } from 'next/router';
 import Layout from '../../../components/global/Layout';
 import { viewMenu } from '../../../graphql/queries/viewMenu';
 import { getCustomer } from '../../../graphql/queries/getCustomer';
-import { viewCollectionProducts } from '../../../graphql/queries/viewCollectionProducts';
 
 const CollectionPage = ({collectionData, urlFilters,subCollections,collectionName,pageProps}) => {
-  const router = useRouter()
-  console.log(collectionData)
   return (
     <>
       {collectionData && subCollections &&

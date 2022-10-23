@@ -24,7 +24,7 @@ const CollectionSubCol = ({data,productData}) => {
                 ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "Header" && (`h-[70vh]`)}
                 ${collectionSet.style.type === "Squared" && (`grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 max-w-7xl mx-auto`)}
-                ${collectionSet.style.type === "Products" && (`grid grid-cols-2 md:grid-cols-3 gap-3 px-4 max-w-7xl mx-auto`)}
+                ${collectionSet.style.type === "Products" && (`grid grid-cols-2 md:grid-cols-3 gap-6 px-4 max-w-7xl mx-auto`)}
                 overflow-scroll 
               `}>
                 {collectionSet.style.type === "Products" ? 
@@ -104,22 +104,21 @@ function CollectionBox({set,index,collectionSet}){
 function CollectionProduct({data}){
   const {locale} = useContext(LocaleContext)
   const coupon = data?.coupon ? JSON.parse(data.coupon.value) : null
-  console.log(coupon)
   return(
-    <div className = "p-4 bg-background aspect-square">
-      <div className = "w-full h-full">
-        <div className = "relative w-full h-full cursor-pointer bg-surface">
+    <div className = "flex flex-col w-full gap-3" >
+      <div className = "flex-1 w-full h-full">
+        <div className = "relative cursor-pointer bg-surface aspect-square">
           <Link href = {`/product/${data.handle}`}>
-            <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill'/>
+            <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill' objectFit='cover'/>
           </Link>
           {coupon && (
-            <div className = "absolute inset-0 flex items-start justify-end">
-              <p className = "text-[10px] font-medium bg-secondaryVariant text-onSecondary w-max px-2 py-0.5 rounded-full">%{coupon.discountAmount} coupon</p>
+            <div className = "absolute flex items-start justify-end inset-2">
+              <p className = "text-[10px] font-medium bg-secondaryVariant text-onSecondary w-max px-2 py-0.5 rounded-md">%{coupon.discountAmount} coupon</p>
             </div>
           )}
         </div>
       </div>
-      <div className = "flex flex-col items-center justify-center mt-2 ">
+      <div className = "flex flex-col items-center justify-center ">
         <p className = "overflow-hidden text-sm text-center">{data.title}</p>
         <p className="text-sm mt-0.5">
         {parseInt(data?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
