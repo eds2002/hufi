@@ -4,6 +4,56 @@ export const allCollections = gql`
 query viewAllCollections($amount:Int, $queryArgs:String!){
   collections(first:$amount,query: $queryArgs){
     nodes{
+      products(sortKey:BEST_SELLING, first:6){
+        nodes{
+          tags
+          id
+          title
+          handle
+          options{
+            name
+            values
+          }
+          variants(first:100){
+            nodes{
+              quantityAvailable
+              id
+              selectedOptions{
+                name
+                value
+              }
+            }
+          }
+          priceRange{
+            maxVariantPrice{
+              amount
+              currencyCode
+            }
+          }
+          compareAtPriceRange{
+            maxVariantPrice{
+              amount
+              currencyCode
+            }
+          }
+          media(first:1){
+            nodes{
+              previewImage{
+                url
+                originalSrc
+              }
+            }
+          }
+          shortDesc:metafield(namespace:"product",key:"short_description"){
+            value
+            type
+          }
+          coupon:metafield(namespace:"product",key:"coupon"){
+            value
+            type
+          }
+        }
+      }
       updatedAt
       id
       title
