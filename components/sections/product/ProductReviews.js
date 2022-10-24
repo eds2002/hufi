@@ -31,12 +31,6 @@ const ProductReviews = ({data,reviews,questions}) => {
   const [currentTab,setCurrentTab] = useState("Reviews")
   const {currentUser} = useContext(UserContext)
 
-  
-  useEffect(()=>{
-    // router.push("#reviews")
-  },[currentPagination])
-  
-
   // Sets the average of ratings & pagination amount for reviews
   useEffect(()=>{
     if(displayReviews){
@@ -74,6 +68,9 @@ const ProductReviews = ({data,reviews,questions}) => {
       year:year,
     }
   }
+
+
+  
   return (
     <section className = "py-24 bg-background scroll-smooth" id = "reviews">
       <div className = "px-4 mx-auto max-w-7xl">
