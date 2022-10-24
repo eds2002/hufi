@@ -523,7 +523,7 @@ function ProductHeading({data,price}){
   <>
     <div className="flex flex-col items-start justify-between w-full px-4 mt-3 md:mt-0">
       <div className="flex items-center justify-between w-full text-2xl font-medium text-onBackground">
-        <p>{data?.product?.title}</p>
+        <p id = {data?.product?.id}>{data?.product?.title}</p>
       </div>
       {/* <div className = "mt-0 ">
         <p className = "text-sm md:text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>

@@ -14,7 +14,7 @@ import CloseButton from '../CloseButton';
 import { aliReviews } from '../../../constants/reviews';
 import { slugify } from '../../../utils/slugify';
 
-export default function WriteReview({openWriteReview, setOpenWriteReview,productTitle}) {
+export default function WriteReview({openWriteReview, setOpenWriteReview,productId}) {
   const {currentUser} = useContext(UserContext)
   const [rating, setRating] = useState()
   const [hoverIndex, setHoverIndex] = useState()
@@ -37,7 +37,9 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
     }
   }
 
+
   const handleSubmit = async () =>{
+    // Error handling
     const errors = {}
     if(rating == undefined) errors['ratingError'] = 'Must set a rating.'
     if(reviews.reviewTitle == "" || reviews.reviewTitle == undefined) errors['reviewTitleError'] = 'Must include a title.'
@@ -46,7 +48,10 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
     if(reviews.review.length > 150 ) errors['reviewError'] = 'Must be less than 150 characters.'
     setErrors(errors)
     if(Object.keys(errors).length > 0) return
+
     if(images.length > 0){
+      // Logic for reviews that contain images
+      // Add urls to firebase cloud.
       const storage = getStorage()
       const downloadedUrls = []
       await Promise.all(images.map(async (image)=>{
@@ -58,11 +63,14 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
       }))
       createReviewDoc(downloadedUrls)
     }else{
+      // If review doesn't contain images, just review the doc with the information we already have.
       const downloadedUrls = []
       createReviewDoc(downloadedUrls)
     }
   }
 
+
+  // For adding reviews based on supplier page
   const addReviews = async () =>{
     const reviewsRef = collection(db,"reviews")
     aliReviews.forEach(async (review) =>{
@@ -80,11 +88,11 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
       review:reviews.review,
       country:country ?? null,
       state:state ?? null,
-      product:productTitle,
+      product:productId,
       images:downloadUrls,
       reviewerId:currentUser?.id,
       reviewer:displayName,
-      createdAt:new Date(),
+      createdAt:new Date().toISOString(),
       edited:false,
     })
     .then(()=>{

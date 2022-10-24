@@ -17,12 +17,14 @@ import { viewCollectionProducts } from "../../graphql/queries/viewCollectionProd
 
 
 
-const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
+const Product = ({productData,pageProps,productRecommendations})=>{
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
   const [recommended,setRecommended] = useState({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter(product => product.title != productData.product.title)}})
   const [crossSell, setCrossSell] = useState()
+  const [reviewsData, setReviewsData] = useState()
+  const [questionsData, setQuestionsData] = useState()
 
   const ref = useRef(null)
   const handleScroll = () => {
@@ -42,6 +44,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
       };
   }, [productData.product]);
 
+  // If meta tag cross sell contains values, query data for those values.
   useEffect(()=>{
     const crossSellJSON = productData?.product?.crossSell?.value ? JSON.parse(productData.product.crossSell.value) : null
     if(crossSellJSON){
@@ -58,6 +61,39 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
       setCrossSell(null)
     }
   },[productData.product.id])
+
+
+  // Get the questions data
+  useEffect(()=>{
+    // Getting questions from firebase.
+    (async()=>{
+      const q = query(collection(db, "questions"), where("product", "==",productData.product.id))
+      const querySnapshot = await getDocs(q)
+      const questions = []
+      querySnapshot.forEach(doc=>{
+        const data = doc.data()
+        data["id"] = doc.id
+        questions.push(data)
+      })
+      setQuestionsData(questions)
+    })()
+  },[])
+
+  // Get the reviews data
+  useEffect(()=>{
+    (async()=>{
+      // Getting reviews from firebase.
+      const q = query(collection(db, "reviews"), where("product", "==",productData?.product?.id))
+      const querySnapshot = await getDocs(q)
+      const reviews = []
+      querySnapshot.forEach(doc=>{
+        const data = doc.data()
+        data["id"] = doc.id
+        reviews.push(data)
+      })
+      setReviewsData(reviews)
+    })()
+  },[])
 
   return (
     <>
@@ -94,7 +130,7 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             {/* <ProductUse data = {productData?.product?.useCases}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
-            <ProductReviews data = {productData} reviews = {reviewsData}/>
+            <ProductReviews data = {productData} reviews = {reviewsData} questions = {questionsData}/>
             {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'You might also like'}/>)}
           </main>
         </Layout>
@@ -127,13 +163,13 @@ export async function getServerSideProps(context) {
     const collectionHandle = slugify(product?.product?.collections?.nodes[0]?.title) ?? null
     let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(viewCollectionProducts, {handle:collectionHandle,amount:10})
 
-    // Getting reviews from firebase.
-    const q = query(collection(db, "reviews"), where("product", "==",product?.product?.title))
-    const querySnapshot = await getDocs(q)
-    const reviews = []
-    querySnapshot.forEach(doc=>{
-      reviews.push(doc.data())
-    })
+    // // Getting reviews from firebase.
+    // const q = query(collection(db, "reviews"), where("product", "==",product?.product?.id))
+    // const querySnapshot = await getDocs(q)
+    // const reviews = []
+    // querySnapshot.forEach(doc=>{
+    //   reviews.push(doc.data())
+    // })
 
     // Data validating
     if(product.product){
@@ -141,7 +177,7 @@ export async function getServerSideProps(context) {
         props:{
           productData:product || errors, 
           pageProps:pageProps, 
-          reviewsData:JSON.stringify(reviews),
+          // reviewsData:JSON.stringify(reviews),
           productRecommendations:productRecommedations || null
         }
       }

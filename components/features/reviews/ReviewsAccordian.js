@@ -16,21 +16,21 @@ import {ExpandImage} from '../'
 const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) => {
   const {currentUser} = useContext(UserContext)
   const [openWriteReview,setOpenWriteReview] = useState(false)
-  const [displayReviews,setDisplayReviews] = useState(reviews ? JSON.parse(reviews) : null)
+  const [displayReviews,setDisplayReviews] = useState(reviews ?? null)
   const [open,setOpen] = useState(false)
   const [average,setAverage] = useState(0)
   const [expandImage,setExpandImage] = useState(false)
   const [selectedReview,setSelectedReview] = useState(null)
 
   useEffect(()=>{
-    setDisplayReviews(reviews ? JSON.parse(reviews) : null)
+    setDisplayReviews(reviews ?? null)
   },[reviews])
 
   useEffect(()=>{
-    if(displayReviews.length != 0){
-      const filter = displayReviews.flatMap(review => review.rating)
-      const sumsOfRating = filter.reduce((a,b)=> a+b, 0)
-      const avg = (sumsOfRating / filter.length )
+    if(displayReviews?.length != 0){
+      const filter = displayReviews?.flatMap(review => review.rating)
+      const sumsOfRating = filter?.reduce((a,b)=> a+b, 0)
+      const avg = (sumsOfRating / filter?.length )
       setAverage(avg)
     }else{
       setAverage(0)
@@ -65,7 +65,7 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
           onClick = {()=>setOpen(!open)}
           >
             <div className = "flex items-center">  
-              <h3 className = "font-medium text-onSurface">Reviews ({displayReviews.length})</h3>
+              <h3 className = "font-medium text-onSurface">Reviews ({displayReviews?.length})</h3>
             </div>
             <div className = "flex items-center">
                 <StarsComponent starRating = {average ?? 0}/>
@@ -100,7 +100,7 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
                             {review.review}
                           </p>
                           <div className = "mt-4">
-                            {review.images.length > 0 && (
+                            {review.images?.length > 0 && (
                               <div className = "flex gap-x-3 ">
                                 {review.images.map((url)=>(
                                   <div 
@@ -123,7 +123,7 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
                   </>
                 ))}
               </div>
-              {displayReviews.length === 0?
+              {displayReviews?.length === 0?
               <>
                 <div className = "pt-4 w-max">
                   {currentUser ? 
@@ -140,7 +140,7 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
               </>
               :
               <>
-                {displayReviews.length > 2 && (
+                {displayReviews?.length > 2 && (
                   <div className = "mt-1 w-max">
                     <Link href = "#reviews">
                       <Button text = 'Read more' CSS = 'bg-secondaryVariant hover:bg-secondary text-onSecondary px-4 py-2 '/>

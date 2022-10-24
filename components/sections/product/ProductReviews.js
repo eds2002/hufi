@@ -1,7 +1,7 @@
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
-import React from 'react'
-import { ExpandImage, StarsComponent, WriteReview } from '../../features'
+import React, { useRef } from 'react'
+import { ExpandImage, StarsComponent, WriteQuestion, WriteReview } from '../../features'
 import { Button } from '../../elements'
 import { useState } from 'react'
 import profilePic from '../../../assets/hufiProfilePic.png'
@@ -11,18 +11,24 @@ import UserContext from '../../../context/userContext'
 import Link from 'next/link'
 import { slugify } from '../../../utils/slugify'
 import { useRouter } from 'next/router'
+import { db } from '../../../firebase/app'
+import { doc, updateDoc } from 'firebase/firestore'
 
-const ProductReviews = ({data,reviews}) => {
+
+const ProductReviews = ({data,reviews,questions}) => {
   const router = useRouter()
   const [openWriteReview,setOpenWriteReview] = useState(false)
-  const [displayReviews,setDisplayReviews] = useState(reviews ? JSON.parse(reviews) : null)
+  const [openWriteQuestion,setOpenWriteQuestion] = useState(false)
+  const [displayReviews,setDisplayReviews] = useState(reviews ?? null)
+  const [displayQuestions,setDisplayQuestions] = useState(questions ?? null)
   const [currentPagination,setCurrentPagination] = useState(1)
-  const [startFrom,setStartFrom] = useState(1)
-  const [displayLimit,setDisplayLimit] = useState(10)
-  const [paginationArray,setPaginationArray] = useState(Array.from(Array(Math.ceil(displayReviews.length / displayLimit)).keys()))
+  const [startFrom] = useState(1)
+  const [displayLimit] = useState(10)
+  const [paginationArray,setPaginationArray] = useState(Array.from(Array(Math.ceil(displayReviews?.length || 1/ displayLimit || 1)).keys()))
   const [average,setAverage] = useState(0)
   const [expandImage,setExpandImage] = useState(false)
   const [selectedReview,setSelectedReview] = useState(null)
+  const [currentTab,setCurrentTab] = useState("Reviews")
   const {currentUser} = useContext(UserContext)
 
   
@@ -30,18 +36,23 @@ const ProductReviews = ({data,reviews}) => {
     router.push("#reviews")
   },[currentPagination])
   
+
+  // Sets the average of ratings & pagination amount for reviews
   useEffect(()=>{
     if(displayReviews){
-      const filter = displayReviews.flatMap(review => review.rating)
+      const filter = displayReviews?.flatMap(review => review.rating)
       const sumsOfRating = filter.reduce((a,b)=> a+b, 0)
-      const avg = (sumsOfRating / filter.length )
+      const avg = (sumsOfRating / filter?.length )
       setAverage(avg)
-      setPaginationArray(Array.from(Array(Math.ceil(displayReviews.length / displayLimit)).keys()))
+      setPaginationArray(Array.from(Array(Math.ceil(displayReviews?.length / displayLimit)).keys()))
     }
   },[displayReviews])
 
+
+  // Reloads on data on review data change
   useEffect(()=>{
-    setDisplayReviews(reviews ? JSON.parse(reviews) : null)
+    setDisplayReviews(reviews ?? null)
+    setDisplayQuestions(questions ?? null)
   },[reviews])
   
   const handleImageClick = (index) =>{
@@ -66,8 +77,9 @@ const ProductReviews = ({data,reviews}) => {
   return (
     <section className = "py-24 bg-background scroll-smooth" id = "reviews">
       <div className = "px-4 mx-auto max-w-7xl">
-        <h3 className = "text-3xl font-medium">Reviews ({displayReviews.length})</h3>
-        {displayReviews.length > 0 && (
+        {/* Top of reviews. */}
+        <h3 className = "text-3xl font-medium">Reviews ({displayReviews?.length})</h3>
+        {displayReviews?.length > 0 && (
           <>
             <div>
               <div className = "flex mt-4 gap-x-2">
@@ -82,18 +94,18 @@ const ProductReviews = ({data,reviews}) => {
                 </div>
               </div>
             </div>
-            <p className = "mt-2 text-lg font-medium text-onBackground/70">{startFrom + currentPagination * displayLimit - displayLimit}-{(currentPagination * displayLimit) > displayReviews.length ? displayReviews.length : currentPagination * displayLimit } of {displayReviews.length} Reviews</p>
+            <p className = "mt-2 text-lg font-medium text-onBackground/70">{startFrom + currentPagination * displayLimit - displayLimit}-{(currentPagination * displayLimit) > displayReviews?.length ? displayReviews?.length : currentPagination * displayLimit } of {displayReviews?.length} Reviews</p>
           </>
         )}
 
-        {/* Reviews with media */}
-        {displayReviews.length > 0 && (
+        {/* Reviews with media section*/}
+        {displayReviews?.length > 0 && (
           <div className = "mt-7">
             <h3 className = "text-2xl font-medium">Images</h3>
             <div className = "flex h-full mt-3 overflow-scroll flex-nowrap gap-x-3 scrollBar">
               {displayReviews.map((review,index)=>(
                 <>
-                  {review.images.length > 0 && (
+                  {review.images?.length > 0 && (
                     <div onClick = {()=>handleImageClick(index)}>
                       <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md w-72 h-44 aspect-video">
                         <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/>
@@ -119,139 +131,404 @@ const ProductReviews = ({data,reviews}) => {
         )}
 
 
-        {/* Reviews & Questions */}
+        {/* Reviews & QuestionsTab */}
         <div className = "flex items-center justify-between mt-7">
-          <div className = ""> 
-            <p className = "cursor-pointer relative py-1 after:absolute after:left-0 after:right-0 after:bg-onBackground after:h-0.5 after:rounded-full after:bottom-0">Reviews</p>
+          <div className = "flex gap-x-6"> 
+            <p 
+              className = {`
+                cursor-pointer relative py-1 
+                ${currentTab === "Reviews" && ("after:absolute after:left-0 after:right-0 after:bg-onBackground after:h-0.5 after:rounded-full after:bottom-0")}
+                `}
+              onClick = {()=>setCurrentTab("Reviews")}
+              >
+              Reviews
+            </p>
+            <p 
+              className = {`
+                cursor-pointer relative py-1 
+                ${currentTab === "Questions" && ("after:absolute after:left-0 after:right-0 after:bg-onBackground after:h-0.5 after:rounded-full after:bottom-0")}
+                `}
+              onClick = {()=>setCurrentTab("Questions")}
+              >
+              Questions
+            </p>
           </div>
-          <div className = "">
-            {/* Display write review button only if reviews exist, removes excessive write reviews buttons */}
-            {displayReviews.length > 0 && (
+        </div>
+
+        {currentTab === "Reviews" && (
+          <>
+            {displayReviews?.length > 0 && (
             <>
               {currentUser ? 
                 <Button 
                   onClick = {()=>setOpenWriteReview(true)}
                   text = 'Write a review' 
-                  CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                  CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
                 />
               :
               <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
                 <Button 
                     onClick
                     text = 'Write a review' 
-                    CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                    CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
                   />
               </Link>
               }
             </>
             )}
-          </div>
-        </div>
-
-
-        {displayReviews.length > 0 ? 
-        <>
-          <div className = "divide-y">
-            {displayReviews.map((review,index)=>(
+            {displayReviews?.length > 0 ? 
               <>
-                {(index + 1 >= (startFrom + currentPagination * displayLimit - displayLimit) && (index+1 <= currentPagination * displayLimit))  && (
-                <div className = "py-6">
-                  <div className = "flex justify-between">
-                    <div className = "relative flex gap-x-4">
-                      <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
-                        <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
-                        <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
-                          <CheckIcon className = "w-3 h-3 text-background"/>
+                <div className = "divide-y">
+                  {displayReviews.map((review,index)=>(
+                    <>
+                      {(index + 1 >= (startFrom + currentPagination * displayLimit - displayLimit) && (index+1 <= currentPagination * displayLimit))  && (
+                      <div className = "py-6">
+                        <div className = "flex justify-between">
+                          <div className = "relative flex gap-x-4">
+                            <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
+                              <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+                              <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+                                <CheckIcon className = "w-3 h-3 text-background"/>
+                              </div>
+                            </div>
+                            <p className = "flex flex-col items-start flex-1 w-full h-full gap-x-3">
+                              <span>{review.reviewer}</span>
+                              <StarsComponent starRating = {review.rating}/>
+                            </p>
+                          </div>
+                          <p className = "text-sm text-onBackground/25">{formatDate(review.createdAt).month} {formatDate(review.createdAt).day}, {formatDate(review.createdAt).year}</p>
+                        </div>
+                        <div className = "mt-4">
+                          <h3 className = "font-medium text-onSurface">{review.reviewTitle}</h3>
+                          <p className = "max-w-2xl mt-3 overflow-hidden text-onSurface/70 text-ellipsis">
+                            {review.review}
+                          </p>
+                          <div className = "mt-4">
+                            {review.images?.length > 0 && (
+                              <div className = "flex gap-x-3 ">
+                                {review.images.map((url)=>(
+                                  <>
+                                  <div 
+                                    className = "relative cursor-pointer w-14 h-14" 
+                                    onClick={()=>handleImageClick(index)}
+                                  >
+                                    <Image src = {url} layout = 'fill'/>
+                                  </div>
+                                  </>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          {(review?.country || review?.state) && (
+                            <p className = "mt-6 text-sm text-onSurface/70">Location: {review.state ? review.state+',' : '' } {review.country}</p>
+                          )}
                         </div>
                       </div>
-                      <p className = "flex flex-col items-start flex-1 w-full h-full gap-x-3">
-                        <span>{review.reviewer}</span>
-                        <StarsComponent starRating = {review.rating}/>
-                      </p>
-                    </div>
-                    <p className = "text-sm text-onBackground/25">{formatDate(review.createdAt).month} {formatDate(review.createdAt).day}, {formatDate(review.createdAt).year}</p>
-                  </div>
-                  <div className = "mt-4">
-                    <h3 className = "font-medium text-onSurface">{review.reviewTitle}</h3>
-                    <p className = "max-w-2xl mt-3 overflow-hidden text-onSurface/70 text-ellipsis">
-                      {review.review}
-                    </p>
-                    <div className = "mt-4">
-                      {review.images.length > 0 && (
-                        <div className = "flex gap-x-3 ">
-                          {review.images.map((url)=>(
-                            <>
-                            <div 
-                              className = "relative cursor-pointer w-14 h-14" 
-                              onClick={()=>handleImageClick(index)}
-                            >
-                              <Image src = {url} layout = 'fill'/>
-                            </div>
-                            </>
-                          ))}
-                        </div>
                       )}
-                    </div>
-                    {(review?.country || review?.state) && (
-                      <p className = "mt-6 text-sm text-onSurface/70">Location: {review.state ? review.state+',' : '' } {review.country}</p>
-                    )}
-                  </div>
+                    </>
+                  ))}
                 </div>
+                {displayReviews.length > displayLimit && (
+                  <div className = "flex items-center justify-center mt-12 gap-x-6">
+                    <p onClick = {()=>setCurrentPagination(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
+                      <ChevronLeftIcon className = "w-5 h-5 cursor-pointer"/>
+                    </p>
+                    <div className = "flex gap-x-1.5">
+                      {paginationArray.map((val)=>(
+                        <>
+                          <div className = "w-max">
+                            <p 
+                              className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
+                              onClick = {()=>setCurrentPagination(val+1)}
+                            >{val + 1}</p>
+                          </div>
+                        </>
+                      ))}
+                    </div>
+                    <p onClick = {()=>setCurrentPagination(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
+                      <ChevronRightIcon className = "w-5 h-5 cursor-pointer"/>
+                    </p>
+                  </div>
                 )}
               </>
-            ))}
-          </div>
-          {displayReviews.length > displayLimit && (
-            <div className = "flex items-center justify-center mt-12 gap-x-6">
-              <p onClick = {()=>setCurrentPagination(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
-                <ChevronLeftIcon className = "w-5 h-5 cursor-pointer"/>
-              </p>
-              <div className = "flex gap-x-1.5">
-                {paginationArray.map((val)=>(
+              :
+              <div className = "flex items-center justify-center py-40"> 
+                <div className = "">
+                  <p className = "max-w-sm text-2xl font-medium text-center">Hm, it&apos;s empty in here.</p>
+                  <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Be the first to review.</p>
+                  <div className = "flex items-center justify-center mx-auto w-max">          
+                  {currentUser ? 
+                    <Button 
+                      onClick = {()=>setOpenWriteReview(true)}
+                      text = 'Write a review' 
+                      CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                    />
+                  :
+                  <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
+                    <Button 
+                        onClick
+                        text = 'Write a review' 
+                        CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                      />
+                  </Link>
+                  }
+                  </div>
+                </div>
+              </div>
+            }
+          </>
+        )}
+
+        {currentTab === "Questions" && (
+          <>
+          {(displayQuestions?.length > 0 && displayQuestions.every(question => question.answer != "")) && (
+            <>
+              {currentUser ? 
+                <Button 
+                  onClick = {()=>setOpenWriteQuestion(true)}
+                  text = 'Ask a question' 
+                  CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
+                />
+              :
+              <Link href = {`/login?redirect=/product/${slugify(data.product.title)}/#reviews`}>
+                <Button 
+                    onClick
+                    text = 'Ask a question' 
+                    CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
+                  />
+              </Link>
+              }
+            </>
+            )}
+
+          {displayQuestions?.length > 0 ? 
+            <>
+
+              {/* Display for admin accounts, allows admins to see quesitons that need answering. */}
+              <div>
+                {/* Checks if any questions are left unanswered for admin users. */}
+                {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
+
+                {displayQuestions?.map((question)=>(
                   <>
-                    <div className = "w-max">
-                      <p 
-                        className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
-                        onClick = {()=>setCurrentPagination(val+1)}
-                      >{val + 1}</p>
-                    </div>
+                    {(question.answer === "" && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) &&
+                      <UnansweredQuestions question = {question}/>
+                    }
                   </>
                 ))}
               </div>
-              <p onClick = {()=>setCurrentPagination(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
-                <ChevronRightIcon className = "w-5 h-5 cursor-pointer"/>
-              </p>
-            </div>
-          )}
-        </>
-        :
-        <div className = "flex items-center justify-center py-40"> 
-          <div className = "">
-            <p className = "max-w-sm text-3xl text-center mb-7">Be the first to share your opinions or thoughts.</p>
-            <div className = "flex items-center justify-center mx-auto w-max">          
-            {currentUser ? 
-              <Button 
-                onClick = {()=>setOpenWriteReview(true)}
-                text = 'Write a review' 
-                CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-              />
+
+              {/* For users that are not admins. */}
+              {/* If all questions have no answeres, display no questions */}
+              {/* Else display the questions that are answered. */}
+              {displayQuestions.every(question => question.answer === "") ? 
+              <div className = "flex items-center justify-center py-24"> 
+                <div className = "">
+                  <p className = "max-w-sm text-2xl font-medium text-center">Questions are currently being answered.</p>
+                  <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Ask another question?</p>
+                  <div className = "flex items-center justify-center mx-auto w-max">          
+                  {currentUser ? 
+                    <Button 
+                      onClick = {()=>setOpenWriteQuestion(true)}
+                      text = 'Ask a question' 
+                      CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                    />
+                  :
+                  <Link href = {`/login?redirect=/product/${slugify(data.product.title)}/#reviews`}>
+                    <Button 
+                        onClick
+                        text = 'Ask a question' 
+                        CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                      />
+                  </Link>
+                  }
+                  </div>
+                </div>
+              </div>
+              :
+              <div className = "divide-y">
+                {displayQuestions?.map((question)=>(
+                  <>
+                    {(question.answer != "" && (
+                      <AnsweredQuestions question = {question}/>
+                    ))}
+                  </>
+                ))}
+              </div>
+              }
+            </>
             :
-            <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
-              <Button 
-                  onClick
-                  text = 'Write a review' 
-                  CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                />
-            </Link>
-            }
+            <div className = "flex items-center justify-center py-40"> 
+              <div className = "">
+                  <p className = "max-w-sm text-2xl font-medium text-center">Curious about this product?</p>
+                  <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Be the first to ask away.</p>
+                <div className = "flex items-center justify-center mx-auto w-max">          
+                {currentUser ? 
+                  <Button 
+                    onClick = {()=>setOpenWriteQuestion(true)}
+                    text = 'Ask a question' 
+                    CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                  />
+                :
+                <Link href = {`/login?redirect=/product/${slugify(data.product.title)}/#reviews`}>
+                  <Button 
+                      onClick
+                      text = 'Ask a question' 
+                      CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                    />
+                </Link>
+                }
+                </div>
+              </div>
+            </div>
+          }
+          </>
+        )}
+
+      </div>
+      <ExpandImage expandImage = {expandImage} setExpandImage = {setExpandImage} selectedReview = {selectedReview}/>
+      <WriteReview productId = {data?.product?.id} openWriteReview = {openWriteReview} setOpenWriteReview = {setOpenWriteReview}/>
+      <WriteQuestion productId = {data?.product?.id} openWriteQuestion = {openWriteQuestion} setOpenWriteQuestion = {setOpenWriteQuestion}/>
+    </section>
+  )
+}
+
+function UnansweredQuestions({question}){
+  const router = useRouter()
+  const [answerQuestion,setAnswerQuestion] = useState(false)
+  const inputRef = useRef()
+  const docRef = doc(db, "questions",question.id)
+
+  const handleSubmit = async (e) =>{
+    e.preventDefault()
+    const inputValue = inputRef.current.value
+    await updateDoc(docRef,{answer:inputValue, dateAnswered:new Date().toISOString()})
+      .then(docRef => {
+        window.location.reload()
+      })
+      .catch(error=> {
+        console.log(error)
+        alert("Error in updating doc.")
+      })
+  }
+
+
+
+  
+  const formatDate = (userDate,monthAdd) =>{
+    const num = monthAdd ?? 0
+  
+    const removeTime = new Date (new Date(userDate).toDateString())
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const month = new Date(removeTime).getMonth()
+    const day = new Date(removeTime).getDate()
+    const year = new Date(removeTime).getFullYear()
+    return {
+      month:months[month + num],
+      day:day,
+      year:year,
+    }
+  }
+  return(
+    <div className = "relative w-full px-6 py-6 my-6 rounded-md bg-surface">
+      <div className = "flex justify-between w-full">
+        <div className = "relative flex w-full gap-x-4">
+          <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
+            <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+            <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+              <CheckIcon className = "w-3 h-3 text-background"/>
+            </div>
+          </div>
+          <div className = "flex flex-col flex-1">
+            <p className = "flex items-center justify-between font-medium">
+              {question.name}
+              <span className = "pl-10 text-sm text-onBackground/25">{(formatDate(question.dateAsked).month).slice(0,3)} {formatDate(question.dateAsked).day}, {formatDate(question.dateAsked).year}</span>
+            </p>
+            <h3 className = "font-medium text-onBackground/70">Q: {question.question}</h3>
+          </div>
+        </div>
+      </div>
+      {answerQuestion ? 
+      <form onSubmit={(e)=>handleSubmit(e)}>
+        <input 
+          className = "w-full h-full px-2 py-2 bg-transparent border border-black rounded-md mt-7"
+          ref = {inputRef}
+          placeholder = 'Write your answer'
+        />
+        <Button
+          text = 'Submit answer'
+          CSS = 'mt-4 bg-secondaryVariant py-2 text-onSecondary sm:w-max px-4'  
+        />
+      </form>
+      :
+      <Button 
+        text = 'Answer question' 
+        CSS = 'mt-4 bg-secondaryVariant py-2 text-onSecondary sm:w-max px-4'
+        onClick = {()=>setAnswerQuestion(true)}
+      />
+      }
+    </div>
+  )
+}
+function AnsweredQuestions({question}){
+  
+  const formatDate = (userDate,monthAdd) =>{
+    const num = monthAdd ?? 0
+  
+    const removeTime = new Date (new Date(userDate).toDateString())
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const month = new Date(removeTime).getMonth()
+    const day = new Date(removeTime).getDate()
+    const year = new Date(removeTime).getFullYear()
+    return {
+      month:months[month + num],
+      day:day,
+      year:year,
+    }
+  }
+  return(
+    <div className = "relative w-full py-8">
+      <div className = "flex justify-between w-full">
+        <div className = "relative flex w-full gap-x-4">
+          <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
+            <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+            <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+              <CheckIcon className = "w-3 h-3 text-background"/>
+            </div>
+          </div>
+          <div className = "flex flex-col flex-1">
+            <p className = "flex items-center justify-between font-medium">
+              {question.name}
+              <span className = "pl-10 text-sm text-onBackground/25">{(formatDate(question.dateAsked).month).slice(0,3)} {formatDate(question.dateAsked).day}, {formatDate(question.dateAsked).year}</span>
+            </p>
+            <h3 className = "font-medium text-onBackground/70">Q: {question.question}</h3>
+          </div>
+        </div>
+      </div>
+      {/* Question answered */}
+      <div className = "flex items-center justify-start py-4 ml-5">
+        <div className = "w-0.5 rounded-full h-16 bg-onBackground/25"/>
+        <div className = "flex-1 ml-5">
+          <div className = "flex justify-between">
+            <div className = "relative flex w-full gap-x-4">
+              <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
+                <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+                <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+                  <CheckIcon className = "w-3 h-3 text-background"/>
+                </div>
+              </div>
+              <div className = "flex flex-col flex-1 w-full">
+                <p className = "flex items-center justify-between font-medium">
+                  Hufi Team
+                  {/* <span className = "pl-10 text-sm text-onBackground/25">{(formatDate(question.dateAnswered).month).slice(0,3)} {formatDate(question.dateAnswered).day}, {formatDate(question.dateAnswered).year}</span> */}
+                </p>
+                <h3 className = "font-medium text-onBackground/70">A: {question.answer}</h3>
+              </div>
             </div>
           </div>
         </div>
-        }
       </div>
-      <ExpandImage expandImage = {expandImage} setExpandImage = {setExpandImage} selectedReview = {selectedReview}/>
-      <WriteReview productTitle = {data?.product?.title} openWriteReview = {openWriteReview} setOpenWriteReview = {setOpenWriteReview}/>
-    </section>
+    </div>
   )
 }
 

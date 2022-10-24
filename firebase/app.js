@@ -14,7 +14,7 @@ const clientCredentials = {
 
 const app = initializeApp(clientCredentials)
 
-const db = getFirestore()
+const db = getFirestore(app)
 const storage = getStorage()
 
 export {db,storage}
