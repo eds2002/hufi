@@ -33,7 +33,7 @@ const ProductReviews = ({data,reviews,questions}) => {
 
   
   useEffect(()=>{
-    router.push("#reviews")
+    // router.push("#reviews")
   },[currentPagination])
   
 
@@ -290,7 +290,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                   CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
                 />
               :
-              <Link href = {`/login?redirect=/product/${slugify(data.product.title)}/#reviews`}>
+              <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
                 <Button 
                     onClick
                     text = 'Ask a question' 
@@ -307,11 +307,11 @@ const ProductReviews = ({data,reviews,questions}) => {
               {/* Display for admin accounts, allows admins to see quesitons that need answering. */}
               <div>
                 {/* Checks if any questions are left unanswered for admin users. */}
-                {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
+                {(displayQuestions.some((question)=>question.answer === "") && (currentUser != undefined && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID)) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
 
                 {displayQuestions?.map((question)=>(
                   <>
-                    {(question.answer === "" && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) &&
+                    {(question.answer === "" && (currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID && currentUser != undefined)) &&
                       <UnansweredQuestions question = {question}/>
                     }
                   </>
@@ -334,7 +334,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                       CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
                     />
                   :
-                  <Link href = {`/login?redirect=/product/${slugify(data.product.title)}/#reviews`}>
+                  <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
                     <Button 
                         onClick
                         text = 'Ask a question' 
@@ -370,7 +370,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                     CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
                   />
                 :
-                <Link href = {`/login?redirect=/product/${slugify(data.product.title)}/#reviews`}>
+                <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
                   <Button 
                       onClick
                       text = 'Ask a question' 
