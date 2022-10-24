@@ -103,8 +103,11 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                   <div className = {`${expand ? 'hidden' : 'flex'} flex-col justify-center p-6 md:flex-1`}>
                     <div className = "flex justify-between">
                       <div className = "relative flex gap-x-4">
-                        <div className = "relative rounded-full select-none w-11 h-11 bg-neutral-600">
-                          <Image src = {profilePic} layout = 'fill' className = "rounded-full" objectFit='cover'/>
+                        <div className = "relative bg-black rounded-full select-none w-11 h-11">
+                          {/* Profile pic based off reviewers first letter of first name */}
+                          <div className = "inset-0 flex items-center justify-center h-full">
+                            <p className = "ml-1 text-2xl font-bold text-white">{selectedReview?.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                          </div>
                           <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
                             <CheckIcon className = "w-3 h-3 text-background"/>
                           </div>

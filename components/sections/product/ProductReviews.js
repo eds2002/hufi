@@ -110,8 +110,11 @@ const ProductReviews = ({data,reviews,questions}) => {
                       <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md w-72 h-44 aspect-video">
                         <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/>
                         <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
-                          <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
-                            <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+                          <div className = "relative bg-black rounded-full w-11 h-11">
+                            {/* Profile image based on reviewers first letter of their name. */}
+                            <div className = "inset-0 flex items-center justify-center h-full">
+                              <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                            </div>
                             <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
                               <CheckIcon className = "w-3 h-3 text-background"/>
                             </div>
@@ -185,8 +188,10 @@ const ProductReviews = ({data,reviews,questions}) => {
                       <div className = "py-6">
                         <div className = "flex justify-between">
                           <div className = "relative flex gap-x-4">
-                            <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
-                              <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+                            <div className = "relative bg-black rounded-full w-11 h-11">
+                              <div className = "inset-0 flex items-center justify-center h-full">
+                                <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                              </div>
                               <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
                                 <CheckIcon className = "w-3 h-3 text-background"/>
                               </div>
@@ -281,7 +286,7 @@ const ProductReviews = ({data,reviews,questions}) => {
 
         {currentTab === "Questions" && (
           <>
-          {(displayQuestions?.length > 0 && displayQuestions.every(question => question.answer != "")) && (
+          {(displayQuestions?.length > 0 || displayQuestions.every(question => question.answer != "")) && (
             <>
               {currentUser ? 
                 <Button 
@@ -308,7 +313,6 @@ const ProductReviews = ({data,reviews,questions}) => {
               <div>
                 {/* Checks if any questions are left unanswered for admin users. */}
                 {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
-                {console.log(currentUser)}
 
                 {displayQuestions?.map((question)=>(
                   <>
@@ -435,8 +439,11 @@ function UnansweredQuestions({question}){
     <div className = "relative w-full px-6 py-6 my-6 rounded-md bg-surface">
       <div className = "flex justify-between w-full">
         <div className = "relative flex w-full gap-x-4">
-          <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
-            <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+          <div className = "relative bg-black rounded-full w-11 h-11">
+            {/* Profile picture based off first letter of their name */}
+            <div className = "inset-0 flex items-center justify-center h-full">
+              <p className = "ml-1 text-2xl font-bold text-white">{question.name.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+            </div>
             <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
               <CheckIcon className = "w-3 h-3 text-background"/>
             </div>
@@ -446,7 +453,7 @@ function UnansweredQuestions({question}){
               {question.name}
               <span className = "pl-10 text-sm text-onBackground/25">{(formatDate(question.dateAsked).month).slice(0,3)} {formatDate(question.dateAsked).day}, {formatDate(question.dateAsked).year}</span>
             </p>
-            <h3 className = "font-medium text-onBackground/70">Q: {question.question}</h3>
+            <h3 className = "text-sm font-medium text-onBackground/70 sm:text-base">Q: {question.question}</h3>
           </div>
         </div>
       </div>
@@ -492,8 +499,10 @@ function AnsweredQuestions({question}){
     <div className = "relative w-full py-8">
       <div className = "flex justify-between w-full">
         <div className = "relative flex w-full gap-x-4">
-          <div className = "relative rounded-full w-11 h-11 bg-neutral-600">
-            <Image src = {profilePic} layout = 'fill' className = "rounded-full"/>
+          <div className = "relative bg-black rounded-full w-11 h-11">
+            <div className = "inset-0 flex items-center justify-center h-full">
+              <p className = "ml-1 text-2xl font-bold text-white">{question.name.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+            </div>
             <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
               <CheckIcon className = "w-3 h-3 text-background"/>
             </div>
@@ -503,13 +512,13 @@ function AnsweredQuestions({question}){
               {question.name}
               <span className = "pl-10 text-sm text-onBackground/25">{(formatDate(question.dateAsked).month).slice(0,3)} {formatDate(question.dateAsked).day}, {formatDate(question.dateAsked).year}</span>
             </p>
-            <h3 className = "font-medium text-onBackground/70">Q: {question.question}</h3>
+            <h3 className = "text-sm font-medium text-onBackground/90 sm:text-base">Q: {question.question}</h3>
           </div>
         </div>
       </div>
       {/* Question answered */}
-      <div className = "flex items-center justify-start py-4 ml-5">
-        <div className = "w-0.5 rounded-full h-16 bg-onBackground/25"/>
+      <div className = "flex items-center justify-start h-full pt-8 ml-4">
+        <div className = "w-0.5 rounded-full h-full bg-onBackground/25"/>
         <div className = "flex-1 ml-5">
           <div className = "flex justify-between">
             <div className = "relative flex w-full gap-x-4">
@@ -524,7 +533,7 @@ function AnsweredQuestions({question}){
                   Hufi Team
                   {/* <span className = "pl-10 text-sm text-onBackground/25">{(formatDate(question.dateAnswered).month).slice(0,3)} {formatDate(question.dateAnswered).day}, {formatDate(question.dateAnswered).year}</span> */}
                 </p>
-                <h3 className = "font-medium text-onBackground/70">A: {question.answer}</h3>
+                <h3 className = "text-sm text-onBackground/70 sm:text-base">A: {question.answer}</h3>
               </div>
             </div>
           </div>
