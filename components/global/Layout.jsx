@@ -11,6 +11,10 @@ import { storefront } from '../../utils/storefront';
 import UserContext from '../../context/userContext';
 
 const Layout = ({children,headerData,userData,footerData}) => {
+  const {setCurrentUser} = useContext(UserContext)
+  useEffect(()=>{
+    setCurrentUser(userData.customer)
+  },[])
   return (
     <>
       <Header data = {headerData} user = {userData}/>

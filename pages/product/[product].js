@@ -1,4 +1,4 @@
-import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews,ProductFeatures, ProductIncentive, ProductUse } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 import {HorizontalProducts, Signup} from '../../components/sections'
@@ -127,7 +127,6 @@ const Product = ({productData,pageProps,productRecommendations})=>{
           <main className = "relative scroll-smooth">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData} crossSell = {crossSell}/>
-            {/* <ProductUse data = {productData?.product?.useCases}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <ProductReviews data = {productData} reviews = {reviewsData} questions = {questionsData}/>
@@ -162,14 +161,6 @@ export async function getServerSideProps(context) {
     // Getting product recommendations
     const collectionHandle = slugify(product?.product?.collections?.nodes[0]?.title) ?? null
     let {data:productRecommedations, errors:productRecommendationsErrors} = await storefront(viewCollectionProducts, {handle:collectionHandle,amount:10})
-
-    // // Getting reviews from firebase.
-    // const q = query(collection(db, "reviews"), where("product", "==",product?.product?.id))
-    // const querySnapshot = await getDocs(q)
-    // const reviews = []
-    // querySnapshot.forEach(doc=>{
-    //   reviews.push(doc.data())
-    // })
 
     // Data validating
     if(product.product){

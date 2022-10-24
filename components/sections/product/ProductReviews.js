@@ -307,11 +307,11 @@ const ProductReviews = ({data,reviews,questions}) => {
               {/* Display for admin accounts, allows admins to see quesitons that need answering. */}
               <div>
                 {/* Checks if any questions are left unanswered for admin users. */}
-                {(displayQuestions.some((question)=>question.answer === "") && (currentUser != undefined && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID)) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
+                {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
 
                 {displayQuestions?.map((question)=>(
                   <>
-                    {(question.answer === "" && (currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID && currentUser != undefined)) &&
+                    {(question.answer === "" && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) &&
                       <UnansweredQuestions question = {question}/>
                     }
                   </>
@@ -404,6 +404,7 @@ function UnansweredQuestions({question}){
     const inputValue = inputRef.current.value
     await updateDoc(docRef,{answer:inputValue, dateAnswered:new Date().toISOString()})
       .then(docRef => {
+        router.push("#reviews")
         window.location.reload()
       })
       .catch(error=> {
