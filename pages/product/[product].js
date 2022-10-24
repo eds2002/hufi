@@ -88,14 +88,14 @@ const Product = ({productData,pageProps,reviewsData,productRecommendations})=>{
             <meta property="twitter:image" content={productData.product.media.nodes[0].image.url}/>
         </Head>
         <Layout {...pageProps}>
-          <main className = "relative">
+          <main className = "relative scroll-smooth">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData} crossSell = {crossSell}/>
             {/* <ProductUse data = {productData?.product?.useCases}/> */}
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
-            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'You might also like'}/>)}
             <ProductReviews data = {productData} reviews = {reviewsData}/>
+            {recommended?.products?.nodes?.length != 0 && (<HorizontalProducts data = {recommended} text = {'You might also like'}/>)}
           </main>
         </Layout>
         </>

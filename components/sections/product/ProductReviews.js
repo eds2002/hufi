@@ -10,8 +10,10 @@ import { useEffect,useContext } from 'react'
 import UserContext from '../../../context/userContext'
 import Link from 'next/link'
 import { slugify } from '../../../utils/slugify'
+import { useRouter } from 'next/router'
 
 const ProductReviews = ({data,reviews}) => {
+  const router = useRouter()
   const [openWriteReview,setOpenWriteReview] = useState(false)
   const [displayReviews,setDisplayReviews] = useState(reviews ? JSON.parse(reviews) : null)
   const [currentPagination,setCurrentPagination] = useState(1)
@@ -24,6 +26,9 @@ const ProductReviews = ({data,reviews}) => {
   const {currentUser} = useContext(UserContext)
 
   
+  useEffect(()=>{
+    router.push("#reviews")
+  },[currentPagination])
   
   useEffect(()=>{
     if(displayReviews){
@@ -59,7 +64,7 @@ const ProductReviews = ({data,reviews}) => {
     }
   }
   return (
-    <section className = "py-24 bg-background" id = "reviews">
+    <section className = "py-24 bg-background scroll-smooth" id = "reviews">
       <div className = "px-4 mx-auto max-w-7xl">
         <h3 className = "text-3xl font-medium">Reviews ({displayReviews.length})</h3>
         {displayReviews.length > 0 && (
