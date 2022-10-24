@@ -77,7 +77,7 @@ const Product = ({productData,pageProps,productRecommendations})=>{
       })
       setQuestionsData(questions)
     })()
-  },[])
+  },[productData])
 
   // Get the reviews data
   useEffect(()=>{
@@ -93,7 +93,7 @@ const Product = ({productData,pageProps,productRecommendations})=>{
       })
       setReviewsData(reviews)
     })()
-  },[])
+  },[productData])
 
   return (
     <>

@@ -308,6 +308,7 @@ const ProductReviews = ({data,reviews,questions}) => {
               <div>
                 {/* Checks if any questions are left unanswered for admin users. */}
                 {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
+                {console.log(currentUser)}
 
                 {displayQuestions?.map((question)=>(
                   <>
