@@ -12,7 +12,7 @@ import Link from 'next/link'
 import { slugify } from '../../../utils/slugify'
 import { useRouter } from 'next/router'
 import { db } from '../../../firebase/app'
-import { doc, updateDoc } from 'firebase/firestore'
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 
 
 const ProductReviews = ({data,reviews,questions}) => {
@@ -68,8 +68,6 @@ const ProductReviews = ({data,reviews,questions}) => {
       year:year,
     }
   }
-
-
   
   return (
     <section className = "py-24 bg-background scroll-smooth" id = "reviews">
@@ -415,6 +413,17 @@ function UnansweredQuestions({question}){
       })
   }
 
+  const deleteQuestion = async () =>{
+    await deleteDoc(doc(db,"questions",question.id))
+      .then(()=>{
+        window.location.reload()
+      })
+      .catch((e)=>{
+        console.log(e)
+        alert('Error in deleting the question, try again later.')
+      })
+  }
+
 
 
   
@@ -467,11 +476,14 @@ function UnansweredQuestions({question}){
         />
       </form>
       :
-      <Button 
-        text = 'Answer question' 
-        CSS = 'mt-4 bg-secondaryVariant py-2 text-onSecondary sm:w-max px-4'
-        onClick = {()=>setAnswerQuestion(true)}
-      />
+      <div className = "flex flex-col items-center justify-center mt-7 gap-x-3 sm:flex-row sm:justify-start">
+        <Button 
+          text = 'Answer question' 
+          CSS = 'bg-secondaryVariant py-2 text-onSecondary sm:w-max px-4'
+          onClick = {()=>setAnswerQuestion(true)}
+        />
+        <p className = "mt-2 text-sm cursor-pointer sm:mt-0 text-onSurface/50 hover:text-onSurface/40" onClick = {()=>deleteQuestion()}>Delete question</p>
+      </div>
       }
     </div>
   )

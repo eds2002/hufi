@@ -1,5 +1,4 @@
-import { Fragment, useState,useMemo, useContext} from 'react'
-import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
+import { Fragment, useState, useContext} from 'react'
 import { ArrowRightOnRectangleIcon, Bars3Icon, CubeIcon, UserCircleIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useRef } from 'react'
@@ -8,7 +7,6 @@ import CartContext from '../../context/cartContext'
 import { slugify } from '../../utils/slugify'
 import { CartDrawer } from '.'
 import MobileNav from './mobilenav/MobileNav'
-import useSWR from 'swr'
 
 
 

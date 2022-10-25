@@ -1,7 +1,6 @@
 High Priority:
-  COMPLETED 1) Redesign collection and subcollections adding products instead of collections.
-  COMPLETED 2) Improve sub collection design.
-  COMPLETED 3) Improve sub collection filter system.
+  1) Create & integrate a stripe checkout page.
+  
 
 Low Priority:
   1) Add ratings to all products displayed @ home, sub collections, or collections.
