@@ -159,7 +159,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                         text = "Add to cart" 
                         onClick = {(e)=>addToCart(e)} 
                         tag = {'product-page-add-to-cart'}
-                        CSS = {'py-3 bg-secondaryVariant bg-secondary text-onSecondary'}
+                        CSS = {'py-3 bg-secondaryVariant hover:bg-secondary text-onSecondary'}
                       />
                     </div>
                     <Description data = {data}/>
