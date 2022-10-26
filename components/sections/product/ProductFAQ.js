@@ -1,15 +1,5 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-
-const faqs = [
-  {
-    question: "What's the best thing about Switzerland?",
-    answer:
-      "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-  },
-  // More questions...
-]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -20,7 +10,7 @@ export default function FAQ({data}) {
   return (
     <>
     {reviews && (
-      <div className="py-24 bg-background">
+      <div className="py-24 bg-surface">
         <div className="px-4 mx-auto max-w-7xl sm:py-16 ">
           <div className="mx-auto mt-10 divide-y-2 divide-onBackground/10 ">
             <h2 className="text-3xl font-medium tracking-tight text-left text-onBackground sm:text-4xl">

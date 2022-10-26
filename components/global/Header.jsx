@@ -1,5 +1,5 @@
 import { Fragment, useState, useContext} from 'react'
-import { ArrowRightOnRectangleIcon, Bars3Icon, CubeIcon, UserCircleIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline'
+import { ArrowRightOnRectangleIcon, Bars3Icon, CubeIcon, UserCircleIcon, ChatBubbleBottomCenterIcon, UsersIcon} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useRef } from 'react'
 import Image from 'next/image'
@@ -7,6 +7,8 @@ import CartContext from '../../context/cartContext'
 import { slugify } from '../../utils/slugify'
 import { CartDrawer } from '.'
 import MobileNav from './mobilenav/MobileNav'
+import { XMarkIcon } from '@heroicons/react/20/solid'
+import { Account } from '../drawers'
 
 
 
@@ -14,55 +16,30 @@ import MobileNav from './mobilenav/MobileNav'
 export default function Header({data,user}) {
   const [open, setOpen] = useState(false)
   const [scrollPos,setScrollPos] = useState(0)
+  const [displayBanner,setDisplayBanner] = useState(true)
   const {openCart,setOpenCart,cartData,viewedCart,setViewedCart} = useContext(CartContext)
+  const [openAccount,setOpenAccount] = useState(false)
 
   const headerRef = useRef()
 
   return (
     <>
-      <div className="relative z-40 bg-surface">
-        <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onPrimary lg:flex-none">
-            Free worldwide shipping on orders over $75.
-          </p>
-
-          <div className="relative z-10 hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-            <span className="w-px h-6 bg-onPrimary" aria-hidden="true" />
-            {user?.customer ? 
-              <div className="relative group">
-                <p className = "text-sm font-medium cursor-pointer text-onPrimary hover:text-onBackground/70">Hi, {user.customer.firstName}</p>
-                <div className = "absolute right-0 z-40 max-w-xl rounded-lg shadow-xl opacity-0 pointer-events-none bg-surface group-hover:opacity-100 group-hover:pointer-events-auto">
-                  <div className="flex flex-col items-start justify-start w-56 divide-y divide-onSurface/20">
-                    <Link href = "/user/profile?tab=profile">
-                      <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
-                        <li className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Profile <UserCircleIcon className = "w-5 h-5"/></li>
-                      </div>
-                    </Link>
-                    <Link href = "/user/profile?tab=orders">
-                      <div className = "w-full pl-4 pr-10 rounded-md hover:bg-background">
-                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground">Orders <CubeIcon className = "w-5 h-5"/></a>
-                      </div>
-                    </Link>
-                    <Link href = "/api/logout" >
-                      <div className = "w-full py-5 pl-4 pr-10 rounded-md cursor-pointer hover:bg-background">
-                        <a className = "flex items-center w-full py-2 text-base font-medium cursor-pointer gap-x-3 text-onBackground ">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            :
-            <Link href = "/login">
-              <a className="text-sm font-medium text-onPrimary hover:text-onBackground/70">
-                Sign in
-              </a>
-            </Link>
-            }
+      {displayBanner && 
+        <div className="relative z-40 bg-secondaryVariant">
+          <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onSecondary lg:flex-none">
+              Free worldwide shipping on orders over $75.
+            </p>
+          </div>
+          <div className = "absolute inset-0 flex items-center justify-end px-4 text-onSecondary">
+            <XMarkIcon 
+              className = "w-5 h-5"
+              onClick = {()=>setDisplayBanner(false)}
+            />
           </div>
         </div>
-      </div>
+      }
       <div className={`sticky top-0 z-30 transition duration-500`} ref = {headerRef}>
-        {/* Mobile menu */}
         <header className="relative z-20">
           <nav aria-label="Top">
             {/* Secondary navigation */}
@@ -155,7 +132,7 @@ export default function Header({data,user}) {
                       </div>
                     </Link>
 
-                    {/* Mobile menu and search (lg-) */}
+                    {/* Mobile menu(lg-) */}
                     <div className="flex items-center flex-1 lg:hidden">
                       <button
                         type="button"
@@ -193,8 +170,8 @@ export default function Header({data,user}) {
                         </a>
                       </div>
                     </Link>
-
-                    {/* DESKTOP SUPPORT LINKS */}
+                    
+                    {/* Right side header */}
                     <div className="flex items-center justify-end flex-1">
                       {/* For links that do not have sub links */}
                       <div className = "hidden lg:flex gap-x-10">
@@ -214,17 +191,26 @@ export default function Header({data,user}) {
                           </>
                         ))}
                       </div>
-                      <div className="flex items-center lg:ml-8">
-                        <div className="relative flow-root rounded-full ">
-                            <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-transparent border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 border-2 rounded-full cursor-pointer relative z-10 view-cart-GA4`}
-                            onClick = {()=>setOpenCart(!openCart)}
-                            >
-                              <span className="text-sm font-medium ">{cartData?.lines?.edges?.length || 0}</span>
-                            </div>
-                            <div className = {`absolute inset-0 bg-tertiary rounded-full opacity-0 ${(cartData?.lines?.edges?.length != 0 && !viewedCart) && ('animate-ping opacity-100') }`}/>
-                            <span className="sr-only">items in cart, view bag</span>
+
+                      {/* User links */}
+                      <div className = "flex items-center justify-center lg:ml-8 gap-x-2">
+                        <UserCircleIcon 
+                          className = "w-7 h-7 text-secondaryVariant/60"  
+                          onClick = {()=>setOpenAccount(true)}
+                        />
+                        <div className="flex items-center">
+                          <div className="relative flow-root rounded-full ">
+                              <div className = {`${cartData?.lines?.edges?.length > 0 ? ('bg-tertiaryVariant text-white border-tertiaryVariant') : ('text-onBackground bg-secondaryVariant/20 border-onBackground/50 hover:border-onBackground/75')} flex items-center justify-center w-6 h-6 rounded-full cursor-pointer relative z-10 view-cart-GA4`}
+                              onClick = {()=>setOpenCart(!openCart)}
+                              >
+                                <span className="text-sm font-medium ">{cartData?.lines?.edges?.length || 0}</span>
+                              </div>
+                              <div className = {`absolute inset-0 bg-tertiary rounded-full opacity-0 ${(cartData?.lines?.edges?.length != 0 && !viewedCart) && ('animate-ping opacity-100') }`}/>
+                              <span className="sr-only">items in cart, view bag</span>
+                          </div>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -235,6 +221,7 @@ export default function Header({data,user}) {
       </div>
       <MobileNav open = {open} setOpen = {setOpen} data = {data} user = {user}/>
       <CartDrawer openCart={openCart} setOpenCart = {setOpenCart} Fragment = {Fragment}/>
+      <Account openAccount={openAccount} setOpenAccount = {setOpenAccount} Fragment = {Fragment}/>
     </>
   )
 }

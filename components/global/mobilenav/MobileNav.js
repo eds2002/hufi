@@ -76,40 +76,6 @@ export default function MobileNav({open,setOpen,data,user}){
                   <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Hufi Rewards Member</a>
                 </Link>
               </div>
-
-              {user?.customer ? 
-              <div className="absolute bottom-0 w-full px-4 py-6 pb-12 space-y-6 border-t border-onBackground/15">
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <Link href = "/user/profile?tab=profile">
-                      <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Profile <UserCircleIcon className = "w-5 h-5"/></a>
-                    </Link>
-                  </div>
-                  <div>
-                    <Link href = "/user/profile?tab=orders">
-                    <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Orders <CubeIcon className = "w-5 h-5"/></a>
-                    </Link>
-                  </div>
-                  <div className = "mt-10">
-                    <Link href = "/api/logout">
-                      <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Logout <ArrowRightOnRectangleIcon className = "w-5 h-5"/></a>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              :
-              <div className="absolute bottom-0 w-full px-4 py-6 pb-12 space-y-6 border-t border-onBackground/15 ">
-                <div className = "w-full">
-                  <Link href = "/login">
-                    <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Login</a>
-                  </Link>
-                  <Link href = "/signup">
-                    <a className = "flex items-center w-full py-1 text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Sign up</a>
-                  </Link>
-                </div>
-              </div>
-              }
-
             </Dialog.Panel>
           </Transition.Child>
         </div>

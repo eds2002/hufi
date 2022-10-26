@@ -68,17 +68,3 @@ export default function AboutUs({pageProps}){
 }
 
 export { default as getServerSideProps } from '../../utils/getServerSideProps'
-
-// export async function getServerSideProps(context){
-//   const cookies = context?.req?.cookies?.userAccess
-//   let pageProps = {}
-//   const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
-//   const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
-//   const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
-//   pageProps["headerData"] = headerData
-//   pageProps["footerData"] = footerData
-//   pageProps["userData"] = userInformation
-//   pageProps["userAccess"] = cookies
-//   console.log(pageProps)
-//   return {props:{pageProps:pageProps}}
-// }

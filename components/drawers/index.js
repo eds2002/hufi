@@ -10,4 +10,14 @@ export const FiltersDrawer = dynamic(
   }
 )
 
+export const Account = dynamic(
+  ()=> import(
+    /*webpackChunkName: "FiltersDrawer"*/
+    './Account'
+  ),{
+    ssr:false,
+    // loading:()=><h1>Loading...</h1>,
+  }
+)
+
 import {test} from '.'

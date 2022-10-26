@@ -16,6 +16,7 @@ import { RefundsModal, SecureTransactions, DeliveryModal } from '../../modals'
 import { ReviewsAccordian, ReviewsModal,CrossSellComponent } from '../../features'
 import { useCallback } from 'react'
 import ExpandImage from './ProductExpandImage'
+import hufiProtect from '../../../assets/hufiprotect.svg'
 
 
 export default function ProductOverview({data,compRef,reviews,crossSell}) {
@@ -434,13 +435,13 @@ function GetItByComponent({data}){
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
         <p className = "flex items-center px-4 mt-4 text-sm md:flex text-onBackground/70">
           <span><QuestionMarkCircleIcon className = "w-4 h-4 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/></span>
-          <span className = "mr-1">Delivered by</span>
-          <span className = "font-medium text-onBackground">{` ${minMonth} ${minDays} - ${maxMonth} ${maxDays}, ${maxYear}`}</span>
+          <span className = "mr-1">Delivery by</span>
+          <span className = "font-medium text-onBackground">{` ${minMonth.slice(0,3)} ${minDays} - ${maxMonth.slice(0,3)} ${maxDays}, ${maxYear}`}</span>
         </p>
       :
       <>
-        <p className = "px-4 text-sm text-onBackground/70">Fast delivery: 
-          <span className = "font-medium">{` ${orderWithinDates.minMonth} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
+        <p className = "px-4 text-sm text-onBackground/70">FAST delivery: 
+          <span className = "font-medium">{` ${orderWithinDates.minMonth.slice(0,3)} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth.slice(0,3)} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
           <br/>
           Order within:
           <span className = "font-medium text-primaryVariant2">{`
@@ -545,7 +546,9 @@ function ProductHeading({data,price}){
           </span>
         </span>
         :
-        <span>{formatNumber(price,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+        <> 
+          <span>{formatNumber(price,data.product.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+        </>
       }
       </p>
     </div>
