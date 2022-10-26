@@ -139,7 +139,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                 `}
               onClick = {()=>setCurrentTab("Reviews")}
               >
-              Reviews
+              Reviews ({displayReviews.length})
             </p>
             <p 
               className = {`
@@ -148,7 +148,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                 `}
               onClick = {()=>setCurrentTab("Questions")}
               >
-              Questions
+              Questions ({displayQuestions.length})
             </p>
           </div>
         </div>

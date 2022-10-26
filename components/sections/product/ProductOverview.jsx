@@ -154,7 +154,13 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                     <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
                     <GetItByComponent data = {data}/>
                     <div className = "px-4 mt-4 mb-10">
-                      <Button className = "product-page-add-to-cart" text = "Add to cart" onClick = {(e)=>addToCart(e)} tag = {'product-page-add-to-cart'}/>
+                      <Button 
+                        className = "product-page-add-to-cart" 
+                        text = "Add to cart" 
+                        onClick = {(e)=>addToCart(e)} 
+                        tag = {'product-page-add-to-cart'}
+                        CSS = {'py-3 bg-secondaryVariant bg-secondary text-onSecondary'}
+                      />
                     </div>
                     <Description data = {data}/>
                     <div className = "px-4">
@@ -433,15 +439,14 @@ function GetItByComponent({data}){
   return(
   <>
       {day <= 0 && hour <= 0 && minute <= 0 && second <= 0 ? 
-        <p className = "flex items-center px-4 mt-4 text-sm md:flex text-onBackground/70">
-          <span><QuestionMarkCircleIcon className = "w-4 h-4 mr-0.5 cursor-pointer" onClick = {()=>setDeliveryModal(true)}/></span>
+        <p className = "flex items-center px-4 text-sm md:flex text-onBackground/70">
           <span className = "mr-1">Delivery by</span>
-          <span className = "font-medium text-onBackground">{` ${minMonth.slice(0,3)} ${minDays} - ${maxMonth.slice(0,3)} ${maxDays}, ${maxYear}`}</span>
+          <span className = "font-semibold text-onBackground">{` ${minMonth.slice(0,3)} ${minDays} - ${maxMonth.slice(0,3)} ${maxDays}, ${maxYear}`}.</span>
         </p>
       :
       <>
-        <p className = "px-4 text-sm text-onBackground/70">FAST delivery: 
-          <span className = "font-medium">{` ${orderWithinDates.minMonth.slice(0,3)} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth.slice(0,3)} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}</span>
+        <p className = "px-4 text-sm text-onBackground/70">FAST delivery
+          <span className = "font-semibold text-onBackground">{` ${orderWithinDates.minMonth.slice(0,3)} ${orderWithinDates.minDays} - ${orderWithinDates.maxMonth.slice(0,3)} ${orderWithinDates.maxDays}, ${orderWithinDates.maxYear}`}.</span>
           <br/>
           Order within:
           <span className = "font-medium text-primaryVariant2">{`

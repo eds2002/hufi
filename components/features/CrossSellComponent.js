@@ -162,6 +162,7 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               <div className = "mt-7">
                 <Button 
                   text = {selectedProducts?.length == 2 ? `Add all three items | ${formatNumber(total,currencyCode,locale)}` : selectedProducts?.length == 1 ? `Add both items | ${formatNumber(total,currencyCode,locale)}` : `Just add this item | ${formatNumber(total,currencyCode,locale)}`}
+                  CSS = 'py-3 text-onSecondary bg-secondaryVariant hover:bg-secondary'
                   onClick = {()=>handleAddToCart()}  
                 />
               </div>
@@ -195,6 +196,7 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               <div className = "w-full mt-7">
                 <Button 
                   text = {`View all three | ${formatNumber(total,currencyCode,locale)}`}
+                  CSS = 'py-3 text-onSecondary bg-secondaryVariant hover:bg-secondary'
                   onClick = {()=>setExpand(true)}
                 />
               </div>
