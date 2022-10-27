@@ -10,12 +10,12 @@ import LocaleContext from '../../../context/localeContext'
 const CollectionSubCol = ({data,productData}) => {
   return (
     <section className = "w-full">
-      <div className = 'mx-auto '>
+      <div className = 'mx-auto divide-y-4 sm:divide-y-0'>
         {data.map((collectionSet,index)=>(
           <>
-            <div className = "">
+            <div className = "py-6">
               {collectionSet?.heading?.title != "" && (
-                <h1 className = "px-4 pt-10 mx-auto mb-6 text-2xl font-medium max-w-7xl">{collectionSet?.heading?.title ?? 'Collection Heading'}</h1>
+                <h3 className = "px-4 mx-auto mb-3 text-lg font-medium md:text-2xl max-w-7xl">{collectionSet?.heading?.title ?? 'Collection Heading'}</h3>
               )}
               <div className = {`
                 ${collectionSet.style.type === "Default" && ('grid w-full grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-3 h-screen max-w-7xl px-4 mx-auto pb-10')}
@@ -24,7 +24,7 @@ const CollectionSubCol = ({data,productData}) => {
                 ${collectionSet.style.type === "Banner" && (`grid h-[60vh] gap-3 max-w-7xl px-4 mx-auto pb-10`)}
                 ${collectionSet.style.type === "Header" && (`h-[70vh]`)}
                 ${collectionSet.style.type === "Squared" && (`grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 max-w-7xl mx-auto`)}
-                ${collectionSet.style.type === "Products" && (`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 px-4 max-w-7xl mx-auto`)}
+                ${collectionSet.style.type === "Products" && (`flex flex-nowrap overflow-scroll max-w-7xl mx-auto px-4 gap-x-3 scrollBar`)}
                 overflow-scroll 
               `}>
                 {collectionSet.style.type === "Products" ? 
@@ -39,12 +39,12 @@ const CollectionSubCol = ({data,productData}) => {
                       </>
                     ))}
                   </>
-                  :
+                :
                   <>
                     {collectionSet.collectionTitles[0].collections.nodes[0].products.nodes.map((product,index)=>(
                       <>
                         {index < 6 && (
-                          <CollectionProduct data = {product}/>
+                          <CollectionProduct data = {product} index = {index}/>
                         )}
                       </>
                     ))}
@@ -83,7 +83,7 @@ function CollectionBox({set,index,collectionSet}){
         <Image src = {set?.collections?.nodes[0]?.image?.url} layout = 'fill' objectFit='cover' className = 'object-cover w-full h-full select-none '/>
         <div className = "absolute inset-0 bg-black/40 mix-blend-darken"/>
           <div className={`
-            ${collectionSet.style.type === "Squared" && ('p-4 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
+            ${collectionSet.style.type === "Squared" && ('p-4 relative flex items-center justify-center bg-primaryVariant2/5 w-full h-full mx-auto max-w-7xl')}
             ${collectionSet.style.type === "Default" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
             ${collectionSet.style.type === "TwoRow" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
             ${collectionSet.style.type === "Banner" && ('p-8 relative flex flex-col items-start justify-end w-full h-full mx-auto max-w-7xl')}
@@ -92,7 +92,7 @@ function CollectionBox({set,index,collectionSet}){
           `}>
             {/* FORMAT HTML */}
             <div className = {`w-full max-w-xs
-            ${collectionSet.style.type === "Squared" && ('prose-h6:text-xs prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-base prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
+            ${collectionSet.style.type === "Squared" && ('prose-h6:text-xl prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:hidden prose-a:hidden w-min text-center')}
             ${collectionSet.style.type === "Default" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
             ${collectionSet.style.type === "TwoRow" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
             ${collectionSet.style.type === "Banner" && ('prose-h6:text-sm prose-h6:font-medium prose-h6:text-primary prose-h6:text-opacity-90 prose-h3:mt-1 prose-h3:text-2xl prose-h3:font-medium prose-h3:text-white prose-a:hidden')}
@@ -106,22 +106,24 @@ function CollectionBox({set,index,collectionSet}){
                   ref = {aRef}
                 />
               )}
-              <Link href = {handle}>
-                <Button text = "Shop" CSS = ' mt-3 w-24 py-1 bg-background text-onBackground' tag = 'view-collection-btn'/>
-              </Link>
+              {collectionSet.style.type != "Squared" && (
+                <Link href = {handle}>
+                  <Button text = "Shop" CSS = ' mt-3 w-24 py-1 bg-background text-onBackground' tag = 'view-collection-btn'/>
+                </Link>
+              )}
             </div>          
           </div>
     </div>
   )
 }
 
-function CollectionProduct({data}){
+function CollectionProduct({data,index}){
   const {locale} = useContext(LocaleContext)
   const coupon = data?.coupon ? JSON.parse(data.coupon.value) : null
   return(
-    <div className = "flex flex-col w-full gap-3" >
+    <div className = {`flex flex-col  gap-3`} >
       <div className = "flex-1 w-full h-full">
-        <div className = "relative cursor-pointer bg-surface aspect-square">
+        <div className = "relative cursor-pointer w-52 h-52 bg-surface aspect-square">
           <Link href = {`/product/${data.handle}`}>
             <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill' objectFit='cover'/>
           </Link>

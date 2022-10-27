@@ -7,7 +7,7 @@ const CollectionBanner = ({data}) => {
   const textRef = useRef()
   const [handle,setHandle] = useState(null)
   useEffect(()=>{
-    const tagHandle = textRef?.current?.getElementsByTagName("a")[0].innerText
+    const tagHandle = textRef?.current?.getElementsByTagName("a")[0]?.innerText
     setHandle(tagHandle)
   },[])
   return (
@@ -37,9 +37,11 @@ const CollectionBanner = ({data}) => {
             dangerouslySetInnerHTML={{ __html: data?.collectionByHandle?.collectionText?.value || data?.collectionByHandle?.descriptionHtml }}
             ref = {textRef}
           />
-          <Link href = {handle ?? '/product/all-products'}>
-            <Button text = 'Shop now' CSS = 'bg-background w-max px-4 mt-4 py-2'/>
-          </Link>
+          {handle && (
+            <Link href = {handle ?? '/product/all-products'}>
+              <Button text = 'Shop now' CSS = 'bg-background w-max px-4 mt-4 py-2'/>
+            </Link>
+          )}
         </div>
       </div>
     </section>

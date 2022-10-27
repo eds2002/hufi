@@ -10,9 +10,9 @@ export default function FAQ({data}) {
   return (
     <>
     {reviews && (
-      <div className="py-24 bg-surface">
+      <div className="py-16 bg-surface/50">
         <div className="px-4 mx-auto max-w-7xl sm:py-16 ">
-          <div className="mx-auto mt-10 divide-y-2 divide-onBackground/10 ">
+          <div className="mx-auto divide-y-2 divide-onBackground/10 ">
             <h2 className="text-3xl font-medium tracking-tight text-left text-onBackground sm:text-4xl">
               Frequently asked questions ({reviews.length})
             </h2>
