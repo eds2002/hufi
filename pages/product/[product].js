@@ -1,7 +1,7 @@
-import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews,ProductBenefits } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
-import {HorizontalProducts, Signup} from '../../components/sections'
+import {HorizontalProducts} from '../../components/sections'
 import Head from "next/head";
 import { slugify } from "../../utils/slugify";
 import { useEffect,useState, useRef,useContext } from "react";
@@ -127,6 +127,7 @@ const Product = ({productData,pageProps,productRecommendations})=>{
           <main className = "relative scroll-smooth">
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData} crossSell = {crossSell}/>
+            <ProductBenefits/>
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <ProductReviews data = {productData} reviews = {reviewsData} questions = {questionsData}/>

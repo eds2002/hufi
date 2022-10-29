@@ -90,4 +90,14 @@ export const ProductExpandImage = dynamic(
   }
 )
 
+export const ProductBenefits = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductExpandImage" */
+    './ProductBenefits'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
 
