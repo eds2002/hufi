@@ -169,7 +169,7 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
             </>
             :
             <>  
-              <div className = "flex items-center justify-between">
+              <div className = "flex items-center justify-evenly">
 
                 {/* CURRENT PRODUCT IMAGE */}
                 <div className = "relative w-24 bg-gray-200 rounded-sm cursor-pointer select-none aspect-square"
@@ -195,8 +195,8 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               {/* VIEW ALL PRODUCTS BUTTON */}
               <div className = "w-full mt-7">
                 <Button 
-                  text = {`View all three | ${formatNumber(total,currencyCode,locale)}`}
-                  CSS = 'py-3 text-onSecondary bg-secondaryVariant hover:bg-secondary'
+                  text = {`${crossSell?.products?.length === 2 ? 'View all three' : crossSell?.products?.length === 1 ? 'View both' : 'View Items'} | ${formatNumber(total,currencyCode,locale)}`}
+                  CSS = 'py-4 text-onSecondary bg-secondaryVariant hover:bg-secondary'
                   onClick = {()=>setExpand(true)}
                 />
               </div>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, CheckIcon,LockClosedIcon, QuestionMarkCircleIcon, PlayIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, CheckIcon,LockClosedIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
 import LocaleContext from '../../../context/localeContext'
@@ -16,7 +16,6 @@ import { RefundsModal, SecureTransactions, DeliveryModal } from '../../modals'
 import { ReviewsAccordian, ReviewsModal,CrossSellComponent } from '../../features'
 import { useCallback } from 'react'
 import ExpandImage from './ProductExpandImage'
-import hufiProtect from '../../../assets/hufiprotect.svg'
 
 
 export default function ProductOverview({data,compRef,reviews,crossSell}) {
@@ -156,10 +155,10 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                     <div className = "px-4 mt-4 mb-10">
                       <Button 
                         className = "product-page-add-to-cart" 
-                        text = "Add to cart" 
+                        text = {`Add to cart | ${formatNumber(price)}`}
                         onClick = {(e)=>addToCart(e)} 
                         tag = {'product-page-add-to-cart'}
-                        CSS = {'py-3 bg-secondaryVariant hover:bg-secondary text-onSecondary'}
+                        CSS = {'py-4 bg-secondaryVariant hover:bg-secondary text-onSecondary'}
                       />
                     </div>
                     <Description data = {data}/>
@@ -326,7 +325,7 @@ function Description({data}){
   return(
     <div className="px-4 mt-4 overflow-hidden rounded-md">
       <div
-        className="prose-h1:mb-6 prose-h1:font-medium prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
+        className="prose-h1:mb-6 prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
       />
 </div>
@@ -528,12 +527,9 @@ function ProductHeading({data,price}){
   return(
   <>
     <div className="flex flex-col items-start justify-between w-full px-4 mt-3 md:mt-0">
-      <div className="flex items-center justify-between w-full text-2xl font-medium text-onBackground">
+      <div className="flex items-center justify-between w-full text-2xl text-onBackground">
         <p id = {data?.product?.id}>{data?.product?.title}</p>
       </div>
-      {/* <div className = "mt-0 ">
-        <p className = "text-sm md:text-lg text-onBackground/60">{data?.product?.shortDesc?.value}</p>
-      </div> */}
       <p className="mt-1 text-base md:text-lg sm:text-base">
         {parseInt(data.product?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
         <span className = "flex flex-col gap-x-1">
