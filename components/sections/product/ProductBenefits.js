@@ -24,12 +24,15 @@ const ProductBenefits = () => {
         <h6 className = "text-3xl font-medium text-center">Good to know</h6>
         <div className = "flex flex-col gap-12 mt-10 lg:items-center lg:justify-center lg:flex-row">
           {benefits.map((benefit)=>(
-            <div className = "flex flex-col items-center justify-center w-full h-full max-w-xs mx-auto text-center">
-              <div className = "relative w-20 h-20">
+            <div 
+              className = "flex flex-col items-center justify-center w-full h-full max-w-xs mx-auto text-center"
+              key = {benefit.title}
+            >
+              <div className = "relative w-16 h-16 pointer-events-none select-none">
                 <Image src = {benefit.icon} layout = 'fill'/>
               </div>
-              <p className = "mt-3 font-medium">{benefit.title}</p>
-              <p className = "text-sm">{benefit.paragraph}</p>
+              <p className = "mt-3 font-medium lg:text-lg">{benefit.title}</p>
+              <p className = "text-sm lg:text-base">{benefit.paragraph}</p>
             </div>
           ))}
         </div>
