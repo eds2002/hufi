@@ -36,6 +36,15 @@ export const DeliveryModal = dynamic(
     ssr:false,
   }
 )
+export const SizeModal = dynamic(
+  ()=> import(
+    /*webpackChunkName: "SizeModal" */
+    './SizeModal'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
 
 
 

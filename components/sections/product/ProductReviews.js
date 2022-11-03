@@ -99,7 +99,7 @@ const ProductReviews = ({data,reviews,questions}) => {
             <h3 className = "text-2xl font-medium">Images</h3>
             <div className = "flex h-full mt-3 overflow-scroll flex-nowrap gap-x-3 scrollBar">
               {displayReviews.map((review,index)=>(
-                <>
+                <React.Fragment key = {index}>
                   {review.images?.length > 0 && (
                     <div onClick = {()=>handleImageClick(index)}>
                       <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md w-72 h-44 aspect-video">
@@ -122,7 +122,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                       </div>
                     </div>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </div>
           </div>
@@ -178,7 +178,7 @@ const ProductReviews = ({data,reviews,questions}) => {
               <>
                 <div className = "divide-y">
                   {displayReviews.map((review,index)=>(
-                    <>
+                    <React.Fragment key = {index}>
                       {(index + 1 >= (startFrom + currentPagination * displayLimit - displayLimit) && (index+1 <= currentPagination * displayLimit))  && (
                       <div className = "py-6">
                         <div className = "flex justify-between">
@@ -207,14 +207,14 @@ const ProductReviews = ({data,reviews,questions}) => {
                             {review.images?.length > 0 && (
                               <div className = "flex gap-x-3 ">
                                 {review.images.map((url)=>(
-                                  <>
+                                  <React.Fragment key = {url}>
                                   <div 
                                     className = "relative cursor-pointer w-14 h-14" 
                                     onClick={()=>handleImageClick(index)}
                                   >
                                     <Image src = {url} layout = 'fill'/>
                                   </div>
-                                  </>
+                                  </React.Fragment>
                                 ))}
                               </div>
                             )}
@@ -225,7 +225,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                         </div>
                       </div>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </div>
                 {displayReviews.length > displayLimit && (
@@ -235,14 +235,12 @@ const ProductReviews = ({data,reviews,questions}) => {
                     </p>
                     <div className = "flex gap-x-1.5">
                       {paginationArray.map((val)=>(
-                        <>
-                          <div className = "w-max">
-                            <p 
-                              className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
-                              onClick = {()=>setCurrentPagination(val+1)}
-                            >{val + 1}</p>
-                          </div>
-                        </>
+                        <div className = "w-max" key = {val}>
+                          <p 
+                            className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
+                            onClick = {()=>setCurrentPagination(val+1)}
+                          >{val + 1}</p>
+                        </div>
                       ))}
                     </div>
                     <p onClick = {()=>setCurrentPagination(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
@@ -309,12 +307,12 @@ const ProductReviews = ({data,reviews,questions}) => {
                 {/* Checks if any questions are left unanswered for admin users. */}
                 {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
 
-                {displayQuestions?.map((question)=>(
-                  <>
+                {displayQuestions?.map((question,index)=>(
+                  <React.Fragment key = {index}>
                     {(question.answer === "" && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) &&
                       <UnansweredQuestions question = {question}/>
                     }
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
 
@@ -347,12 +345,12 @@ const ProductReviews = ({data,reviews,questions}) => {
               </div>
               :
               <div className = "divide-y">
-                {displayQuestions?.map((question)=>(
-                  <>
+                {displayQuestions?.map((question,key)=>(
+                  <React.Fragment key = {key}>
                     {(question.answer != "" && (
                       <AnsweredQuestions question = {question}/>
                     ))}
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
               }

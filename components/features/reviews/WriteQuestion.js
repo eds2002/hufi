@@ -6,8 +6,10 @@ import { Button } from '../../elements'
 import { useContext } from 'react';
 import UserContext from '../../../context/userContext';
 import CloseButton from '../CloseButton';
+import { useRouter } from 'next/router';
 
 export default function WriteQuestion({openWriteQuestion, setOpenWriteQuestion,productId}) {
+  const router = useRouter()
   const {currentUser} = useContext(UserContext)
 
   const [question, setQuestion] = useState({})
@@ -47,7 +49,7 @@ export default function WriteQuestion({openWriteQuestion, setOpenWriteQuestion,p
       setOpenWriteQuestion(false)
       setQuestion({})
       setErrors({})
-      window.location.reload()
+      router.reload()
     })
     .catch((error)=>{
       console.log(error)

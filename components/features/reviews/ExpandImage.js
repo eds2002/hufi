@@ -39,8 +39,7 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
   }
 
   return (
-    <>
-      <Transition appear show={expandImage} as={Fragment}>
+    <Transition appear show={expandImage} as={Fragment}>
         <Dialog as="div" className="relative z-[99999]" onClose={()=>setExpandImage(false)}>
           <Transition.Child
             as={Fragment}
@@ -135,7 +134,6 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
             </div>
           </div>
         </Dialog>
-      </Transition>
-    </>
+    </Transition>
   )
 }

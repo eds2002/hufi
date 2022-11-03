@@ -1,4 +1,4 @@
-import { Fragment, useState, useContext} from 'react'
+import React, { Fragment, useState, useContext} from 'react'
 import { ArrowRightOnRectangleIcon, Bars3Icon, CubeIcon, UserCircleIcon, ChatBubbleBottomCenterIcon, UsersIcon} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useRef } from 'react'
@@ -52,7 +52,7 @@ export default function Header({data,user}) {
                       {/* Mega menus */}
                         <div className="flex items-center justify-center h-full space-x-8 " >
                           {data?.menu?.items?.map((category, categoryIdx) => (
-                            <> 
+                            <React.Fragment key = {categoryIdx}> 
                               {category.items != 0 && (
                                 <div className = "h-full group">
                                   <Link href = {`/collection/${slugify(category?.title)}`}>
@@ -100,7 +100,7 @@ export default function Header({data,user}) {
                                   </div>
                                 </div>
                               )}
-                            </>
+                            </React.Fragment>
                             ))}
                         </div>
                     </div>
@@ -176,7 +176,7 @@ export default function Header({data,user}) {
                       {/* For links that do not have sub links */}
                       <div className = "hidden lg:flex gap-x-10">
                         {data?.menu?.items?.map((page) => (
-                          <>
+                          <React.Fragment key = {page.title}>
                             {page.items.length === 0 && (
                               <Link href = {`
                                 ${page.title == 'About' ? '/company/about-us' : page.title == 'Contact' ? '/support' : ''}
@@ -188,7 +188,7 @@ export default function Header({data,user}) {
                                 </a>
                               </Link>
                             )}
-                          </>
+                          </React.Fragment>
                         ))}
                       </div>
 

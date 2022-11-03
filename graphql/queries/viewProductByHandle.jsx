@@ -188,6 +188,10 @@ query Product($handle: String!) {
       value
       type
     }
+    sizeGuide:metafield(namespace:"product",key:"sizeguide"){
+      value
+      type
+    }
   }
 }
 `

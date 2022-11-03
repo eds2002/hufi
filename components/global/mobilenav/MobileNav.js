@@ -1,5 +1,5 @@
 import { Transition,Dialog,Tab } from "@headlessui/react"
-import { Fragment,useState } from "react"
+import React, { Fragment,useState } from "react"
 import { XMarkIcon,UserCircleIcon,CubeIcon, ChatBubbleBottomCenterIcon,ArrowRightOnRectangleIcon,ChevronRightIcon,ChevronLeftIcon} from "@heroicons/react/24/outline"
 import Link from "next/link"
 import { slugify } from "../../../utils/slugify"
@@ -45,20 +45,20 @@ export default function MobileNav({open,setOpen,data,user}){
               <Tab.Group as="div" className="mt-2">
                 <Tab.Panels as={Fragment}>
                   {data?.menu?.items?.map((category, categoryIdx) => (
-                    <>
+                    <React.Fragment key = {categoryIdx}>
                       {category.items != 0 && (
                       <>
                         <MobileLinks category = {category}/>
                       </>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </Tab.Panels>
               </Tab.Group>
 
               <div className="px-4 py-6 space-y-6 border-t border-onBackground/15">
                 {data?.menu?.items?.map((page) => (
-                  <>
+                  <React.Fragment key = {page.title}>
                     {page.items.length === 0 && (  
                       <Link href = {`
                       ${page.title == 'About' ? '/company/about-us' : page.title == 'Contact' ? '/support' : ''}
@@ -70,7 +70,7 @@ export default function MobileNav({open,setOpen,data,user}){
                         </div>
                       </Link>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
                 <Link href = "/hufi-rewards-member">
                   <a className = "flex items-center w-full text-xl font-medium cursor-pointer gap-x-3 text-onBackground hover:text-onBackground/70">Hufi Rewards Member</a>

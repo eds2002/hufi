@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { ChevronDownIcon, CheckIcon,LockClosedIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { Button } from '../../elements'
 import Image from 'next/image'
@@ -12,10 +12,11 @@ import { useMemo } from 'react'
 import { storefront } from '../../../utils/storefront'
 import { addCartDiscountCode } from '../../../graphql/mutations/addCartDiscountCode'
 import UserContext from '../../../context/userContext'
-import { RefundsModal, SecureTransactions, DeliveryModal } from '../../modals'
+import { RefundsModal, SecureTransactions, DeliveryModal, SizeModal } from '../../modals'
 import { ReviewsAccordian, ReviewsModal,CrossSellComponent } from '../../features'
 import { useCallback } from 'react'
 import ExpandImage from './ProductExpandImage'
+import { BookOpenIcon } from '@heroicons/react/24/outline'
 
 
 export default function ProductOverview({data,compRef,reviews,crossSell}) {
@@ -261,7 +262,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
           ref = {imageRef}
         >
           {data.product?.media?.nodes?.map((media,index)=>(
-            <>
+            <React.Fragment key = {index}>
               {media?.image ? (
                 <div className = {`
                 ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
@@ -301,7 +302,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
                 </>
               )
               }
-            </>
+            </React.Fragment>
           ))}
         </div>
         <div className = "absolute bottom-0 left-0 right-0 flex items-center justify-center mb-4 lg:hidden">
@@ -464,26 +465,38 @@ function GetItByComponent({data}){
 }
 
 function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange}){
+  const [sizeModal,setSizeModal] = useState(false)
   return(
-    <div className = "mt-4">
-      {data.product.options.map((option,index)=>(
-        <div key = {index} className = "">
-          {/* Options title */}
-          {/* TODO, avoid rendering products with no options / variants */}
-          {option.name != "Title" && (
-            <h3 className = "px-4 text-base font-medium" id = {option.name}>
-              <span>{option.name}</span>
-              {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
-            </h3>
-          )}
-  
-          {/* Options Values */}
-          <div className = "flex flex-wrap items-center gap-3 px-4 overflow-x-scroll scrollBar">
+    <>
+      <div className = "mt-4">
+        {data.product.options.map((option,index)=>(
+          <div key = {index} className = "">
+            {/* Options title */}
             {/* TODO, avoid rendering products with no options / variants */}
             {option.name != "Title" && (
-              <div className = "flex items-center gap-3 px-1 mt-2 mb-4 md:flex-wrap">
-                {option.values.map((value,key)=>(
-                  <>
+              <h3 className = "flex items-center px-4 text-base font-medium gap-x-2 " id = {option.name}>
+                <span>{option.name}</span>
+                {option.name === "Size" && (
+                  <React.Fragment>
+                    {data?.product?.sizeGuide?.value && (
+                      <span 
+                        className = "flex items-center justify-center text-sm font-normal cursor-pointer text-tertiaryVariant gap-x-1" 
+                        onClick = {()=>setSizeModal(true)}>
+                        <BookOpenIcon className = "w-3 h-3"/> Size guide
+                      </span>
+                    )}
+                  </React.Fragment>
+                )}
+                {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
+              </h3>
+            )}
+    
+            {/* Options Values */}
+            <div className = "flex flex-wrap items-center gap-3 px-4 overflow-x-scroll scrollBar">
+              {/* TODO, avoid rendering products with no options / variants */}
+              {option.name != "Title" && (
+                <div className = "flex items-center gap-3 px-1 mt-2 mb-4 md:flex-wrap">
+                  {option.values.map((value,key)=>(
                     <p className = 
                     {`
                       ${option.name === "Color" ? 
@@ -506,14 +519,17 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                     >
                       {option.name === "Color" ? '' : value}
                     </p>
-                  </>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+      {data?.product?.sizeGuide?.value && (
+        <SizeModal sizeModal = {sizeModal} setSizeModal = {setSizeModal} sizing = {data?.product?.sizeGuide?.value}/>
+      )}
+    </>
   )
 }
 
@@ -657,4 +673,78 @@ function ProductDetailsComponent({data}){
     </>
   )
 }
+
+
+const test = [
+  {
+    cm:[
+      {
+        s:{
+          waist:"60-70",
+          hip:"80-90",
+          pantLength: "91"
+        },
+        m:{
+          waist:"64-74",
+          hip:"84-94",
+          pantLength: "92"
+        },
+        l:{
+          waist:"68-78",
+          hip:"88-98",
+          pantLength: "93"
+        },
+        xl:{
+          waist:"72-82",
+          hip:"92-102",
+          pantLength: "94"
+        },
+        xxl:{
+          waist:"78-86",
+          hip:"96-106",
+          pantLength: "95"
+        },
+        xxxl:{
+          waist:"80-90",
+          hip:"100-110",
+          pantLength: "96"
+        },
+      }
+    ],
+    in:[
+      {
+        s:{
+          waist:"23.62 - 26.56",
+          hip:"31.50 - 35.43",
+          pantLength:"35.83"
+        },
+        m:{
+          waist:"25.20 - 29.13",
+          hip:"33.07 - 37.01",
+          pantLength:"36.22"
+        },
+        l:{
+          waist:"26.77 - 30.71",
+          hip:"34.65 - 38.58",
+          pantLength:"36.61"
+        },
+        xl:{
+          waist:"28.35 - 32.28",
+          hip:"36.22 - 40.16",
+          pantLength:"37.01"
+        },
+        xxl:{
+          waist:"29.92 - 33.86",
+          hip:"37.80 - 41.73",
+          pantLength:"37.40"
+        },
+        xxxl:{
+          waist:"31.50 - 35.43",
+          hip:"39.37 - 43.31",
+          pantLength:"37.80"
+        },
+      }
+    ]
+  }
+]
 
