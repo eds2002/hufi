@@ -192,6 +192,10 @@ query Product($handle: String!) {
       value
       type
     }
+    bannerImage:metafield(namespace:"product",key:"banner_image"){
+      value
+      type
+    }
   }
 }
 `

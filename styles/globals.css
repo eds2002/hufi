@@ -55,5 +55,11 @@ a {
   position: absolute;
   top:0;
   @apply select-none text-white right-0 rotate-180
-  }
+}
+
+.boxShadow {
+  -webkit-box-shadow: inset 400px 0px 400px -100px rgba(0,0,0,0.70); 
+  box-shadow: inset 400px 0px 400px -100px rgba(0,0,0,0.70);
+}
+
 

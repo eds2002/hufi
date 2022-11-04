@@ -43,7 +43,7 @@ export default function Home({data,collections,productData,pageProps}) {
             <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'/>
             <meta httpEquiv='X-UA-Compatible' content='ie=edge'/>
             <title>Hufi</title>
-            <meta name = "description" content = "Selling innovative, life changing products."/>
+            <meta name = "description" content = "Hufi is a community marketplace that brings all sorts of products customers will love and adore. We are committed to providing top-quality products and customer service."/>
             <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
 
             <meta property="og:title" content="Hufi"/>

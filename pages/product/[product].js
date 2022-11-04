@@ -1,4 +1,4 @@
-import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews,ProductBenefits } from "../../components/sections/product";
+import { ProductFAQ, ProductImageView, ProductOverview, ProductReviews,ProductBenefits,ProductBanner } from "../../components/sections/product";
 import {storefront} from '../../utils/storefront'
 import {viewProductByHandle} from '../../graphql/queries/viewProductByHandle'
 import {HorizontalProducts} from '../../components/sections'
@@ -128,6 +128,7 @@ const Product = ({productData,pageProps,productRecommendations})=>{
             <ProductStickyCart data = {productData} display = {enableStickyCart}/>
             <ProductOverview data = {productData} compRef = {ref} reviews = {reviewsData} crossSell = {crossSell}/>
             <ProductBenefits/>
+            <ProductBanner data = {productData?.product?.bannerImage?.value}/>
             <ProductImageView data = {productData}/>
             <ProductFAQ data = {productData}/>
             <ProductReviews data = {productData} reviews = {reviewsData} questions = {questionsData}/>

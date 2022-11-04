@@ -100,4 +100,14 @@ export const ProductBenefits = dynamic(
   }
 )
 
+export const ProductBanner = dynamic(
+  ()=> import(
+    /*webpackChunkName: "ProductExpandImage" */
+    './ProductBanner'
+  ),{
+    // loading: () => <h1>Loading...</h1>,
+    ssr:false,
+  }
+)
+
 

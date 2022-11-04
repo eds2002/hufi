@@ -219,9 +219,9 @@ const ProductReviews = ({data,reviews,questions}) => {
                               </div>
                             )}
                           </div>
-                          {(review?.country || review?.state) && (
+                          {/* {(review?.country || review?.state) && (
                             <p className = "mt-6 text-sm text-onSurface/70">Location: {review.state ? review.state+',' : '' } {review.country}</p>
-                          )}
+                          )} */}
                         </div>
                       </div>
                       )}

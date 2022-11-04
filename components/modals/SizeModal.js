@@ -6,7 +6,6 @@ import { CloseButton } from '../features'
 export default function SizeModal({sizeModal,setSizeModal,sizing}) {
   const [sizingData,setSizingData] = useState(sizing != undefined ? JSON.parse(sizing) : undefined)
   const [selectedSize,setSelectedSize] = useState("Inches")
-  console.log(sizingData)
   return (
     <>
       <Transition appear show={sizeModal} as={Fragment}>
