@@ -229,7 +229,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
         }, 5)); 
         containerRef.current.scrollLeft = expandPos * containerRef.current.clientWidth
       }catch(e){
-        console.log(e)
+        (e)
       }
     })()
   },[expandPos, containerRef.current])

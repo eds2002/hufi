@@ -12,12 +12,12 @@ const Hero = ({data}) => {
     setHandle(tagHandle)
   },[])
   return (
-    <section className="relative">
-      <div className = "relative z-20 flex items-end justify-start w-full h-[75vh] md:h-[80vh] px-8 py-16 mx-auto">
+    <section className="relative mx-auto max-w-7xl">
+      <div className = "relative z-20 flex items-end justify-start w-full h-[40vh] md:h-[70vh] px-8 py-16 mx-auto ">
         <div className="flex flex-col items-start justify-start max-w-sm sm:max-w-7xl" >
           <div className = {`prose  
               prose-h1:text-4xl prose-h1:font-semibold prose-h1:sm:text-5xl prose-h1:md:text-6xl prose-h1:my-0 prose-h1:text-background
-              prose-p:lg:text-lg prose-p:sm:text-base prose-p:mt-2 prose-p:text-background/90 prose-p:max-w-xs
+              prose-p:lg:text-lg prose-p:sm:text-base prose-p:mt-2 prose-p:text-background/90 prose-p:max-w-xs prose-p:text-sm
               prose-a:hidden
               `} ref = {textRef}>
             <div
@@ -29,10 +29,10 @@ const Hero = ({data}) => {
           </Link>
         </div>
       </div>
-      <div className = "absolute inset-0 z-10 bg-black/40"/>
-      <div className = "absolute inset-0">
-        <div className = "w-full h-full">
-          <img src = {data.page.heroImageBanner.reference.image.url} alt = {data.page.heroImageBanner.reference.image.altText} className = "object-cover w-full h-full"/>
+      <div className = "absolute inset-0 z-10 overflow-hidden bg-black/40 "/>
+      <div className = "absolute inset-0 overflow-hidden ">
+        <div className = "w-full h-full ">
+          <Image src = {data.page.heroImageBanner.reference.image.url} alt = {data.page.heroImageBanner.reference.image.altText} className = "object-cover w-full h-full" layout='fill'/>
         </div>
       </div>
     </section>

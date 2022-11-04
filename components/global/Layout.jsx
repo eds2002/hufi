@@ -13,7 +13,7 @@ import UserContext from '../../context/userContext';
 const Layout = ({children,headerData,userData,footerData}) => {
   const {setCurrentUser} = useContext(UserContext)
   useEffect(()=>{
-    setCurrentUser(userData.customer)
+    setCurrentUser(userData?.customer)
   },[])
   return (
     <>

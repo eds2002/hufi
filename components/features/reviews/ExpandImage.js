@@ -81,8 +81,8 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                     )}
                     <div 
                       className = "grid grid-flow-col auto-cols-[100%] snap-x snap-mandatory  scrollBar overflow-scroll h-full cursor-pointer w-full" 
-                      ref = {containerRef}
                       onClick = {()=>setExpand(!expand)}
+                      ref = {containerRef}
                     >
                       {selectedReview?.images?.map((url)=>(
                         <div className = "relative w-full h-full overflow-hidden select-none snap-center" key = {url}>

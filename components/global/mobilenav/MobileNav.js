@@ -30,17 +30,21 @@ export default function MobileNav({open,setOpen,data,user}){
             leaveTo="-translate-x-full"
           >
             <Dialog.Panel className="relative flex flex-col w-full max-w-xs pb-12 overflow-y-auto shadow-xl bg-background">
-              <div className="flex px-4 pt-5 pb-2">
+              <div className="flex items-center justify-center w-full px-4 py-5 ">
+                <div className = "w-full ">
+                  <Link href = "/">
+                    <p className = "text-3xl font-medium ">Shop Hufi</p>
+                  </Link>
+                </div>
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center p-2 -m-2 rounded-md text-onBackground"
+                  className="p-2 -m-2 rounded-md outline-none"
                   onClick={() => setOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
                   <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                 </button>
               </div>
-
               {/* Links */}
               <Tab.Group as="div" className="mt-2">
                 <Tab.Panels as={Fragment}>
@@ -55,7 +59,6 @@ export default function MobileNav({open,setOpen,data,user}){
                   ))}
                 </Tab.Panels>
               </Tab.Group>
-
               <div className="px-4 py-6 space-y-6 border-t border-onBackground/15">
                 {data?.menu?.items?.map((page) => (
                   <React.Fragment key = {page.title}>

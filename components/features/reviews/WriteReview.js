@@ -106,7 +106,7 @@ export default function WriteReview({openWriteReview, setOpenWriteReview,product
       setErrors({})
     })
     .catch((error)=>{
-      console.log(error)
+      (error)
       alert('Error in adding your review, please try again later.')
     })
   }

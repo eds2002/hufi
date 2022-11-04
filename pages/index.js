@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { storefront } from '../utils/storefront'
 import img from '../assets/abstractBlocks.svg'
 import Image from 'next/image'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import UserContext from '../context/userContext'
 import { viewIndexMetafields } from '../graphql/queries/viewIndexMetafields'
 import {viewProducts} from '../graphql/queries/viewProducts'
@@ -13,12 +13,32 @@ import CollectionSubCol from '../components/sections/collection/CollectionSubCol
 import { FirstTimeModal } from '../components/modals'
 import Layout from '../components/global/Layout'
 import { Hero, HorizontalProducts, Signup} from '../components/sections'
+import { useRouter } from 'next/router'
 
 export default function Home({data,collections,productData,pageProps}) {
   const {currentUser,setCurrentUser} = useContext(UserContext)
-  setCurrentUser(pageProps.userData.customer)
-  const [hasPurchased,setHasPurchased] = useState(currentUser?.orders?.nodes?.length == 0 )
+  setCurrentUser(pageProps?.userData?.customer)
+  const [hasPurchased] = useState(currentUser?.orders?.nodes?.length == 0 )
   const [openModal,setOpenModal] = useState(false)
+  const [collectionData, setCollectionData] = useState(null)
+  const router = useRouter()
+
+
+
+  useEffect(()=>{
+     // TODO, loop through collection sets, query values and rewrite values to collection data
+     (async()=>{
+       for(const [index,set] of collections.entries()){
+        const queryData = []
+        for(const value of set.collectionTitles){
+          const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
+          queryData.push(collection)
+        }
+        collections[index].collectionTitles = queryData
+      }
+      setCollectionData(collections)
+     })()
+  },[router.pathname])
   return (
     <>
       {!data || !collections || !productData ? (
@@ -47,7 +67,7 @@ export default function Home({data,collections,productData,pageProps}) {
             <meta name = "keywords" content = 'HUFI, TRENDING, PRODUCTS, INNOVATIVE, LIFE, CHANGING'/>
 
             <meta property="og:title" content="Hufi"/>
-            <meta property="og:description" content="Selling innovative, life changing products."/>
+            <meta property="og:description" content="Hufi is a community marketplace that brings all sorts of products customers will love and adore. We are committed to providing top-quality products and customer service."/>
             <meta property="og:url" content="https://www.hufistore.com/"/>
             <meta property="og:locale" content="en_US"/>
             <meta property="og:image" content="https://www.hufistore.com/hufiOG.png"/>
@@ -59,13 +79,13 @@ export default function Home({data,collections,productData,pageProps}) {
             <meta property="twitter:card" content="summary_large_image"/>
             <meta property="twitter:url" content="https://www.hufistore.com/"/>
             <meta property="twitter:title" content="Hufi"/>
-            <meta property="twitter:description" content="Selling innovative, life changing products."/>
+            <meta property="twitter:description" content="Hufi is a community marketplace that brings all sorts of products customers will love and adore. We are committed to providing top-quality products and customer service."/>
             <meta property="twitter:image" content="https://www.hufistore.com/hufiOG.png"/>
         </Head>
         <Layout {...pageProps}>
           <Hero data = {data}/>
           <HorizontalProducts data = {productData} text = 'Our newest arrivals'/>
-          <CollectionSubCol data = {collections}/>
+          <CollectionSubCol data = {collectionData ?? null}/>
           <Signup/>
           {/* Display only this part when a user is present or if user is not present */}
           {currentUser != null ? (
@@ -116,16 +136,6 @@ export async function getServerSideProps(context){
     const {data,errors} = await storefront(viewIndexMetafields, {handle:"home"})
   
     const collectionsJSON = data.page.collections.value ? JSON.parse(data.page.collections.value) : undefined
-  
-    // TODO, loop through collection sets, query values and rewrite values to collection data
-    for(const [index,set] of collectionsJSON.entries()){
-      const queryData = []
-      for(const value of set.collectionTitles){
-        const {data:collection, errors:collectionError} = await storefront(allCollections,{amount:1, queryArgs:`[${value}]`})
-        queryData.push(collection)
-      }
-      collectionsJSON[index].collectionTitles = queryData
-    }
   
   
     let prods = null;

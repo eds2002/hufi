@@ -1,6 +1,13 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { ProductCard } from '../cards'
+import { useContext } from 'react'
+import LocaleContext from '../../context/localeContext'
+import Link from 'next/link'
 import { useRef } from 'react'
+import Image from 'next/image'
+import { formatNumber } from '../../utils/formatNumber'
+
+
 export default function HorizontalProducts({data:{products},text}) {
   const overflowRef = useRef()
 
@@ -15,7 +22,7 @@ export default function HorizontalProducts({data:{products},text}) {
   }
 
   return (
-    <div className="py-10">
+    <div className="px-4 py-10">
       <div className = "flex items-center justify-between px-4 mx-auto mb-6 max-w-7xl">
         <h1 className = "text-2xl font-medium">{text}</h1>
         <div className = "flex items-center justify-center gap-x-3">
@@ -34,14 +41,56 @@ export default function HorizontalProducts({data:{products},text}) {
 
         </div>
       </div>
-      <div className="flex w-full mx-auto overflow-scroll max-w-7xl scrollBar flex-nowrap snap-x snap-mandatory" ref = {overflowRef}>
+      <div className="flex w-full mx-auto overflow-scroll max-w-7xl scrollBar flex-nowrap snap-x snap-mandatory " ref = {overflowRef}>
         {products?.nodes?.map((product,key)=>(
-          <div className = "snap-start" key = {key}>
+          <div className = "px-4 snap-start" key = {key}>
           {key < 10 && (
-            <ProductCard product={product} key = {key}/>
+            <CollectionProduct data={product} key = {key}/>
           )}
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+function CollectionProduct({data,index}){
+  const {locale} = useContext(LocaleContext)
+  const coupon = data?.coupon ? JSON.parse(data.coupon.value) : null
+  return(
+    <div className = {`flex flex-col  gap-3`} >
+      <div className = "flex-1 w-full h-full">
+        <div className = "relative overflow-hidden rounded-md cursor-pointer bg-neutral-100 w-52 h-52">
+          <Link href = {`/product/${data.handle}`}>
+            <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill' objectFit='cover'/>
+          </Link>
+          {coupon && (
+            <div className = "absolute inset-0 flex items-end justify-start">
+              <p className = "text-xs font-medium bg-primaryVariant2 text-white w-max px-2 py-0.5 rounded-sm">%{coupon.discountAmount} coupon</p>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className = "flex flex-col items-start justify-center ">
+        <p className = "text-sm text-center truncate ">{data.title}</p>
+        <p className="text-sm mt-0.5">
+        {parseInt(data?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
+          <span className = "flex flex-col ">
+            <span className = " text-onBackground/80">
+              {/* After discount */}
+              <span>{formatNumber(data.priceRange.maxVariantPrice.amount,data.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+              {' '}
+              {/* Before discount */}
+              <span className = 'text-xs line-through text-onBackground/50'>{formatNumber(data?.compareAtPriceRange?.maxVariantPrice?.amount)}</span>
+            </span>
+          </span>
+        :
+          <>
+            {/* Normal pricing */}
+            <span>{formatNumber(data.priceRange.maxVariantPrice.amount,data.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+          </>
+        }
+      </p>
       </div>
     </div>
   )
