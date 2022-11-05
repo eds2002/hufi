@@ -11,7 +11,7 @@ const ProductBanner = ({data}) => {
             {/* <div className = "absolute inset-0 z-10 rounded-md opacity-80 boxShadow"/> */}
             {dataJSON.image.split('').reverse().slice(0,3).reverse().join('') === "mp4" ? 
             <>
-              <video autoPlay loop className = "absolute inset-0 z-[1] pointer-events-none select-none" playsInline preload='auto'>
+              <video autoPlay loop className = "absolute inset-0 z-[1] pointer-events-none select-none rounded-md" playsInline preload='auto'>
                 <source src = {dataJSON.image} type = "video/mp4" />
               </video>
               <h1 className = "relative z-10 text-xl font-medium text-white sm:text-2xl md:text-4xl">{dataJSON.heading}</h1>
