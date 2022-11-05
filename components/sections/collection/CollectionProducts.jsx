@@ -1,11 +1,10 @@
-import {useEffect, useState, Fragment, useRef} from 'react'
-import { Button } from '../../elements'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ChevronDownIcon, StarIcon, TruckIcon, CheckBadgeIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import { Transition,Dialog } from '@headlessui/react'
+import {useEffect, useState, useRef, useContext} from 'react'
 import { ProductCard } from '../../cards'
 import { FiltersDrawer } from '../../drawers'
+import LocaleContext from '../../../context/localeContext'
+import Link from 'next/link'
+import Image from 'next/image'
+import { formatNumber } from '../../../utils/formatNumber'
 
 
 const CollectionProducts = ({data,filters}) => {
@@ -101,7 +100,7 @@ const CollectionProducts = ({data,filters}) => {
       {/* DISPLAY PRODUCTS */}
       <div className = "w-full px-4 mx-auto max-w-7xl"> 
         <div className = "flex gap-10 mx-auto max-w-7xl">
-          <div className = "grid w-full h-full grid-cols-1 gap-10 pb-32 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3" ref ={productsRef}>
+          <div className = "grid w-full h-full grid-cols-2 gap-10 pb-32 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3" ref ={productsRef}>
           {isEmpty ? 
             <>
               <div className = "flex items-center justify-center w-full h-full grid-cols-1 py-16 sm:grid-cols-2 lg:col-span-3 ">
@@ -121,10 +120,10 @@ const CollectionProducts = ({data,filters}) => {
                   {product.tags.length === 0 && ''}
                   <>
                     {selectedFilters.every(selected=> selected.userSelected.length === 0) ?
-                        <ProductCard product={product} data = {data.collectionByHandle.products}/>
+                        <ProductBox data={product}/>
                       :
                       <>
-                        {filterBy.every(filter=> product.tags.some((tag)=> tag.split(":")[1] === filter)) && <ProductCard product={product} data = {data.collectionByHandle.products}/>}
+                        {filterBy.some(filter=> product.tags.some((tag)=> tag.split(":")[1] === filter)) && <ProductBox data={product}/>}
                       </>
                     }
                   </>
@@ -147,6 +146,49 @@ const CollectionProducts = ({data,filters}) => {
       setSelectedFilters = {setSelectedFilters}
     />
     </>
+  )
+}
+
+
+function ProductBox({data}){
+  const {locale} = useContext(LocaleContext)
+  const coupon = data?.coupon ? JSON.parse(data.coupon.value) : null
+  return(
+    <div className = {`flex flex-col  gap-3`} >
+      <div className = "flex-1 w-full h-full">
+        <div className = "relative overflow-hidden rounded-md cursor-pointer bg-neutral-100 aspect-square">
+          <Link href = {`/product/${data.handle}`}>
+            <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill' objectFit='cover'/>
+          </Link>
+          {coupon && (
+            <div className = "absolute inset-0 flex items-end justify-start">
+              <p className = "text-xs font-medium bg-primaryVariant2 text-white w-max px-2 py-0.5 rounded-sm">%{coupon.discountAmount} coupon</p>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className = "flex flex-col items-start justify-center ">
+        <p className = "text-sm text-center truncate ">{data.title}</p>
+        <p className="text-sm mt-0.5">
+        {parseInt(data?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
+          <span className = "flex flex-col ">
+            <span className = " text-onBackground/80">
+              {/* After discount */}
+              <span>{formatNumber(data.priceRange.maxVariantPrice.amount,data.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+              {' '}
+              {/* Before discount */}
+              <span className = 'text-xs line-through text-onBackground/50'>{formatNumber(data?.compareAtPriceRange?.maxVariantPrice?.amount)}</span>
+            </span>
+          </span>
+        :
+          <>
+            {/* Normal pricing */}
+            <span>{formatNumber(data.priceRange.maxVariantPrice.amount,data.priceRange.maxVariantPrice.currencyCode,locale)}</span>
+          </>
+        }
+      </p>
+      </div>
+    </div>
   )
 }
 

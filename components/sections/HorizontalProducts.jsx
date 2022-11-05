@@ -1,5 +1,4 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import { ProductCard } from '../cards'
 import { useContext } from 'react'
 import LocaleContext from '../../context/localeContext'
 import Link from 'next/link'
