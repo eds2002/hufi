@@ -1,5 +1,5 @@
 import { ChevronDownIcon, PencilIcon } from "@heroicons/react/20/solid"
-import { useContext } from "react"
+import React, { useContext } from "react"
 import { useState,useEffect } from "react"
 import UserContext from "../../../context/userContext"
 import { Button } from "../../elements"
@@ -76,7 +76,7 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
             <div className = "p-4">
               <div className = "divide-y">
                 {displayReviews.map((review,index)=>(
-                  <>
+                  <React.Fragment key = {index}>
                     {index < 2 && (
                       <div className = "py-6">
                         <div className = "flex justify-between">
@@ -114,13 +114,13 @@ const ReviewsAccordian = ({currentProduct, setOpenReviewsModal,reviews,data}) =>
                               </div>
                             )}
                           </div>
-                          {(review?.country || review?.state) && (
+                          {/* {(review?.country || review?.state) && (
                             <p className = "mt-6 text-sm text-onSurface/70">Location: {review.state ? review.state+',' : '' } {review.country}</p>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
               {displayReviews?.length === 0?

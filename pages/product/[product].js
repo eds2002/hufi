@@ -13,6 +13,7 @@ import UserContext from "../../context/userContext";
 import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
 import { viewCollectionProducts } from "../../graphql/queries/viewCollectionProducts";
+import { productMetaTags } from "../../graphql/queries/productMetaTags";
 
 
 
@@ -79,7 +80,7 @@ const Product = ({productData,pageProps,productRecommendations})=>{
     })()
   },[productData])
 
-  // Get the reviews data
+  // Get the reviews data and other metaTags
   useEffect(()=>{
     (async()=>{
       // Getting reviews from firebase.
@@ -94,6 +95,18 @@ const Product = ({productData,pageProps,productRecommendations})=>{
       setReviewsData(reviews)
     })()
   },[productData])
+
+
+  // Get the product metaTags
+  useEffect(()=>{
+    (async()=>{
+      // Getting reviews from firebase.
+      const {data:product,errors} = await storefront(productMetaTags, {handle:productData.product.handle})
+
+      productData.product = {...productData.product, ...product.product}
+    })()
+  },[productData])
+
 
   return (
     <>
@@ -156,7 +169,7 @@ export async function getServerSideProps(context) {
     pageProps["userAccess"] = cookies || null
 
 
-    // Fetching request product
+    // Fetching requested product
     const { req, query:SSRQuery, res, asPath, pathname } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
 
@@ -170,7 +183,6 @@ export async function getServerSideProps(context) {
         props:{
           productData:product || errors, 
           pageProps:pageProps, 
-          // reviewsData:JSON.stringify(reviews),
           productRecommendations:productRecommedations || null
         }
       }

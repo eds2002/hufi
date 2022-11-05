@@ -82,72 +82,6 @@ query Product($handle: String!) {
         }
 			}
     }
-    mediaThreeText:metafield(namespace:"product",key:"showcase_text_3"){
-      value
-      type
-    }
-    mediaThree:metafield(namespace:"product",key:"showcase_image_3"){
-      value
-      type
-      reference {
-        ... on MediaImage {
-          image {
-            altText
-            url
-          }
-        }
-        ... on Video{
-					sources{
-            url
-          }
-        }
-      }
-    }
-    mediaTwoText:metafield(namespace:"product",key:"showcase_text_2"){
-      value
-      type
-    }
-    mediaTwo:metafield(namespace:"product",key:"showcase_image_2"){
-      value
-      type
-      reference {
-        ... on MediaImage {
-          image {
-            altText
-            url
-          }
-        }
-        ... on Video{
-					sources{
-            url
-          }
-        }
-      }
-    }
-    
-    
-    mediaOneText:metafield(namespace:"product",key:"showcase_text_1"){
-      value
-      type
-    }
-    mediaOne:metafield(namespace:"product",key:"showcase_image_1"){
-      value
-      type
-      reference {
-        ... on MediaImage {
-          image {
-            altText
-            url
-          }
-        }
-        ... on Video{
-					sources{
-            url
-          }
-        }
-      }
-    }
-    
     details: metafield(namespace: "product", key: "details") {
     	value
     	type
@@ -156,14 +90,6 @@ query Product($handle: String!) {
     	value
     	type
   	}
-    shortDesc:metafield(namespace:"product",key:"short_description"){
-      value
-      type
-    }
-    faqs:metafield(namespace:"product",key:"faqs"){
-      value
-      type
-    }
     useCases:metafield(namespace:"product",key:"use_cases"){
       value 
       type
@@ -189,10 +115,6 @@ query Product($handle: String!) {
       type
     }
     sizeGuide:metafield(namespace:"product",key:"sizeguide"){
-      value
-      type
-    }
-    bannerImage:metafield(namespace:"product",key:"banner_image"){
       value
       type
     }

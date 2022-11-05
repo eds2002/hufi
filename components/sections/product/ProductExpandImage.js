@@ -40,39 +40,43 @@ export default function ExpandImage({expandImage,setExpandImage,data,expandPos,s
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel 
-                  className="relative flex flex-col w-full max-w-3xl overflow-hidden transition-all transform shadow-xl md:h-full bg-background rounded-2xl "
+                  className="relative flex flex-col w-full max-w-lg overflow-hidden transition-all transform shadow-xl lg:max-w-3xl bg-background rounded-2xl "
                 >
-                  <div className = "relative flex self-start px-4 pt-4 gap-x-3">
+                  <div className = "relative flex self-start px-4 pt-4 gap-x-3 ">
                    <h3 className = "text-2xl font-medium">Media ({data.product.media.nodes.length})</h3>
                   </div>
-                  <div className = "flex flex-col h-full lg:flex-row-reverse">  
+                  <div className = "flex flex-col lg:flex-row-reverse">  
                     {/* Media Carousel */}
-                    <div className = "w-full h-full p-4 mt-4">
-                      <div className = " grid grid-flow-col auto-cols-[100%] h-full overflow-scroll snap-x snap-mandatory scrollBar rounded-md aspect-square" ref = {containerRef}>
+                    <div className = "w-full p-4 mt-4">
+                      <div className = " grid grid-flow-col auto-cols-[100%]  overflow-scroll snap-x snap-mandatory scrollBar rounded-md  w-full " ref = {containerRef}>
                         {data.product.media.nodes.map((media)=>(
                           <>
                             {media?.image && (
                               <img src = {media?.image?.url} className = "object-cover w-full h-full snap-center" security=''/>
                             )}
                             {media?.sources && (
-                              <video
-                                src = {media.sources[0].url}
-                                controls
-                                poster = {media.previewImage.url}
-                                className = "snap-center"
-                              />
+                              <div className = "flex justify-center w-full h-full bg-black aspect-square "> 
+                                <video
+                                  src = {media.sources[0].url}
+                                  controls
+                                  poster = {media.previewImage.url}
+                                  className = "object-contain h-full snap-center"
+                                />
+                              </div>
                             )}
                           </>
                         ))}
                       </div>
                     </div>
+
+                    
                     {/* Display all media  */}
                     <div className = "flex gap-3 p-6 overflow-x-scroll overflow-y-hidden rounded-md flex-nowrap scrollBar lg:flex-col">
                       {data.product.media.nodes.map((media,index)=>(
                           <>
                             {media?.image && (
                               <div 
-                                className = {`${expandPos === index && ('ring-2 ring-offset-2 ring-secondaryVariant')} w-16 h-16 bg-gray-200 aspect-square cursor-pointer`}
+                                className = {`${expandPos === index && ('ring-2 ring-offset-2 ring-secondaryVariant')} w-16 h-16 bg-gray-200 aspect-square cursor-pointer overflow-hidden`}
                                 onClick = {()=>setExpandPos(index)}
                               >
                                 <img src = {media?.image?.url} className = "object-contain snap-center" security=''/>
@@ -80,7 +84,7 @@ export default function ExpandImage({expandImage,setExpandImage,data,expandPos,s
                             )}
                             {media?.sources && (
                               <div 
-                                className = {`${expandPos === index && ('ring-2 ring-offset-2 ring-secondaryVariant')} w-16 h-16 bg-gray-200 aspect-square cursor-pointer relative`}
+                                className = {`${expandPos === index && ('ring-2 ring-offset-2 ring-secondaryVariant')} w-16 h-16 bg-gray-200 aspect-square cursor-pointer relative overflow-hidden`}
                                 onClick = {()=>setExpandPos(index)}
                               >
                                 <img

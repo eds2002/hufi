@@ -206,7 +206,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
 
 function ImageCarousel({data, imageRef, currentVariant}){
   const [imagePos,setImagePos] = useState(0)
-  const [amountOfDots] = useState(data.product.media.nodes.length || 0)
+  const [amountOfDots] = useState(data.product.media.nodes)
   const [expandImage, setExpandImage] = useState(false)
   const [expandType,setExpandType] = useState("Photos")
   const [expandPos,setExpandPos] = useState(0)
@@ -214,7 +214,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
 
   // Figure out the current position of image, only set the image pos when number is a whole number.
   const handleScroll = useCallback(()=>{
-    if(Number.isInteger(imageRef.current.scrollLeft / imageRef.current.clientWidth)){
+    if(Number.isInteger(parseInt(imageRef.current.scrollLeft) / parseInt(imageRef.current.clientWidth))){
       setImagePos(imageRef.current.scrollLeft / imageRef.current.clientWidth)
     }
   })
@@ -283,19 +283,20 @@ function ImageCarousel({data, imageRef, currentVariant}){
                 <>
                   <div className = {`
                   ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                    relative w-full  overflow-hidden snap-center md:rounded-md h-full aspect-square
+                    relative w-full  overflow-hidden snap-center md:rounded-md h-full aspect-square bg-black
                   `}
                   key = {index}
                   onClick = {()=>handleExpandClick("Videos",index)}
                   >
                     <Image
-                      className = "object-cover w-full h-full"
+                      className = "object-contain w-full h-full"
                       src = {media?.previewImage?.url}
                       layout='fill'
+                      priority = {index === 0 ? true : false}
                     />
                     <div className = "absolute inset-0 z-20 flex items-center justify-center ">
-                      <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background/40 backdrop-blur-md">
-                        <PlayIcon className = "w-12 h-12 text-secondary"/>
+                      <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
+                        <PlayIcon className = "w-8 h-8 text-secondary"/>
                       </div>
                     </div>
                   </div>
@@ -306,13 +307,24 @@ function ImageCarousel({data, imageRef, currentVariant}){
           ))}
         </div>
         <div className = "absolute bottom-0 left-0 right-0 flex items-center justify-center mb-4 lg:hidden">
-          <div className = "flex p-2 rounded-full cursor-pointer bg-black/25 backdrop-blur-xl">
-            {Array.from(Array(amountOfDots), (_,i)=>i).map((v,index)=>(
-              <div 
-                key = {index}
-                className = {`w-2 h-2 mx-1 ${index == imagePos ? 'bg-white' : 'bg-white/30'} rounded-full transition-colors`}  
-                onClick = {()=>setImagePos(index)}
-              />
+          <div className = "flex items-center p-2 rounded-full cursor-pointer bg-black/25 backdrop-blur-xl gap-x-1.5">
+            {amountOfDots.map((v,index)=>(
+              <>
+                {v.image && (
+                  <div 
+                    key = {index}
+                    className = {`w-2 h-2  ${index == imagePos ? 'bg-white' : 'bg-white/30'} rounded-full transition-colors`}  
+                    onClick = {()=>setImagePos(index)}
+                  />
+                )}
+                {v.sources && (
+                  <PlayIcon 
+                    key = {index}
+                    className = {`w-3 h-3 -mx-0.5 ${index == imagePos ? 'text-white' : 'text-white/30'}  transition-colors`}
+                    onClick = {()=>setImagePos(index)}
+                  />
+                )}
+              </>
             ))}
           </div>
         </div>
@@ -673,78 +685,4 @@ function ProductDetailsComponent({data}){
     </>
   )
 }
-
-
-const test = [
-  {
-    cm:[
-      {
-        s:{
-          waist:"60-70",
-          hip:"80-90",
-          pantLength: "91"
-        },
-        m:{
-          waist:"64-74",
-          hip:"84-94",
-          pantLength: "92"
-        },
-        l:{
-          waist:"68-78",
-          hip:"88-98",
-          pantLength: "93"
-        },
-        xl:{
-          waist:"72-82",
-          hip:"92-102",
-          pantLength: "94"
-        },
-        xxl:{
-          waist:"78-86",
-          hip:"96-106",
-          pantLength: "95"
-        },
-        xxxl:{
-          waist:"80-90",
-          hip:"100-110",
-          pantLength: "96"
-        },
-      }
-    ],
-    in:[
-      {
-        s:{
-          waist:"23.62 - 26.56",
-          hip:"31.50 - 35.43",
-          pantLength:"35.83"
-        },
-        m:{
-          waist:"25.20 - 29.13",
-          hip:"33.07 - 37.01",
-          pantLength:"36.22"
-        },
-        l:{
-          waist:"26.77 - 30.71",
-          hip:"34.65 - 38.58",
-          pantLength:"36.61"
-        },
-        xl:{
-          waist:"28.35 - 32.28",
-          hip:"36.22 - 40.16",
-          pantLength:"37.01"
-        },
-        xxl:{
-          waist:"29.92 - 33.86",
-          hip:"37.80 - 41.73",
-          pantLength:"37.40"
-        },
-        xxxl:{
-          waist:"31.50 - 35.43",
-          hip:"39.37 - 43.31",
-          pantLength:"37.80"
-        },
-      }
-    ]
-  }
-]
 

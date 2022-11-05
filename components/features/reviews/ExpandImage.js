@@ -123,9 +123,9 @@ export default function ExpandImage({expandImage,setExpandImage,selectedReview})
                       <p className = "max-w-2xl mt-3 overflow-hidden text-onSurface/70 text-ellipsis">
                         {selectedReview?.review}
                       </p>
-                      {(selectedReview?.country || selectedReview?.state) && (
+                      {/* {(selectedReview?.country || selectedReview?.state) && (
                         <p className = "mt-6 text-sm text-onSurface/70">Location: {selectedReview?.state ? selectedReview?.state+',' : '' } {selectedReview?.country}</p>
-                      )}
+                      )} */}
                     </div>
                   </div>
                   <CloseButton onClick = {()=>setExpandImage(false)}/>

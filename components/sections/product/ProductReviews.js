@@ -30,6 +30,7 @@ const ProductReviews = ({data,reviews,questions}) => {
   const [selectedReview,setSelectedReview] = useState(null)
   const [currentTab,setCurrentTab] = useState("Reviews")
   const {currentUser} = useContext(UserContext)
+  const [reviewsFilter, setReviewsFilter] = useState(null)
 
   // Sets the average of ratings & pagination amount for reviews
   useEffect(()=>{
@@ -48,6 +49,21 @@ const ProductReviews = ({data,reviews,questions}) => {
     setDisplayReviews(reviews ?? null)
     setDisplayQuestions(questions ?? null)
   },[reviews])
+
+  useEffect(()=>{
+    if(reviewsFilter === null) return
+    switch(reviewsFilter){
+      case 'Newest':
+        setDisplayReviews(arr => [...arr.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt) )])
+        break;
+      case 'Highest Ratings':
+        setDisplayReviews(arr => [...arr.sort((a,b)=> b.rating - a.rating)])
+        break;
+      case 'Lowest Ratings':
+        setDisplayReviews(arr => [...arr.sort((a,b)=> a.rating - b.rating)])
+        break;
+    }
+  },[reviewsFilter])
   
   const handleImageClick = (index) =>{
     setSelectedReview(displayReviews[index])
@@ -68,6 +84,7 @@ const ProductReviews = ({data,reviews,questions}) => {
       year:year,
     }
   }
+
   
   return (
     <section className = "py-24 bg-background scroll-smooth" id = "reviews">
@@ -155,8 +172,10 @@ const ProductReviews = ({data,reviews,questions}) => {
 
         {currentTab === "Reviews" && (
           <>
+
+            {/* Review Button */}
             {displayReviews?.length > 0 && (
-            <>
+            <div className = "flex items-center justify-between">
               {currentUser ? 
                 <Button 
                   onClick = {()=>setOpenWriteReview(true)}
@@ -172,7 +191,8 @@ const ProductReviews = ({data,reviews,questions}) => {
                   />
               </Link>
               }
-            </>
+              <SortComponent setReviewsFilter = {setReviewsFilter}/>
+            </div>
             )}
             {displayReviews?.length > 0 ? 
               <>
@@ -388,6 +408,32 @@ const ProductReviews = ({data,reviews,questions}) => {
       <WriteReview productId = {data?.product?.id} openWriteReview = {openWriteReview} setOpenWriteReview = {setOpenWriteReview}/>
       <WriteQuestion productId = {data?.product?.id} openWriteQuestion = {openWriteQuestion} setOpenWriteQuestion = {setOpenWriteQuestion}/>
     </section>
+  )
+}
+
+function SortComponent({setReviewsFilter}){
+  const [open,setOpen] = useState(false)
+  const [currentFilter,setCurrentFilter] = useState("Select")
+
+  const handleOptionClick = (value) =>{
+    setCurrentFilter(value)
+    setReviewsFilter(value)
+    setOpen(false)
+  }
+  return(
+    <div className = "relative flex text-sm gap-x-2 text-onBackground/50">
+      <p>Sort by:</p>
+      <div>
+        <p onClick = {()=>setOpen(!open)} className = {`${currentFilter === "Select" ? 'text-onBackground/50' : 'font-medium text-onBackground'} cursor-pointer`}>{currentFilter}</p>
+        {open && (
+          <div className = "absolute right-0 mt-2 rounded-md bg-neutral-200 w-max text-onBackground">
+            <p className = {`px-4 py-2 rounded-md cursor-pointer hover:bg-neutral-300 ${currentFilter === "Newest" && 'bg-neutral-300'}`} onClick = {()=>handleOptionClick("Newest")}>Newest</p>
+            <p className = {`px-4 py-2 rounded-md cursor-pointer hover:bg-neutral-300 ${currentFilter === "Highest Ratings" && 'bg-neutral-300'}`} onClick = {()=>handleOptionClick("Highest Ratings")}>Highest Ratings</p>
+            <p className = {`px-4 py-2 rounded-md cursor-pointer hover:bg-neutral-300 ${currentFilter === "Lowest Ratings" && 'bg-neutral-300'}`} onClick = {()=>handleOptionClick("Lowest Ratings")}>Lowest Ratings</p>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
