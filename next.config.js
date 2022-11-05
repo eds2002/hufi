@@ -12,6 +12,10 @@ const nextConfig = {
     domains:["cdn.shopify.com","tailwindui.com","cdn-icons-png.flaticon.com","images.pexels.com","firebasestorage.googleapis.com"]
   },
   compress:true,
+  i18n: {
+    locales: ["en"],
+    defaultLocale: "en",
+  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig,{
