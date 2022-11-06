@@ -126,17 +126,16 @@ const ProductReviews = ({data,reviews,questions}) => {
                       {review.images.map((url,mediaIndex)=>(
                         <React.Fragment key = {mediaIndex}>
                           {url.includes('mp4') && (
-                            <div className = "cursor-pointer">
+                            <div className = "overflow-hidden rounded-md cursor-pointer">
                               <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md h-80 aspect-[9/16]">
                                 <video 
                                   prelaod = 'metadata' 
-                                  className = "absolute object-cover w-full h-full" onClick={(e)=>handleImageClick(index,mediaIndex)} 
+                                  className = "absolute object-cover w-full h-full rounded-md" onClick={(e)=>handleImageClick(index,mediaIndex)} 
                                   onMouseOver = {(e)=>e.target.play()} 
                                   onMouseLeave={(e)=>e.target.pause()}>
                                   <source src = {`${url}#t=0.001`} type = "video/mp4"/>
                                 </video>
-                                {/* <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/> */}
-                                <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
+                                <div className = "flex w-full px-4 py-2 overflow-hidden gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
                                   <div className = "relative bg-black rounded-full w-11 h-11">
                                     {/* Profile image based on reviewers first letter of their name. */}
                                     <div className = "inset-0 flex items-center justify-center h-full">
