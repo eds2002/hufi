@@ -1,4 +1,4 @@
-import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import React, { useRef } from 'react'
 import { ExpandImage, StarsComponent, WriteQuestion, WriteReview } from '../../features'
@@ -31,6 +31,7 @@ const ProductReviews = ({data,reviews,questions}) => {
   const [currentTab,setCurrentTab] = useState("Reviews")
   const {currentUser} = useContext(UserContext)
   const [reviewsFilter, setReviewsFilter] = useState(null)
+  const [selectedMediaIndex,setSelectedMediaIndex] = useState(0)
 
   // Sets the average of ratings & pagination amount for reviews
   useEffect(()=>{
@@ -42,7 +43,6 @@ const ProductReviews = ({data,reviews,questions}) => {
       setPaginationArray(Array.from(Array(Math.ceil(displayReviews?.length / displayLimit)).keys()))
     }
   },[displayReviews])
-
 
   // Reloads on data on review data change
   useEffect(()=>{
@@ -65,9 +65,10 @@ const ProductReviews = ({data,reviews,questions}) => {
     }
   },[reviewsFilter])
   
-  const handleImageClick = (index) =>{
+  const handleImageClick = (index,mediaIndex) =>{
     setSelectedReview(displayReviews[index])
-    setExpandImage(true)
+    setExpandImage(true)  
+    setSelectedMediaIndex(mediaIndex)
   }
   
   const formatDate = (userDate,monthAdd) =>{
@@ -84,6 +85,7 @@ const ProductReviews = ({data,reviews,questions}) => {
       year:year,
     }
   }
+
 
   
   return (
@@ -113,36 +115,89 @@ const ProductReviews = ({data,reviews,questions}) => {
         {/* Reviews with media section*/}
         {displayReviews?.length > 0 && (
           <div className = "mt-7">
-            <h3 className = "text-2xl font-medium">Images</h3>
+
+            {/* Reviews with videos */}
+            {displayReviews.some((review)=> review.images.some((url)=>url.includes('mp4'))) && (
+              <>
+                <h3 className = "text-2xl font-medium">Reviews with videos</h3>
+                <div className = "flex h-full mt-3 overflow-scroll flex-nowrap gap-x-3 scrollBar mb-7">
+                  {displayReviews.map((review,index)=>(
+                    <React.Fragment key = {index}>
+                      {review.images.map((url,mediaIndex)=>(
+                        <React.Fragment key = {mediaIndex}>
+                          {url.includes('mp4') && (
+                            <div className = "cursor-pointer">
+                              <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md h-80 aspect-[9/16]">
+                                <video 
+                                  prelaod = 'metadata' 
+                                  className = "absolute object-cover w-full h-full" onClick={(e)=>handleImageClick(index,mediaIndex)} 
+                                  onMouseOver = {(e)=>e.target.play()} 
+                                  onMouseLeave={(e)=>e.target.pause()}>
+                                  <source src = {url} type = "video/mp4"/>
+                                </video>
+                                {/* <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/> */}
+                                <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
+                                  <div className = "relative bg-black rounded-full w-11 h-11">
+                                    {/* Profile image based on reviewers first letter of their name. */}
+                                    <div className = "inset-0 flex items-center justify-center h-full">
+                                      <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                                    </div>
+                                    <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+                                      <CheckIcon className = "w-3 h-3 text-background"/>
+                                    </div>
+                                  </div>
+                                  <div className = "flex flex-col items-start justify-center flex-1 w-full h-full my-auto overflow-hidden truncate text-ellipsis">
+                                    <p className = "overflow-hidden text-sm truncate text-onSecondary whitespace-nowrap text-ellipsis">{review.reviewTitle}</p>
+                                    <p className = "text-xs text-onSecondary/60">{review.reviewer}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Reviews with images */}
+            <h3 className = "text-2xl font-medium">Reviews with images</h3>
             <div className = "flex h-full mt-3 overflow-scroll flex-nowrap gap-x-3 scrollBar">
               {displayReviews.map((review,index)=>(
                 <React.Fragment key = {index}>
-                  {review.images?.length > 0 && (
-                    <div onClick = {()=>handleImageClick(index)}>
-                      <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md w-72 h-44 aspect-video">
-                        <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/>
-                        <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
-                          <div className = "relative bg-black rounded-full w-11 h-11">
-                            {/* Profile image based on reviewers first letter of their name. */}
-                            <div className = "inset-0 flex items-center justify-center h-full">
-                              <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                    <React.Fragment>
+                      {(!review.images[0]?.includes('mp4') && review.images.length > 0) &&(
+                        <div 
+                          onClick = {()=>handleImageClick(index,0)} 
+                          className = "cursor-pointer">
+                          <div className = "relative flex items-end justify-center overflow-hidden bg-gray-200 rounded-md w-72 h-44 aspect-video">
+                            <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/>
+                            <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
+                              <div className = "relative bg-black rounded-full w-11 h-11">
+                                {/* Profile image based on reviewers first letter of their name. */}
+                                <div className = "inset-0 flex items-center justify-center h-full">
+                                  <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                                </div>
+                                <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+                                  <CheckIcon className = "w-3 h-3 text-background"/>
+                                </div>
+                              </div>
+                              <div className = "flex flex-col items-start justify-center flex-1 w-full h-full my-auto overflow-hidden truncate text-ellipsis">
+                                <p className = "overflow-hidden text-sm truncate text-onSecondary whitespace-nowrap text-ellipsis">{review.reviewTitle}</p>
+                                <p className = "text-xs text-onSecondary/60">{review.reviewer}</p>
+                              </div>
                             </div>
-                            <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
-                              <CheckIcon className = "w-3 h-3 text-background"/>
-                            </div>
-                          </div>
-                          <div className = "flex flex-col items-start justify-center flex-1 w-full h-full my-auto overflow-hidden truncate text-ellipsis">
-                            <p className = "overflow-hidden text-sm truncate text-onSecondary whitespace-nowrap text-ellipsis">{review.reviewTitle}</p>
-                            <p className = "text-xs text-onSecondary/60">{review.reviewer}</p>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  )}
-                </React.Fragment>
+                      )}
+                    </React.Fragment>
+                  </React.Fragment>
               ))}
             </div>
           </div>
+          
         )}
 
 
@@ -226,14 +281,33 @@ const ProductReviews = ({data,reviews,questions}) => {
                           <div className = "mt-4">
                             {review.images?.length > 0 && (
                               <div className = "flex gap-x-3 ">
-                                {review.images.map((url)=>(
+                                {review.images.map((url,imageIndex)=>(
                                   <React.Fragment key = {url}>
-                                  <div 
-                                    className = "relative cursor-pointer w-14 h-14" 
-                                    onClick={()=>handleImageClick(index)}
-                                  >
-                                    <Image src = {url} layout = 'fill'/>
-                                  </div>
+                                  {url.includes(".mp4") ? 
+                                    <div className = "relative overflow-hidden rounded-md cursor-pointer pointer-events-none">
+                                      <div 
+                                        className = "absolute inset-0 z-10 flex items-center justify-center rounded-md pointer-events-none bg-black/25"
+                                      >
+                                        <div>
+                                          <PlayCircleIcon className = "text-white w-7 h-7"/>
+                                        </div>
+                                      </div>
+                                      <video 
+                                        className = "relative flex items-center justify-center object-cover rounded-md cursor-pointer pointer-events-auto w-14 h-14 bg-neutral-200"
+                                        onClick={()=>handleImageClick(index,imageIndex)}
+                                        preload = "metadata"
+                                      >
+                                        <source src = {url}/>
+                                      </video>
+                                    </div>
+                                  :
+                                    <div 
+                                      className = "relative overflow-hidden rounded-md cursor-pointer w-14 h-14" 
+                                      onClick={()=>handleImageClick(index,imageIndex)}
+                                    >
+                                      <Image src = {url} layout = 'fill'/>
+                                    </div>
+                                  }
                                   </React.Fragment>
                                 ))}
                               </div>
@@ -404,8 +478,8 @@ const ProductReviews = ({data,reviews,questions}) => {
         )}
 
       </div>
-      <ExpandImage expandImage = {expandImage} setExpandImage = {setExpandImage} selectedReview = {selectedReview}/>
-      <WriteReview productId = {data?.product?.id} openWriteReview = {openWriteReview} setOpenWriteReview = {setOpenWriteReview}/>
+      <ExpandImage expandImage = {expandImage} setExpandImage = {setExpandImage} selectedReview = {selectedReview} selectedMediaIndex = {selectedMediaIndex}/>
+      <WriteReview productId = {data?.product?.id} openWriteReview = {openWriteReview} setOpenWriteReview = {setOpenWriteReview} productTitle = {data?.product?.title}/>
       <WriteQuestion productId = {data?.product?.id} openWriteQuestion = {openWriteQuestion} setOpenWriteQuestion = {setOpenWriteQuestion}/>
     </section>
   )

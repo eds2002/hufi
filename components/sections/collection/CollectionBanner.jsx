@@ -18,7 +18,7 @@ const CollectionBanner = ({data}) => {
         layout = 'fill' 
         className = "object-cover w-full h-full pointer-events-none select-none" 
         priority 
-        altText = {data?.collectionByHandle?.banner?.reference?.image?.altText}  
+        alt = {data?.collectionByHandle?.banner?.reference?.image?.altText}  
       />
       :
       <Image 
@@ -26,7 +26,7 @@ const CollectionBanner = ({data}) => {
         layout = 'fill' 
         className = "object-cover w-full h-full pointer-events-none select-none" 
         priority 
-        altText = {data?.collectionByHandle?.image?.altText}
+        alt = {data?.collectionByHandle?.image?.altText}
       />
       }
       <div className = "absolute inset-0 bg-black/50"/>

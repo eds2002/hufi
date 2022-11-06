@@ -112,7 +112,7 @@ export default function WriteQuestion({openWriteQuestion, setOpenWriteQuestion,p
                       onClick = {()=>handleSubmit()}
                     />
                   </div>
-                  <CloseButton onClick = {()=>setOpenWriteReview(false)}/>
+                  <CloseButton onClick = {()=>setOpenWriteQuestion(false)}/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

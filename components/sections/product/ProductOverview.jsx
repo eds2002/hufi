@@ -511,17 +511,13 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                   {option.values.map((value,key)=>(
                     <p className = 
                     {`
-                      ${option.name === "Color" ? 
-                      (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
-                      :
-                      (`${soldOutItems?.includes(value) ? 
-                          'bg-gray-300 ring-black/60 cursor-default w-max' 
-                        : 
-                          `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 
-                              'ring-primaryVariant bg-primary w-max' 
-                            : 
-                              'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-full w-max`)
-                      }
+                      ${option.name === "Color" 
+                      ? (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
+                      : (`${soldOutItems?.includes(value) 
+                        ? 'bg-gray-300 ring-black/60 cursor-default w-max' 
+                        : `${selectedOption.filter(opt =>opt.value === value).length > 0 
+                          ? 'ring-primaryVariant bg-primary w-max' 
+                          : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-md w-max`)}
                       text-sm mt-1
                     `}
                     style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}

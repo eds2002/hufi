@@ -14,7 +14,7 @@ import CloseButton from '../CloseButton';
 import { aliReviews } from '../../../constants/reviews';
 import { slugify } from '../../../utils/slugify';
 
-export default function WriteReview({openWriteReview, setOpenWriteReview,productId}) {
+export default function WriteReview({openWriteReview, setOpenWriteReview,productId,productTitle}) {
   const {currentUser} = useContext(UserContext)
   const [rating, setRating] = useState()
   const [hoverIndex, setHoverIndex] = useState()

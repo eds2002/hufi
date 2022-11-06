@@ -1,10 +1,11 @@
-import {useEffect, useState, useRef, useContext} from 'react'
+import React, {useEffect, useState, useRef, useContext} from 'react'
 import { ProductCard } from '../../cards'
 import { FiltersDrawer } from '../../drawers'
 import LocaleContext from '../../../context/localeContext'
 import Link from 'next/link'
 import Image from 'next/image'
 import { formatNumber } from '../../../utils/formatNumber'
+import { Button } from '../../elements'
 
 
 const CollectionProducts = ({data,filters}) => {
@@ -13,6 +14,7 @@ const CollectionProducts = ({data,filters}) => {
   const [filterBy, setFilterBy] = useState([])
   const [filtersModal,setFiltersModal] = useState(false)
   const [selectedFilters,setSelectedFilters] = useState([])
+  const [displayAmount,setDisplayAmount] = useState(8)
   const [isEmpty,setIsEmpty] = useState(false)
   const productsRef = useRef()
 
@@ -61,15 +63,16 @@ const CollectionProducts = ({data,filters}) => {
   
   return (
     <>
-    <section className = "bg-background">
+    <section className = "relative bg-background">
       {/* FILTERS NAV */}
       <nav className = "flex items-center justify-between w-full gap-6 px-4 py-6 mx-auto max-w-7xl">
           {tags.length != 0 && (
             <div className = "flex items-center justify-start flex-1">
               <p className = "hidden mr-5 text-xs sm:text-sm text-onBackground/60 sm:block">Filter by</p>
               <div className = {`
-              fixed left-0 right-0 z-10 flex items-center justify-start max-w-xs gap-3 px-4 py-2 mx-auto overflow-scroll rounded-full bottom-7 bg-onBackground/20 backdrop-blur-md w-min 
-              sm:relative sm:flex sm:flex-1 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:bottom-0 sm:max-w-none`}>
+              relative left-0 right-0 z-10 flex items-center justify-start max-w-xs gap-3 px-4 py-2 mx-auto overflow-scroll rounded-full  bg-onBackground/20 backdrop-blur-md w-min 
+              sm:relative sm:flex sm:flex-1 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:bottom-0 sm:max-w-none 
+              `}>
                 {tags.map((tag)=>(
                   <p 
                     className = {`${selectedFilters.some(selected=> selected.tag === tag && selected.userSelected.length > 0) ? 'bg-primary' : 'bg-neutral-200'}
@@ -115,20 +118,33 @@ const CollectionProducts = ({data,filters}) => {
             </>
             :
             <>
-              {data.collectionByHandle.products.nodes.map((product)=>(
-                <>
-                  {product.tags.length === 0 && ''}
-                  <>
-                    {selectedFilters.every(selected=> selected.userSelected.length === 0) ?
-                        <ProductBox data={product}/>
-                      :
+              {data.collectionByHandle.products.nodes.map((product,index)=>(
+                <React.Fragment key = {index}>
+                  {displayAmount > index && (
+                    <React.Fragment>
+                      {product.tags.length === 0 && ''}
                       <>
-                        {filterBy.some(filter=> product.tags.some((tag)=> tag.split(":")[1] === filter)) && <ProductBox data={product}/>}
+                        {selectedFilters.every(selected=> selected.userSelected.length === 0) ?
+                            <ProductBox data={product}/>
+                          :
+                          <>
+                            {filterBy.some(filter=> product.tags.some((tag)=> tag.split(":")[1] === filter)) && <ProductBox data={product}/>}
+                          </>
+                        }
                       </>
-                    }
-                  </>
-                </>
+                    </React.Fragment>
+                  )}
+                </React.Fragment>
               ))}
+              {displayAmount < data.collectionByHandle.products.nodes.length && (
+                <div className = "w-full col-span-2">
+                  <Button 
+                    text = 'Load more' 
+                    CSS = 'w-max px-4 py-2 bg-secondaryVariant hover:bg-secondary text-onSecondary mx-auto'
+                    onClick={()=>setDisplayAmount(displayAmount + displayAmount)}
+                  />
+                </div>
+              )}
             </>
             }
           </div>
