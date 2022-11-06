@@ -149,9 +149,9 @@ function Media({expand,setExpand,containerRef,imagePos,selectedReview,expandImag
         ref = {containerRef}
       >
         {selectedReview?.images?.map((url)=>(
-          <div className = "relative w-full h-full overflow-hidden select-none snap-center" key = {url}>
+          <div className = "relative w-full h-full mx-auto overflow-hidden select-none snap-center" key = {url}>
             {url.includes('mp4') ? 
-            <div className = "w-full h-full bg-black">
+            <div className = "flex items-center justify-center w-full h-full bg-black">
               <video controls className = "w-full h-full" ref = {videoRef}>
                 <source src = {url} type = "video/mp4"/>
               </video>

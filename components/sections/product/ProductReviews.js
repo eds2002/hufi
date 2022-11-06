@@ -131,8 +131,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                                 <video 
                                   prelaod = 'metadata' 
                                   className = "absolute object-cover w-full h-full rounded-md" onClick={(e)=>handleImageClick(index,mediaIndex)} 
-                                  onMouseOver = {(e)=>e.target.play()} 
-                                  onMouseLeave={(e)=>e.target.pause()}>
+                                >
                                   <source src = {`${url}#t=0.001`} type = "video/mp4"/>
                                 </video>
                                 <div className = "flex w-full px-4 py-2 overflow-hidden gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
