@@ -133,7 +133,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                                   className = "absolute object-cover w-full h-full" onClick={(e)=>handleImageClick(index,mediaIndex)} 
                                   onMouseOver = {(e)=>e.target.play()} 
                                   onMouseLeave={(e)=>e.target.pause()}>
-                                  <source src = {url} type = "video/mp4"/>
+                                  <source src = {`${url}#t=0.001`} type = "video/mp4"/>
                                 </video>
                                 {/* <Image src = {review.images[0]} layout = 'fill' objectFit='cover'/> */}
                                 <div className = "flex w-full px-4 py-2 gap-x-3 bg-secondaryVariant/50 backdrop-blur-md rounded-bl-md rounded-br-md">
@@ -297,7 +297,7 @@ const ProductReviews = ({data,reviews,questions}) => {
                                         onClick={()=>handleImageClick(index,imageIndex)}
                                         preload = "metadata"
                                       >
-                                        <source src = {url}/>
+                                        <source src = {`${url}#t=0.001`}/>
                                       </video>
                                     </div>
                                   :
@@ -313,9 +313,6 @@ const ProductReviews = ({data,reviews,questions}) => {
                               </div>
                             )}
                           </div>
-                          {/* {(review?.country || review?.state) && (
-                            <p className = "mt-6 text-sm text-onSurface/70">Location: {review.state ? review.state+',' : '' } {review.country}</p>
-                          )} */}
                         </div>
                       </div>
                       )}
