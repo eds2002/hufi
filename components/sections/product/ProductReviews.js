@@ -16,7 +16,6 @@ import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 
 
 const ProductReviews = ({data,reviews,questions}) => {
-  const router = useRouter()
   const [openWriteReview,setOpenWriteReview] = useState(false)
   const [openWriteQuestion,setOpenWriteQuestion] = useState(false)
   const [displayReviews,setDisplayReviews] = useState(reviews ?? null)
@@ -223,9 +222,10 @@ const ProductReviews = ({data,reviews,questions}) => {
           </div>
         </div>
 
+
+        {/* Reviews */}
         {currentTab === "Reviews" && (
           <>
-
             {/* Review Button */}
             {displayReviews?.length > 0 && (
             <div className = "flex items-center justify-between">
@@ -317,6 +317,8 @@ const ProductReviews = ({data,reviews,questions}) => {
                     </React.Fragment>
                   ))}
                 </div>
+
+                {/* Pagination */}
                 {displayReviews.length > displayLimit && (
                   <div className = "flex items-center justify-center mt-12 gap-x-6">
                     <p onClick = {()=>setCurrentPagination(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
@@ -366,6 +368,8 @@ const ProductReviews = ({data,reviews,questions}) => {
           </>
         )}
 
+
+        {/* Questions */}
         {currentTab === "Questions" && (
           <>
           {(displayQuestions?.length > 0 || displayQuestions.every(question => question.answer != "")) && (
@@ -495,7 +499,7 @@ function SortComponent({setReviewsFilter}){
       <div>
         <p onClick = {()=>setOpen(!open)} className = {`${currentFilter === "Select" ? 'text-onBackground/50' : 'font-medium text-onBackground'} cursor-pointer`}>{currentFilter}</p>
         {open && (
-          <div className = "absolute right-0 mt-2 rounded-md bg-neutral-200 w-max text-onBackground">
+          <div className = "absolute right-0 mt-2 rounded-md bg-neutral-100 w-max text-onBackground">
             <p className = {`px-4 py-2 rounded-md cursor-pointer hover:bg-neutral-300 ${currentFilter === "Newest" && 'bg-neutral-300'}`} onClick = {()=>handleOptionClick("Newest")}>Newest</p>
             <p className = {`px-4 py-2 rounded-md cursor-pointer hover:bg-neutral-300 ${currentFilter === "Highest Ratings" && 'bg-neutral-300'}`} onClick = {()=>handleOptionClick("Highest Ratings")}>Highest Ratings</p>
             <p className = {`px-4 py-2 rounded-md cursor-pointer hover:bg-neutral-300 ${currentFilter === "Lowest Ratings" && 'bg-neutral-300'}`} onClick = {()=>handleOptionClick("Lowest Ratings")}>Lowest Ratings</p>

@@ -153,7 +153,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                     <CouponComponent data = {data} selectedOption = {selectedOption}/>
                     <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
                     <GetItByComponent data = {data}/>
-                    <div className = "px-4 mt-4 mb-10">
+                    <div className = "px-4 mt-4 mb-6">
                       <Button 
                         className = "product-page-add-to-cart" 
                         text = {`Add to cart | ${formatNumber(price)}`}
@@ -170,8 +170,8 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                       <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
                       {/* Perks */}
                       <div className = "mt-4">
-                          <div className = "flex items-center text-xs gap-x-3">
-                            <LockClosedIcon className = "w-5 h-5 text-onBackground/50" />
+                          <div className = "flex items-center text-xs gap-x-1">
+                            <LockClosedIcon className = "w-4 h-4 text-onBackground/50" />
                             <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
                             onClick = {()=>setSecureTransactionModal(true)}
                             >Secure transaction</p>
@@ -336,7 +336,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
 
 function Description({data}){
   return(
-    <div className="px-4 mt-4 overflow-hidden rounded-md">
+    <div className="px-4 my-4 overflow-hidden rounded-md">
       <div
         className="prose-h1:mb-6 prose-p:mt-2 prose-h1:text-onBackground prose-p:text-onBackground/60 prose-p:sm:text-base prose-p:font-light prose-h6:hidden prose-p:text-base prose-li:list-disc prose-li:ml-4 prose-li:mb-3"
         dangerouslySetInnerHTML={{ __html: data.product.descriptionHtml }}
