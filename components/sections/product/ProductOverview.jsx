@@ -266,7 +266,7 @@ function ImageCarousel({data, imageRef, currentVariant}){
                 <div 
                   className = {`
                   ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
-                    relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-[2/1.5] lg:aspect-square 
+                    relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
                   `}
                   key = {index}
                   onClick = {()=>handleExpandClick("Photos",index)}
