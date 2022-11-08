@@ -168,21 +168,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                       <DetailsComponent data = {data.product.details}/>
                       <LearnMoreComponent data = {data.product.learnmore}/>
                       <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
-                      {/* Perks */}
-                      <div className = "mt-4">
-                          <div className = "flex items-center text-xs gap-x-1">
-                            <LockClosedIcon className = "w-4 h-4 text-onBackground/50" />
-                            <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
-                            onClick = {()=>setSecureTransactionModal(true)}
-                            >Secure transaction</p>
-                          </div>
-                          {/* <div className = "flex items-center mt-2 text-xs gap-x-3">
-                            <CheckBadgeIcon className = "w-5 h-5 text-onBackground/50" />
-                            <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
-                            onClick = {()=>setRefundsModal(true)}
-                            >30-Day Money Back Guarantee.</p>
-                          </div> */}
-                      </div>
+                      <Perks setSecureTransactionModal = {setSecureTransactionModal}/>
                       <CrossSellComponent data = {data} crossSell = {crossSell} selectedOption = {selectedOption}/>
                     </div>
                   </div>
@@ -201,6 +187,19 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
         </div>
       }
     </>
+  )
+}
+
+function Perks({setSecureTransactionModal}){
+  return(
+    <div className = "mt-4">
+      <div className = "flex items-center text-xs gap-x-1">
+        <LockClosedIcon className = "w-4 h-4 text-onBackground/50" />
+        <p className = "text-sm cursor-pointer text-onBackground/40 hover:text-onBackground/30"
+        onClick = {()=>setSecureTransactionModal(true)}
+        >Secure transaction</p>
+      </div>
+    </div>
   )
 }
 
@@ -263,45 +262,42 @@ function ImageCarousel({data, imageRef, currentVariant}){
         >
           {data.product?.media?.nodes?.map((media,index)=>(
             <React.Fragment key = {index}>
-              {media?.image ? (
-                <div className = {`
-                ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
-                  relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
-                `}
-                key = {index}
-                onClick = {()=>handleExpandClick("Photos",index)}
+              {media?.image ? 
+                <div 
+                  className = {`
+                  ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
+                    relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-[2/1.5] lg:aspect-square 
+                  `}
+                  key = {index}
+                  onClick = {()=>handleExpandClick("Photos",index)}
                 >
                   <Image 
                     src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
                     layout='fill' 
-                    objectFit='cover' 
+                    objectFit='contain' 
                   />
                 </div>
-              )
               :
-              (
-                <>
-                  <div className = {`
+                <div 
+                  className = {`
                   ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                    relative w-full  overflow-hidden snap-center md:rounded-md h-full aspect-square bg-black
+                    relative w-full overflow-hidden snap-center md:rounded-md h-full  bg-black
                   `}
                   key = {index}
                   onClick = {()=>handleExpandClick("Videos",index)}
-                  >
-                    <Image
-                      className = "object-contain w-full h-full"
-                      src = {media?.previewImage?.url}
-                      layout='fill'
-                      priority = {index === 0 ? true : false}
-                    />
-                    <div className = "absolute inset-0 z-20 flex items-center justify-center ">
-                      <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
-                        <PlayIcon className = "w-8 h-8 text-secondary"/>
-                      </div>
+                >
+                  <Image
+                    className = "object-contain w-full h-full"
+                    src = {media?.previewImage?.url}
+                    layout='fill'
+                    priority = {index === 0 ? true : false}
+                  />
+                  <div className = "absolute inset-0 z-20 flex items-center justify-center ">
+                    <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
+                      <PlayIcon className = "w-8 h-8 text-secondary"/>
                     </div>
                   </div>
-                </>
-              )
+                </div>
               }
             </React.Fragment>
           ))}
