@@ -5,6 +5,9 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    maxWidth:{
+      '7xl':'1920px'
+    },
     extend: {
       colors:{        
         "primary":"#E9F5DB",
