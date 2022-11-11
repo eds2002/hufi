@@ -179,7 +179,14 @@ export default function Header({data,user}) {
                           <React.Fragment key = {page.title}>
                             {page.items.length === 0 && (
                               <Link href = {`
-                                ${page.title == 'About' ? '/company/about-us' : page.title == 'Contact' ? '/support' : ''}
+                                ${page.title == 'About' 
+                                  ? '/company/about-us' 
+                                  : page.title == 'Contact' 
+                                    ? '/support' 
+                                    : page.title == 'Blog'
+                                      ? '/blog'
+                                      : ''
+                                      }
                               `} key={page.title}>
                                 <a
                                   className="flex items-center text-sm font-medium transition cursor-pointer text-onBackground hover:text-onBackground/70"

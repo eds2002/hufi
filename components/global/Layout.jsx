@@ -10,7 +10,7 @@ import CartContext from '../../context/cartContext';
 import { storefront } from '../../utils/storefront';
 import UserContext from '../../context/userContext';
 
-const Layout = ({children,headerData,userData,footerData}) => {
+const Layout = ({children,headerData,userData,footerData, theme}) => {
   const {setCurrentUser} = useContext(UserContext)
   useEffect(()=>{
     setCurrentUser(userData?.customer)

@@ -64,7 +64,14 @@ export default function MobileNav({open,setOpen,data,user}){
                   <React.Fragment key = {page.title}>
                     {page.items.length === 0 && (  
                       <Link href = {`
-                      ${page.title == 'About' ? '/company/about-us' : page.title == 'Contact' ? '/support' : ''}
+                      ${page.title == 'About' 
+                        ? '/company/about-us' 
+                        : page.title == 'Contact' 
+                          ? '/support' 
+                          : page.title == 'Blog' 
+                            ? '/blog'
+                            : ''
+                          }
                       `}>
                         <div key={page.title} className="flow-root">
                           <a className = "flex items-center justify-between w-full text-xl font-medium cursor-pointer text-onBackground hover:text-onBackground/70">
