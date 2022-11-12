@@ -10,8 +10,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 
-const filters = ["All","Recent","Products","Company"]
-
 const Blog:React.FC<any> = ({pageProps}) => {
   const [selected,setSelected] = useState('All')
   const [paginationLimit] = useState(9)
@@ -43,14 +41,13 @@ const Blog:React.FC<any> = ({pageProps}) => {
 
   return (
     <Layout {...pageProps} theme = {'dark'}>
-      <section className = "h-[40vh] relative bg-secondaryVariant">
-        <div className = "relative h-full px-4 py-16 mx-auto my-auto max-w-7xl">
+      <section className = "min-h-[40vh] relative bg-secondaryVariant flex items-center justify-between">
+        <div className = "relative flex flex-col items-center justify-between h-full px-4 mx-auto my-auto max-w-7xl">
           <div className = "flex flex-col items-center justify-center text-center gap-y-3 text-onSecondary">
             <h1 className = "text-6xl font-medium text-center">Hufi Blog</h1>
             <p className = "max-w-sm text-base text-center xl:text-xl md:text-lg opacity-60">In the mood for reading? Take a look at some of our blogs.</p>
           </div>
           <FiltersComponent
-            filters = {filters}
             selected = {selected}
             setSelected = {setSelected}
           />
@@ -73,46 +70,23 @@ const Blog:React.FC<any> = ({pageProps}) => {
   )
 }
 
-
-interface FilterProps {
-  filters:string[];
-  setSelected:React.Dispatch<React.SetStateAction<any>>,
-  selected:String,
-}
-
-const FiltersComponent:React.FC<FilterProps> = ({filters,setSelected,selected}) =>{
+const FiltersComponent:React.FC<FilterProps> = ({setSelected,selected}) =>{
+  const filters = ["All","Products","Company"]
   return(
-    <div className = "absolute flex px-4 py-2 rounded-full bottom-4 left-4 bg-onSecondary/20 gap-x-2 w-max">
-      {filters.map((filter)=>(
-        <li 
-          className = {`list-none ${filter === selected ? 'bg-background px-4 py-0.5 rounded-full text-onBackground' : 'bg-transparent px-4 py-0.5 rounded-full text-background '} transition-all select-none cursor-pointer`}
-          onClick = {()=>setSelected(filter)}
-          key = {filter}
-        >
-          {filter}
-        </li>
-      ))}
+    <div className = "flex items-center justify-center w-full mt-10 ">
+      <div className = "flex px-4 py-2 rounded-full w-max bg-onSecondary/20 gap-x-2 ">
+        {filters.map((filter)=>(
+          <li 
+            className = {`list-none ${filter === selected ? 'bg-background px-2 sm:px-4 py-0.5 rounded-full text-onBackground' : 'bg-transparent px-2 sm:px-4 py-0.5 rounded-full text-background '} transition-all select-none cursor-pointer md:text-base text-sm`}
+            onClick = {()=>setSelected(filter)}
+            key = {filter}
+          >
+            {filter}
+          </li>
+        ))}
+      </div>
     </div>
   )
-}
-
-interface BlogsSectionProps{
-  [key:string]:any;
-  renderAmount: number;
-  paginationLimit:number;
-  isLoading:boolean;
-  selected:string;
-}
-
-interface iArticle{
-  excerpt:string;
-  handle:string;
-  id:string;
-  image:{
-    url:string;
-  }
-  title:string;
-  tags:string[];
 }
 
 const BlogsSection:React.FC<BlogsSectionProps> = ({renderAmount,paginationLimit, articles, isLoading,selected}) =>{
@@ -129,38 +103,38 @@ const BlogsSection:React.FC<BlogsSectionProps> = ({renderAmount,paginationLimit,
                   <>
                     {article.tags.filter((tag)=>tag === selected).length === 0 ? 
                     <div className = "flex items-center max-w-xs mx-auto font-medium text-center md:col-span-2 lg:col-span-3 h-[50vh] text-2xl">
-                      We don&apos;t have any articles for this selected filter, pick another!
+                      No articles to display.
                     </div>
                     :
                     <>
                       {article.tags.includes(selected) && (
-                      <div className = "flex flex-row-reverse items-center flex-1 px-2 py-4 overflow-hidden rounded-md hover:bg-surface sm:items-start sm:flex-col gap-x-3 ">
-                          <div className = "relative flex items-center justify-center overflow-hidden bg-gray-200 rounded-md aspect-video sm:w-full w-52">
-                            <Link href = {`/blog/${article.handle}`}>
-                              <Image src = {article.image.url} layout = 'fill' className = "cursor-pointer select-none"/>
-                            </Link>
-                          </div>
-                          <div className = "mr-auto sm:pt-4">
-                            <Link href = {`/blog/${article.handle}`}>
-                              <h6 className = "font-medium cursor-pointer sm:text-lg xl:text-2xl md:text-xl w-max">{article.title}</h6>
-                            </Link>
-                            <p className = "max-w-sm text-sm sm:text-base xl:text-xl text-onBackground/60 md:text-lg">{article.excerpt}</p>
-                          </div>
-                        </div> 
+                      <div className = "flex flex-row-reverse items-center flex-1 px-2 py-4 overflow-hidden rounded-md sm:items-start sm:flex-col gap-x-3 ">
+                        <div className = "relative flex items-center justify-center overflow-hidden bg-gray-200 rounded-md aspect-video sm:w-full w-52">
+                          <Link href = {`/blog/${article.handle}`}>
+                            <Image src = {article.image.url} layout = 'fill' className = "cursor-pointer select-none"/>
+                          </Link>
+                        </div>
+                        <div className = "mr-auto sm:pt-4">
+                          <Link href = {`/blog/${article.handle}`}>
+                            <h6 className = "font-medium cursor-pointer sm:text-lg xl:text-2xl md:text-xl w-max">{article.title}</h6>
+                          </Link>
+                          <p className = "max-w-sm text-sm sm:text-base xl:text-xl text-onBackground/60 md:text-lg">{article.excerpt}</p>
+                        </div>
+                      </div> 
                       )}
                     </>
                     }
                   </>
                   :
-                  <div className = "flex flex-row-reverse items-center flex-1 px-2 py-4 overflow-hidden rounded-md hover:bg-surface sm:items-start sm:flex-col gap-x-3">
-                    <div className = "relative flex items-center justify-center overflow-hidden bg-gray-200 rounded-md aspect-video sm:w-full w-52">
+                  <div className = "flex flex-row-reverse items-center flex-1 px-2 py-4 overflow-hidden rounded-md sm:items-start md:flex-col gap-x-3">
+                    <div className = "relative flex items-center justify-center overflow-hidden bg-gray-200 rounded-md aspect-video md:w-full w-52">
                       <Link href = {`/blog/${article.handle}`}>
                         <Image src = {article.image.url} layout = 'fill' className = "cursor-pointer select-none"/>
                       </Link>
                     </div>
-                    <div className = "mr-auto sm:pt-4">
+                    <div className = "max-w-xs mr-auto sm:pt-4 sm:max-w-4xl">
                       <Link href = {`/blog/${article.handle}`}>
-                        <h6 className = "font-medium cursor-pointer sm:text-lg xl:text-2xl md:text-xl w-max">{article.title}</h6>
+                        <h6 className = "font-medium cursor-pointer sm:text-lg xl:text-2xl md:text-xl ">{article.title}</h6>
                       </Link>
                       <p className = "max-w-sm text-sm sm:text-base xl:text-xl text-onBackground/60 md:text-lg">{article.excerpt}</p>
                     </div>
@@ -175,13 +149,6 @@ const BlogsSection:React.FC<BlogsSectionProps> = ({renderAmount,paginationLimit,
       </div>
     </section>
   )
-}
-
-interface PaginationProps{
-  paginationLimit:Number;
-  currentPagination:Number;
-  handlePaginationClick: (params:Number) => void;
-  [key:string]:any;
 }
 
 const Pagination:React.FC<PaginationProps> = ({articles, paginationLimit, currentPagination, handlePaginationClick,}) =>{
@@ -220,4 +187,32 @@ export const getServerSideProps: GetServerSideProps = async (context)=>{
   pageProps["userData"] = userInformation || null
   pageProps["userAccess"] = cookies || null
   return {props:{pageProps:pageProps}}
+}
+
+interface FilterProps {
+  setSelected:React.Dispatch<React.SetStateAction<any>>,
+  selected:String,
+}
+interface BlogsSectionProps{
+  [key:string]:any;
+  renderAmount: number;
+  paginationLimit:number;
+  isLoading:boolean;
+  selected:string;
+}
+interface iArticle{
+  excerpt:string;
+  handle:string;
+  id:string;
+  image:{
+    url:string;
+  }
+  title:string;
+  tags:string[];
+}
+interface PaginationProps{
+  paginationLimit:Number;
+  currentPagination:Number;
+  handlePaginationClick: (params:Number) => void;
+  [key:string]:any;
 }
