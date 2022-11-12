@@ -103,7 +103,7 @@ const CollectionProducts = ({data,filters}) => {
       {/* DISPLAY PRODUCTS */}
       <div className = "w-full px-4 mx-auto max-w-7xl"> 
         <div className = "flex gap-10 mx-auto max-w-7xl">
-          <div className = "grid w-full h-full grid-cols-2 gap-10 pb-32 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-3" ref ={productsRef}>
+          <div className = "grid w-full h-full grid-cols-2 gap-10 pb-32 md:grid-cols-2 lg:grid-cols-3 sm:gap-10 xl:grid-cols-4" ref ={productsRef}>
           {isEmpty ? 
             <>
               <div className = "flex items-center justify-center w-full h-full grid-cols-1 py-16 sm:grid-cols-2 lg:col-span-3 ">
@@ -113,7 +113,7 @@ const CollectionProducts = ({data,filters}) => {
                 </div>
               </div>
               {data.collectionByHandle.products.nodes.map((product)=>(
-                <ProductCard product={product} data = {data.collectionByHandle.products} key = {product.title}/>
+                <ProductBox data={product}/>
               ))}
             </>
             :
@@ -137,7 +137,7 @@ const CollectionProducts = ({data,filters}) => {
                 </React.Fragment>
               ))}
               {displayAmount < data.collectionByHandle.products.nodes.length && (
-                <div className = "w-full col-span-2">
+                <div className = "w-full col-span-2 lg:col-span-3 xl:col-span-4">
                   <Button 
                     text = 'Load more' 
                     CSS = 'w-max px-4 py-2 bg-secondaryVariant hover:bg-secondary text-onSecondary mx-auto'
@@ -177,7 +177,7 @@ function ProductBox({data}){
             <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill' objectFit='cover'/>
           </Link>
           {coupon && (
-            <div className = "absolute inset-0 flex items-end justify-start">
+            <div className = "absolute inset-0 flex items-end justify-start pointer-events-none">
               <p className = "text-xs font-medium bg-primaryVariant2 text-white w-max px-2 py-0.5 rounded-sm">%{coupon.discountAmount} coupon</p>
             </div>
           )}

@@ -132,7 +132,7 @@ function CollectionProduct({data,index}){
             <Image src = {data.media.nodes[0].previewImage.url} layout = 'fill' objectFit='cover'/>
           </Link>
           {coupon && (
-            <div className = "absolute inset-0 flex items-end justify-start">
+            <div className = "absolute inset-0 flex items-end justify-start pointer-events-none">
               <p className = "text-xs font-medium bg-primaryVariant2 text-white w-max px-2 py-0.5 rounded-sm">%{coupon.discountAmount} coupon</p>
             </div>
           )}
