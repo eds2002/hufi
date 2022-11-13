@@ -113,7 +113,10 @@ const CollectionProducts = ({data,filters}) => {
                 </div>
               </div>
               {data.collectionByHandle.products.nodes.map((product)=>(
-                <ProductBox data={product}/>
+                <ProductBox 
+                  data={product}
+                  key = {product.handle}
+                />
               ))}
             </>
             :
