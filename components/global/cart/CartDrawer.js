@@ -400,7 +400,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                   </div>
                   <div className = "flex flex-col items-center justify-center pb-8">
                     <Link href = {cartData?.checkoutUrl || ''}>
-                      <Button text = {`Checkout (${totalItems} items)`} className = "w-full checkout-button bg-secondaryVariant hover:bg-secondary"/>
+                      <Button 
+                        text = {`Checkout (${totalItems} items)`} 
+                        className = "w-full checkout-button bg-secondaryVariant hover:bg-secondary"
+                        tag={'checkout-button'}
+                      />
                     </Link>
                     {!currentUser && 
                       <span className = "mt-2 text-xs text-neutral-400">Free shipping on orders over $75.</span>
