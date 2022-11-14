@@ -15,6 +15,8 @@ import { useMemo } from 'react'
 import Head from 'next/head'
 import CartContext from '../../context/cartContext'
 import {addToShopifyCart} from '../../utils/addToShopifyCart'
+import { storefront } from '../../utils/storefront'
+import { updateCustomer } from '../../graphql/mutations/customer/updateCustomer'
 
 export default function Profile({pageProps}){
   const {currentUser,setCurrentUser} = useContext(UserContext)
@@ -57,7 +59,7 @@ export default function Profile({pageProps}){
         </div>
       </section>
       {tab === "tab=profile" && (
-        <ProfileTab currentUser = {currentUser} />
+        <ProfileTab currentUser = {currentUser} accessToken = {pageProps?.userAccess}/>
       )}
       {tab === 'tab=orders' && (
         <OrdersTab currentUser={currentUser}/>
@@ -69,20 +71,49 @@ export default function Profile({pageProps}){
 
 
 
-const ProfileTab = ({currentUser}) =>{
+const ProfileTab = ({currentUser,accessToken}) =>{
   const [checked,setChecked] = useState(currentUser?.acceptsMarketing)
   const [values, setValues] = useState({})
   const [confirmModal,setConfirmModal] = useState(false)
+  const [savingMessage,setSavingMessage] = useState('Save')
+  const {setCurrentUser} = useContext(UserContext)
 
 
   const onChange =  (e) =>{
     setValues({...values, [e.target.name]: e.target.value})
   }
-  const handleDeleteAccount = () =>{ 
-    // handle deleting account
-    // Send email to support@hufistore.com to request accoutn deletion
-    setConfirmModal(false)
+
+  const handleFormValidation = async () =>{
+    if(Object.keys(values).length === 0) return
+    if(values.firstName === currentUser?.firstName || values.firstName === "") return
+    if(values?.lastName === currentUser?.lastName || values?.lastName === "") return
+    if(values?.email === currentUser?.email || values?.email === "") return
+
+    setSavingMessage('Saving...')
+    const {data,errors} = await storefront(updateCustomer,{
+      customer:{
+        acceptsMarketing:checked, 
+        email: values?.email ?? currentUser.email, 
+        firstName: values?.firstName ?? currentUser.firstName, 
+        lastName: values.lastName ?? currentUser.lastName 
+      },
+      customerAccessToken: accessToken,
+    })
+
+    if(data.customerUpdate.customerUserErrors.length === 0){
+      setSavingMessage('Saved')
+      const userRef = currentUser
+      userRef.firstName = values.firstName ?? currentUser?.firstName
+      userRef.lastName = values.lastName ?? currentUser?.lastName
+      userRef.email = values.email ?? currentUser?.email
+      setValues({})
+    }else{
+      setSavingMessage('Save')
+    }
   }
+
+
+
   return(
     <section className = "py-24">
    <div className = "flex flex-col gap-6 px-4 mx-auto max-w-7xl md:flex-row">
@@ -94,16 +125,37 @@ const ProfileTab = ({currentUser}) =>{
         <div className = "flex flex-col items-center justify-between w-full md:gap-6 md:flex-row">
           <div className = "w-full">
             <p className = "mb-0 font-medium text-onBackground/60">First name</p>
-            <Input type = 'text' placeHolder = {currentUser?.firstName} onChange = {onChange} />
+            <Input 
+              name = "firstName" 
+              type = 'text' 
+              placeHolder = {currentUser?.firstName} 
+              onChange = {onChange}
+              value = {values?.firstName ?? ''}
+              error = {values.firstName === currentUser?.firstName ? true : values.firstName === "" ? true : false}
+            />
           </div>
           <div className = "w-full">
             <p className = "mb-0 font-medium text-onBackground/60">Last name</p>
-            <Input type = 'text' placeHolder = {currentUser?.lastName} onChange = {onChange}/>
+            <Input 
+              type = 'text' 
+              name = "lastName" 
+              placeHolder = {currentUser?.lastName} 
+              onChange = {onChange}
+              value = {values?.lastName ?? ''}
+              error = {values.lastName === currentUser?.lastName ? true : values.lastName === "" ? true : false}
+            />
           </div>
         </div>
         <div>
           <p className = "mb-0 font-medium text-onBackground/60">Email</p>
-          <Input type = 'text' placeHolder = {currentUser?.email} onChange = {onChange}/>
+          <Input 
+            name = "email" 
+            type = 'email' 
+            placeHolder = {currentUser?.email} 
+            onChange = {onChange}
+            value = {values?.email ?? ''}
+            error = {values.email === currentUser?.email ? true : values.email === "" ? true : false}
+          />
         </div>
         <div className="flex items-center justify-start">
             <label class="inline-flex relative items-center mr-5 cursor-pointer">
@@ -116,13 +168,36 @@ const ProfileTab = ({currentUser}) =>{
             </label>
             <p className = "max-w-sm text-sm">Receive news on new upcoming projects, and occasional discounts?</p>
         </div>
-        <div className = "mt-10">
-          <Button text = 'Request account deletion.' onClick = {()=>setConfirmModal(!confirmModal)}/>
+        <div className = "flex items-center justify-start mt-10 gap-x-4">
+          <Button 
+            text = {savingMessage} 
+            onClick = {()=>handleFormValidation(true)} 
+            CSS = "px-6 py-2 w-max bg-secondaryVariant hover:bg-secondary text-onSecondary"
+          />
+          <p 
+            className = "text-xs cursor-pointer sm:text-sm"
+            onClick = {()=>setConfirmModal(true)}
+          >Request account deletion</p>
         </div>
       </div>
     </div>
+    <DeleteAccountModal 
+      confirmModal={confirmModal}
+      setConfirmModal={setConfirmModal}
+    />
+  </section>
+  )
+}
+
+function DeleteAccountModal({confirmModal,setConfirmModal}){
+  const handleDeleteAccount = () =>{ 
+    // handle deleting account
+    // Send email to support@hufistore.com to request accoutn deletion
+    setConfirmModal(false)
+  }
+  return(
     <Transition appear show={confirmModal} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={()=>setConfirmModal(false)}>
+        <Dialog as="div" className="relative z-[999999999999999999]" onClose={()=>setConfirmModal(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -173,10 +248,39 @@ const ProfileTab = ({currentUser}) =>{
             </div>
           </div>
         </Dialog>
-      </Transition>
-  </section>
+    </Transition>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const OrdersTab = ({currentUser})=>{
   const {locale} = useContext(LocaleContext)
@@ -405,6 +509,7 @@ function OrderProduct({product,order,setViewOrder}){
     </div>
   )
 }
+
 
 
 export { default as getServerSideProps } from '../../utils/getServerSideProps'
