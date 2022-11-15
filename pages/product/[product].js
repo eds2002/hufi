@@ -75,6 +75,9 @@ const Product = ({productData,pageProps,productRecommendations})=>{
 
     hotjar.event('button-click')
 
+    // Update SPA state
+    hotjar.stateChange('/my/page');
+
     if(hotjar.initialized()){
       hotjar.identify('USER_ID',{userProperty:'value'})
     }

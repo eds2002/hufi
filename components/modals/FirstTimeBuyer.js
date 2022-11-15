@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import Image from 'next/image'
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment} from 'react'
 import firstTime from '../../assets/firstTimeBuyer.svg'
 import signedInFirstTime from '../../assets/signedInFirstTimeBuyer.svg'
 import { Button, Input } from '../elements'

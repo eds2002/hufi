@@ -45,7 +45,7 @@ query Product($handle: String!) {
       }
     }
     descriptionHtml
-    media(first: 5) {
+    media(first: 50) {
       nodes{
         ...on MediaImage{
           image{

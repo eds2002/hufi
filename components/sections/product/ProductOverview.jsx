@@ -20,9 +20,8 @@ import { BookOpenIcon } from '@heroicons/react/24/outline'
 
 
 export default function ProductOverview({data,compRef,reviews,crossSell}) {
-  const {locale} = useContext(LocaleContext)
-  const {cartData,setCartData,viewedCart, setViewedCart,setOpenCart} = useContext(CartContext)
-  const {selectedProduct,setSelectedProduct} = useContext(ProductContext)
+  const {cartData,setCartData, setViewedCart,setOpenCart} = useContext(CartContext)
+  const {setSelectedProduct} = useContext(ProductContext)
 
 
   const [selectedOption, setSelectedOption] = useState(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
@@ -34,10 +33,9 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
   const [secureTransactionModal, setSecureTransactionModal] = useState(false)
   const [refundsModal,setRefundsModal] = useState(false)
   const [openReviewsModal, setOpenReviewsModal] = useState(false)
-  const didMount = useRef(false)
   let imageRef = useRef([])
-
-
+  
+  
   // TODO, reset to default once the data changes.
   useEffect(()=>{
     setSelectedOption(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
@@ -53,7 +51,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
   // TODO, this is for the sticky cart
   setSelectedProduct(selectedOption)
   
-
+  
   // FUNCTION TODO, change old array to new array with a value the user has selected
   const handleVariantChange = async (option,selectedValue) =>{
     if(!soldOutItems.includes(selectedValue)){
@@ -62,16 +60,17 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
           if(obj.name === option){
             return {...obj, value:selectedValue}
           }
-  
+          
           return obj
         })
         return newArr
       })
     }
   }
-
-
+  
+  
   // TODO, sets the current image to the variant selected image
+  const didMount = useRef(false)
   useEffect(()=>{
     if(!didMount.current){
       didMount.current = true
@@ -144,10 +143,15 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
           <div className="pb-24">
             <div className="max-w-2xl mx-auto sm:mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
-                <ImageCarousel data = {data} imageRef = {imageRef} currentVariant = {currentVariant}/>
+                <ImageCarousel 
+                  data = {data} 
+                  imageRef = {imageRef} 
+                  currentVariant = {currentVariant}
+                  selectedOption = {selectedOption}
+                />
 
                 {/* RIGHT SIDE */}
-                <div className = "col-span-4">
+                <div className = "col-span-4 ">
                   <div className = "sticky top-[104px]">
                     <ProductHeading data = {data} price = {price}/>
                     <CouponComponent data = {data} selectedOption = {selectedOption}/>
@@ -203,13 +207,47 @@ function Perks({setSecureTransactionModal}){
   )
 }
 
-function ImageCarousel({data, imageRef, currentVariant}){
+function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
   const [imagePos,setImagePos] = useState(0)
-  const [amountOfDots] = useState(data.product.media.nodes)
   const [expandImage, setExpandImage] = useState(false)
-  const [expandType,setExpandType] = useState("Photos")
   const [expandPos,setExpandPos] = useState(0)
-  const containerRef = useRef()
+  const [imagesBasedOnSelected,setImagesBasedOnSelected] = useState(null)
+  const containerRef = useRef() 
+  
+  useEffect(()=>{
+  
+    // Get the selected variants values 
+    const filterImagesByValues = selectedOption.map(variants=>variants.value.toLowerCase())
+    filterImagesByValues.push('all')
+
+
+    // Map through images alt text and only return the ones that have a value 
+    // that is in the filterImagesByValues array
+
+    const imagesBasedOnSelectedVariant = data.product.media.nodes.map((media)=>{
+      if(media?.image){
+        if(!media?.image?.altText) return
+  
+        
+        if(filterImagesByValues.includes(media.image.altText.split(":")[1])){
+          return media
+        }
+      }else{
+        if(media?.previewImage){
+          if(!media.previewImage?.altText) return
+  
+          
+          if(filterImagesByValues.includes(media.previewImage?.altText.split(":")[1])){
+            return media
+          }
+        }
+      }
+    })
+    // Filter the undefined values
+    .filter((val)=>val != undefined)
+    setImagesBasedOnSelected(imagesBasedOnSelectedVariant)
+    
+  },[selectedOption])
 
   // Figure out the current position of image, only set the image pos when number is a whole number.
   const handleScroll = useCallback(()=>{
@@ -221,18 +259,15 @@ function ImageCarousel({data, imageRef, currentVariant}){
   useEffect(()=>{
     (async ()=>{
       try{
-        // TODO, wait a second for setting the scroll position.
-        // Ref doesn't load fast enough to scroll
-        await new Promise((resolve)=>setTimeout(() => {
-          resolve();
-        }, 5)); 
-        containerRef.current.scrollLeft = expandPos * containerRef.current.clientWidth
+        containerRef.current.scrollLeft = expandPos * containerRef?.current?.clientWidth
       }catch(e){
-        (e)
+        console.log(e)
       }
     })()
   },[expandPos, containerRef.current])
 
+
+  // Scrolls back to the beginning when image is 
   useEffect(()=>{
     imageRef.current.scrollLeft = imagePos * imageRef.current.clientWidth
   },[imagePos])
@@ -243,16 +278,16 @@ function ImageCarousel({data, imageRef, currentVariant}){
     div.addEventListener("scroll",handleScroll)
   },[handleScroll])
 
-  const handleExpandClick = (filterType,index) =>{
-    setExpandType(filterType)
+  const handleExpandClick = (index) =>{
     setExpandPos(index)
     setExpandImage(true)
   }
 
 
+
   return(
     <>
-      <div className="relative col-span-8">
+      <div className="relative col-span-7">
         <h2 className="sr-only">Images</h2>
         <div 
           className={`
@@ -260,68 +295,181 @@ function ImageCarousel({data, imageRef, currentVariant}){
             lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer w-full h-full`} 
           ref = {imageRef}
         >
-          {data.product?.media?.nodes?.map((media,index)=>(
-            <React.Fragment key = {index}>
-              {media?.image ? 
-                <div 
-                  className = {`
-                  ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
-                    relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
-                  `}
-                  key = {index}
-                  onClick = {()=>handleExpandClick("Photos",index)}
-                >
-                  <Image 
-                    src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
-                    layout='fill' 
-                    objectFit='contain' 
-                  />
-                </div>
-              :
-                <div 
-                  className = {`
-                  ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                    relative w-full overflow-hidden snap-center md:rounded-md h-full  bg-black
-                  `}
-                  key = {index}
-                  onClick = {()=>handleExpandClick("Videos",index)}
-                >
-                  <Image
-                    className = "object-contain w-full h-full"
-                    src = {media?.previewImage?.url}
-                    layout='fill'
-                    priority = {index === 0 ? true : false}
-                  />
-                  <div className = "absolute inset-0 z-20 flex items-center justify-center ">
-                    <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
-                      <PlayIcon className = "w-8 h-8 text-secondary"/>
-                    </div>
-                  </div>
-                </div>
+          {imagesBasedOnSelected?.length === 0 || !imagesBasedOnSelected ? 
+            <>
+              {data.product.media.nodes.filter((media)=>{
+                if(media?.image){
+                  if(media.image.altText) return media
+                }
+                if(media?.previewImage){
+                  if(media.previewImage.altText) return media
+                }
+              }).map((media,index)=>(
+                <React.Fragment key = {index}>
+                  {index < 10 && (
+                    <>
+                      {media?.image ? 
+                        <div 
+                          className = {`
+                          ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
+                            relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
+                            ${index >= 5 && ('lg:hidden')}
+                          `}
+                          key = {index}
+                          onClick = {()=>handleExpandClick(index)}
+                        >
+                          <Image 
+                            src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
+                            layout='fill' 
+                            objectFit='contain' 
+                          />
+                        </div>
+                      :
+                        <div 
+                          className = {`
+                          ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
+                            relative w-full overflow-hidden snap-center md:rounded-md h-full  bg-black
+                          `}
+                          key = {index}
+                          onClick = {()=>handleExpandClick(index)}
+                        >
+                          <Image
+                            className = "object-contain w-full h-full"
+                            src = {media?.previewImage?.url}
+                            layout='fill'
+                            priority = {index === 0 ? true : false}
+                          />
+                          <div className = "absolute inset-0 z-20 flex items-center justify-center ">
+                            <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
+                              <PlayIcon className = "w-8 h-8 text-secondary"/>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </>
+                  )}
+                </React.Fragment>
+              ))
               }
-            </React.Fragment>
-          ))}
+              
+            </>
+            :
+            <>
+              {imagesBasedOnSelected?.map((media,index)=>(
+                <React.Fragment key = {index}>
+                  {index < 10 && (
+                    <>
+                    {media?.image ? 
+                      <div 
+                        className = {`
+                        ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
+                        ${index >= 5 && ('lg:hidden')}
+                          relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
+
+                        `}
+                        key = {index}
+                        onClick = {()=>handleExpandClick(index)}
+                      >
+                        <Image 
+                          src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
+                          layout='fill' 
+                          objectFit='contain' 
+                        />
+                      </div>
+                    :
+                      <div 
+                        className = {`
+                        ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
+                        ${index >= 5 && ('lg:hidden')}
+                          relative w-full overflow-hidden snap-center md:rounded-md h-full  bg-black
+                        `}
+                        key = {index}
+                        onClick = {()=>handleExpandClick(index)}
+                      >
+                        <Image
+                          className = "object-contain w-full h-full"
+                          src = {media?.previewImage?.url}
+                          layout='fill'
+                          priority = {index === 0 ? true : false}
+                        />
+                        <div className = "absolute inset-0 z-20 flex items-center justify-center ">
+                          <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
+                            <PlayIcon className = "w-8 h-8 text-secondary"/>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    </>
+                  )}
+                </React.Fragment>
+              ))}
+            </>
+          }
+
+
+
         </div>
         <div className = "absolute bottom-0 left-0 right-0 flex items-center justify-center mb-4 lg:hidden">
           <div className = "flex items-center p-2 rounded-full cursor-pointer bg-black/25 backdrop-blur-xl gap-x-1.5">
-            {amountOfDots.map((v,index)=>(
-              <>
-                {v.image && (
-                  <div 
-                    key = {index}
-                    className = {`w-2 h-2  ${index == imagePos ? 'bg-white' : 'bg-white/30'} rounded-full transition-colors`}  
-                    onClick = {()=>setImagePos(index)}
-                  />
-                )}
-                {v.sources && (
-                  <PlayIcon 
-                    key = {index}
-                    className = {`w-3 h-3 -mx-0.5 ${index == imagePos ? 'text-white' : 'text-white/30'}  transition-colors`}
-                    onClick = {()=>setImagePos(index)}
-                  />
-                )}
-              </>
-            ))}
+            {!imagesBasedOnSelected || imagesBasedOnSelected.length === 0 ?
+            <>
+              {data.product.media.nodes.filter((media)=>{
+                if(media?.image){
+                  if(media.image.altText) return media
+                }
+                if(media?.previewImage){
+                  if(media.previewImage.altText) return media
+                }
+              }).map((v,index)=>(
+                <React.Fragment key = {index}>
+                  {index < 10 && (
+                    <>
+                      {v.image && (
+                        <div 
+                          key = {index}
+                          className = {`w-2 h-2  ${index == imagePos ? 'bg-white' : 'bg-white/30'} rounded-full transition-colors`}  
+                          onClick = {()=>setImagePos(index)}
+                        />
+                      )}
+                      {v.sources && (
+                        <PlayIcon 
+                          key = {index}
+                          className = {`w-3 h-3 -mx-0.5 ${index == imagePos ? 'text-white' : 'text-white/30'}  transition-colors`}
+                          onClick = {()=>setImagePos(index)}
+                        />
+                      )}
+                    </>
+                  )}
+                </React.Fragment>
+              ))
+              }
+            </>
+            :
+            <>
+              {imagesBasedOnSelected.map((v,index)=>(
+                <React.Fragment key = {index}>
+                  {index < 10 && (
+                    <>
+                      {v.image && (
+                        <div 
+                          key = {index}
+                          className = {`w-2 h-2  ${index == imagePos ? 'bg-white' : 'bg-white/30'} rounded-full transition-colors`}  
+                          onClick = {()=>setImagePos(index)}
+                        />
+                      )}
+                      {v.sources && (
+                        <PlayIcon 
+                          key = {index}
+                          className = {`w-3 h-3 -mx-0.5 ${index == imagePos ? 'text-white' : 'text-white/30'}  transition-colors`}
+                          onClick = {()=>setImagePos(index)}
+                        />
+                      )}
+                    </>
+                  )}
+                </React.Fragment>
+              ))}
+            </>
+            }
           </div>
         </div>
       </div>
