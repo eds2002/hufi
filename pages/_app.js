@@ -8,6 +8,7 @@ import TagManager from 'react-gtm-module'
 import { useEffect } from 'react'
 
 function MyApp({ Component, pageProps }) {
+  // Google Tag Manager
   useEffect(()=>{
     const gtmId = process.env.NEXT_PUBLIC_GTM_ID || ''
     const tagManagerArgs = {

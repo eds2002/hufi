@@ -25,6 +25,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-gtm-module": "^2.0.11",
+    "react-hotjar": "^5.2.0",
     "react-router-dom": "^6.4.1",
     "sitemap": "^7.1.1",
     "uuid": "^9.0.0"
