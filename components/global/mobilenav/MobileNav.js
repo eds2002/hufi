@@ -1,9 +1,15 @@
 import { Transition,Dialog,Tab } from "@headlessui/react"
-import React, { Fragment,useState } from "react"
+import React, { Fragment,useEffect,useState } from "react"
 import { XMarkIcon,UserCircleIcon,CubeIcon, ChatBubbleBottomCenterIcon,ArrowRightOnRectangleIcon,ChevronRightIcon,ChevronLeftIcon} from "@heroicons/react/24/outline"
 import Link from "next/link"
 import { slugify } from "../../../utils/slugify"
+import { useRouter } from "next/router"
 export default function MobileNav({open,setOpen,data,user}){
+  const router = useRouter()
+
+  useEffect(()=>{
+    setOpen(false)
+  },[router.asPath])
   return(
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
