@@ -6,8 +6,26 @@ import NextNProgress from "nextjs-progressbar";
 import { ProductProvider } from '../context/productContext'
 import TagManager from 'react-gtm-module'
 import { useEffect } from 'react'
+import {hotjar} from 'react-hotjar'
 
 function MyApp({ Component, pageProps }) {
+  // Use hotjar
+  useEffect(()=>{
+    hotjar.initialize(process.env.NEXT_PUBLIC_HJID,process.env.NEXT_PUBLIC_HSJV)
+
+    hotjar.identify('USER_ID',{userProperty:'value'})
+
+    hotjar.event('button-click')
+
+    // Update SPA state
+    hotjar.stateChange('/my/page');
+
+    if(hotjar.initialized()){
+      hotjar.identify('USER_ID',{userProperty:'value'})
+    }
+  },[])
+
+
   // Google Tag Manager
   useEffect(()=>{
     const gtmId = process.env.NEXT_PUBLIC_GTM_ID || ''

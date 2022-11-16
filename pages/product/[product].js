@@ -14,7 +14,6 @@ import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
 import { viewCollectionProducts } from "../../graphql/queries/viewCollectionProducts";
 import { productMetaTags } from "../../graphql/queries/productMetaTags";
-import { hotjar } from "react-hotjar";
 
 
 
@@ -63,25 +62,6 @@ const Product = ({productData,pageProps,productRecommendations})=>{
       setCrossSell(null)
     }
   },[productData.product.id])
-
-
-
-
-  // Use hotjar
-  useEffect(()=>{
-    hotjar.initialize(process.env.NEXT_PUBLIC_HJID,process.env.NEXT_PUBLIC_HSJV)
-
-    hotjar.identify('USER_ID',{userProperty:'value'})
-
-    hotjar.event('button-click')
-
-    // Update SPA state
-    hotjar.stateChange('/my/page');
-
-    if(hotjar.initialized()){
-      hotjar.identify('USER_ID',{userProperty:'value'})
-    }
-  },[])
 
 
   // Get the questions data
