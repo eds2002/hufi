@@ -292,7 +292,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
         <div 
           className={`
             grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer w-full h-full`} 
+            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer w-full h-full `} 
           ref = {imageRef}
         >
           {imagesBasedOnSelected?.length === 0 || !imagesBasedOnSelected ? 
@@ -312,8 +312,9 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
                         <div 
                           className = {`
                           ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
-                            relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
+                            relative w-full h-full overflow-hidden snap-center rounded-md aspect-square
                             ${index >= 5 && ('lg:hidden')}
+                            bg-neutral-100
                           `}
                           key = {index}
                           onClick = {()=>handleExpandClick(index)}
@@ -328,7 +329,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
                         <div 
                           className = {`
                           ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                            relative w-full overflow-hidden snap-center md:rounded-md h-full  bg-black
+                            relative w-full overflow-hidden snap-center rounded-md h-full  bg-black
                           `}
                           key = {index}
                           onClick = {()=>handleExpandClick(index)}
@@ -364,8 +365,8 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
                         className = {`
                         ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
                         ${index >= 5 && ('lg:hidden')}
-                          relative w-full h-full overflow-hidden snap-center md:rounded-md aspect-square 
-
+                          relative w-full h-full overflow-hidden snap-center rounded-md aspect-square 
+                          bg-neutral-100
                         `}
                         key = {index}
                         onClick = {()=>handleExpandClick(index)}
@@ -381,7 +382,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
                         className = {`
                         ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
                         ${index >= 5 && ('lg:hidden')}
-                          relative w-full overflow-hidden snap-center md:rounded-md h-full  bg-black
+                          relative w-full overflow-hidden snap-center rounded-md h-full  bg-black
                         `}
                         key = {index}
                         onClick = {()=>handleExpandClick(index)}

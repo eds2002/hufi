@@ -11,7 +11,6 @@ import { CartProduct } from ".."
 import hufiMemberSvg from '../../../assets/cartReminder.svg'
 import refundsSvg from '../../../assets/30dayrefunds.svg'
 import Image from "next/image"
-import { fetcher } from "../../../utils/fetcher"
 import { storefront } from "../../../utils/storefront"
 import { viewCollectionProducts } from "../../../graphql/queries/viewCollectionProducts"
 import { deliveredDate } from "../../../utils/deliveredDate"
@@ -176,11 +175,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                         {/* Hufi Rewards Member Banner */}
                         {/* Product Recommendations */}
                         {cartUpsell && (
-                          <div className = "px-4 py-6">
+                          <div className = "py-6 ">
                             <div className="sticky top-0 z-20 flex justify-between py-4 border-b bg-background border-b-secondary/10">
-                              <h3 className = "text-xl font-medium">{cartData?.lines?.edges?.length > 1 ? 'Related to items in your cart' : `More from ${cartData?.lines?.edges[0]?.node?.merchandise?.product?.collections?.nodes[0]?.title}`}</h3>
+                              <h3 className = "px-4 text-xl font-medium">{cartData?.lines?.edges?.length > 1 ? 'Related to items in your cart' : `More from ${cartData?.lines?.edges[0]?.node?.merchandise?.product?.collections?.nodes[0]?.title}`}</h3>
                             </div>
-                            <div className="w-full py-4 overflow-scroll scrollBar">
+                            <div className="w-full px-4 py-4 overflow-scroll scrollBar">
                               <div className = "grid grid-flow-col auto-cols-[50%] gap-5">
                                 {cartUpsell?.products?.nodes?.map((product)=>(
                                   <>
@@ -228,11 +227,11 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
 
                         {/* General Product recommendations */}
                         {cartUpsellRow2 && (
-                          <div className = "px-4 py-6">
+                          <div className = "py-6 ">
                           <div className="sticky top-0 z-20 flex justify-between py-4 border-b bg-background border-b-secondary/10">
-                              <h3 className = "text-xl font-medium">Discover more at Hufi</h3>
+                              <h3 className = "px-4 text-xl font-medium">Discover more at Hufi</h3>
                             </div>
-                            <div className="w-full py-4 overflow-scroll scrollBar">
+                            <div className="w-full px-4 py-4 overflow-scroll scrollBar">
                               <div className = "grid grid-flow-col auto-cols-[50%] gap-5">
                                 {cartUpsellRow2?.products?.nodes?.map((product)=>(
                                   <>
@@ -342,6 +341,8 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                             </div>
                           </div>
                         )}
+
+                        {/* Sign up banner */}
                         {!currentUser && (
                           <div className = "">
                             <div className = "flex items-center h-full p-4 bg-surface center gap-x-3">
