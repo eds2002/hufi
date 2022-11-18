@@ -1,7 +1,9 @@
 import Image from 'next/image'
 import React from 'react'
 
-const ProductBanner = ({data}) => {
+
+
+const ProductBanner:React.FC<{data:string;}> = ({data}) => {
   const dataJSON = data ? JSON.parse(data) : null 
   return (
     <>

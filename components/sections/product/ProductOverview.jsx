@@ -40,10 +40,8 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
   useEffect(()=>{
     setSelectedOption(data.product.options.map((option)=>{return({name:option.name,value:option.values[0]})}))
     setCurrentVariant(null)
-    didMount.current = false;
     imageRef.current.scrollLeft = 0
     setPrice(data?.product?.variants?.nodes[0].priceV2?.amount || 0)
-    return(()=>{})
   },[data?.product])
   
   
@@ -70,13 +68,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
   
   
   // TODO, sets the current image to the variant selected image
-  const didMount = useRef(false)
   useEffect(()=>{
-    if(!didMount.current){
-      didMount.current = true
-      return
-    }
-        
     let findId;
     const query = []
     
@@ -96,7 +88,6 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
     imageRef.current.scrollLeft = 0
     setCurrentVariant(data.product.variants.nodes[findId].image.url)
     setPrice(data.product.variants.nodes[findId].priceV2.amount)
-    return(()=>{})
   },[selectedOption])
 
 
@@ -278,8 +269,31 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
     div.addEventListener("scroll",handleScroll)
   },[handleScroll])
 
-  const handleExpandClick = (index) =>{
-    setExpandPos(index)
+  const handleExpandClick = (media) =>{
+    const newArr = data.product.media.nodes.filter((media)=>{
+      if(media?.image){
+        if(media.image.altText) return media
+      }
+      if(media?.previewImage){
+        if(media.previewImage.altText) return media
+      }
+    })
+    let id = 0;
+    if(media.image){
+      id = newArr.findIndex(({image,previewImage})=>{
+        if(image){
+          if(image.url === media.image.url) return true
+        }
+      })
+    }
+    if(media.previewImage){
+      id = newArr.findIndex(({image,previewImage})=>{
+        if(previewImage){
+          if(previewImage.url === media.previewImage.url) return true
+        }
+      })
+    }
+    setExpandPos(id)
     setExpandImage(true)
   }
 
@@ -312,34 +326,41 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
                         <div 
                           className = {`
                           ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
-                            relative w-full h-full overflow-hidden snap-center rounded-md aspect-square
+                            relative w-full h-full overflow-hidden snap-center sm:rounded-md aspect-square
                             ${index >= 5 && ('lg:hidden')}
                             bg-neutral-100
                           `}
                           key = {index}
-                          onClick = {()=>handleExpandClick(index)}
+                          onClick = {()=>handleExpandClick(media)}
                         >
                           <Image 
                             src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
                             layout='fill' 
                             objectFit='contain' 
+                            className = "z-[1]"
                           />
+                          <div className = "absolute inset-0 flex items-center justify-center text-[6em] font-extrabold text-neutral-300">
+                            Hufi.
+                          </div>
                         </div>
                       :
                         <div 
                           className = {`
                           ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
-                            relative w-full overflow-hidden snap-center rounded-md h-full  bg-black
+                            relative w-full overflow-hidden snap-center sm:rounded-md h-full  bg-black
                           `}
                           key = {index}
-                          onClick = {()=>handleExpandClick(index)}
+                          onClick = {()=>handleExpandClick(media)}
                         >
                           <Image
-                            className = "object-contain w-full h-full"
+                            className = "object-contain w-full h-full z-[1]"
                             src = {media?.previewImage?.url}
                             layout='fill'
                             priority = {index === 0 ? true : false}
                           />
+                          <div className = "absolute inset-0 flex items-center justify-center text-[6em] font-extrabold text-neutral-300">
+                            Hufi.
+                          </div>
                           <div className = "absolute inset-0 z-20 flex items-center justify-center ">
                             <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
                               <PlayIcon className = "w-8 h-8 text-secondary"/>
@@ -365,34 +386,41 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
                         className = {`
                         ${index === 0 ? ('lg:col-span-2 h-full w-full') :('lg:col-span-1 h-full w-full')}
                         ${index >= 5 && ('lg:hidden')}
-                          relative w-full h-full overflow-hidden snap-center rounded-md aspect-square 
+                          relative w-full h-full overflow-hidden snap-center sm:rounded-md aspect-square 
                           bg-neutral-100
                         `}
                         key = {index}
-                        onClick = {()=>handleExpandClick(index)}
+                        onClick = {()=>handleExpandClick(media)}
                       >
                         <Image 
                           src = {(currentVariant && index == 0) ? currentVariant : media?.image?.url} 
                           layout='fill' 
                           objectFit='contain' 
+                          className='z-[1]'
                         />
+                        <div className = "absolute inset-0 flex items-center justify-center text-[6em] font-extrabold text-neutral-300">
+                          Hufi.
+                        </div>
                       </div>
                     :
                       <div 
                         className = {`
                         ${index === 0 ? ('lg:col-span-2 w-full') :('lg:col-span-1')}
                         ${index >= 5 && ('lg:hidden')}
-                          relative w-full overflow-hidden snap-center rounded-md h-full  bg-black
+                          relative w-full overflow-hidden snap-center sm:rounded-md h-full  bg-black
                         `}
                         key = {index}
-                        onClick = {()=>handleExpandClick(index)}
+                        onClick = {()=>handleExpandClick(media)}
                       >
                         <Image
-                          className = "object-contain w-full h-full"
+                          className = "object-contain w-full h-full z-[1]"
                           src = {media?.previewImage?.url}
                           layout='fill'
                           priority = {index === 0 ? true : false}
                         />
+                        <div className = "absolute inset-0 flex items-center justify-center text-[6em] font-extrabold text-neutral-300">
+                          Hufi.
+                        </div>
                         <div className = "absolute inset-0 z-20 flex items-center justify-center ">
                           <div className = "flex items-center justify-center p-4 rounded-full shadow-xl bg-background backdrop-blur-md">
                             <PlayIcon className = "w-8 h-8 text-secondary"/>
@@ -410,7 +438,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
 
 
         </div>
-        <div className = "absolute bottom-0 left-0 right-0 flex items-center justify-center mb-4 lg:hidden">
+        <div className = "absolute bottom-0 left-0 right-0 flex items-center justify-center mb-4 lg:hidden z-[2]">
           <div className = "flex items-center p-2 rounded-full cursor-pointer bg-black/25 backdrop-blur-xl gap-x-1.5">
             {!imagesBasedOnSelected || imagesBasedOnSelected.length === 0 ?
             <>
@@ -633,6 +661,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
             {option.name != "Title" && (
               <h3 className = "flex items-center px-4 text-base font-medium gap-x-2 " id = {option.name}>
                 <span>{option.name}</span>
+                {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
                 {option.name === "Size" && (
                   <React.Fragment>
                     {data?.product?.sizeGuide?.value && (
@@ -644,7 +673,6 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                     )}
                   </React.Fragment>
                 )}
-                {/* <span className = "font-normal text-neutral-800">{selectedOption[selectedOption.findIndex(opt =>opt?.name === option.name)]?.value}</span> */}
               </h3>
             )}
     
@@ -663,7 +691,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                         : `${selectedOption.filter(opt =>opt.value === value).length > 0 
                           ? 'ring-primaryVariant bg-primary w-max' 
                           : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-md w-max`)}
-                      text-sm mt-1
+                      text-sm mt-1 relative flex items-center justify-center
                     `}
                     style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
                     onClick = {(e)=>handleVariantChange(option.name,value)}

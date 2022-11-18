@@ -17,13 +17,13 @@ const benefits = [
   },
 ]
 
-const ProductBenefits = () => {
+const ProductBenefits:React.FC = () => {
   return (
     <section className = "py-16 bg-surface/50">
       <div className = "px-4 mx-auto max-w-7xl">
         <h6 className = "text-3xl font-medium text-center">Good to know</h6>
         <div className = "flex flex-col gap-12 mt-10 lg:items-center lg:justify-center lg:flex-row">
-          {benefits.map((benefit)=>(
+          {benefits.map((benefit:{icon:string; title:string; paragraph:string})=>(
             <div 
               className = "flex flex-col items-center justify-center w-full h-full max-w-xs mx-auto text-center"
               key = {benefit.title}

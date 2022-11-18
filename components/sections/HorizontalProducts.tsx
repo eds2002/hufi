@@ -7,17 +7,73 @@ import Image from 'next/image'
 import { formatNumber } from '../../utils/formatNumber'
 
 
-export default function HorizontalProducts({data:{products},text}) {
-  const overflowRef = useRef()
+interface iProduct{
+  compareAtPriceRange:{
+    maxVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+    minVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+  }
+  handle:string;
+  id:string;
+  media:{
+    nodes:ProductImage[];
+  }
+  options:Array<{name:string; values:Array<string>}>
+  orderWithin:{
+    type:string;
+    value:string;
+  }
+  priceRange:{
+    maxVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+  }
+  shortDesc:{
+    type:string;
+    value:string;
+  }
+  title:string;
+  variants:{
+    nodes:Array<{
+      id:string; 
+      quantityAvailable:number;
+      selectedOptions:Array<{
+        name:string;
+        value:string;
+      }>
+    }>
+  }
+}
+
+interface ProductImage{
+  previewImage:{
+    originalSrc:string;
+    url:string;
+  }
+}
+
+
+const HorizontalProducts:React.FC<any> = ({data:{products},text}) => {
+  const overflowRef = useRef<HTMLDivElement>(null)
 
   const handleLeft = () =>{
-    if(overflowRef.current.scrollLeft === 0) return
-    overflowRef.current.scrollLeft = overflowRef.current.scrollLeft - overflowRef.current.clientWidth
+    if(overflowRef.current != null){
+      if(overflowRef?.current?.scrollLeft === 0) return
+      overflowRef.current.scrollLeft = overflowRef.current.scrollLeft - overflowRef.current.clientWidth
+    }
   }
 
 
   const handleRight = () =>{
-    overflowRef.current.scrollLeft = overflowRef.current.scrollLeft + overflowRef.current.clientWidth
+    if(overflowRef.current != null){
+      overflowRef.current.scrollLeft = overflowRef.current.scrollLeft + overflowRef.current.clientWidth
+    }
   }
 
   return (
@@ -41,7 +97,7 @@ export default function HorizontalProducts({data:{products},text}) {
         </div>
       </div>
       <div className="flex w-full mx-auto overflow-scroll max-w-7xl scrollBar flex-nowrap snap-x snap-mandatory " ref = {overflowRef}>
-        {products?.nodes?.map((product,key)=>(
+        {products?.nodes?.map((product:iProduct,key:number)=>(
           <div className = "px-4 snap-start" key = {key}>
           {key < 10 && (
             <CollectionProduct data={product} key = {key}/>
@@ -53,7 +109,58 @@ export default function HorizontalProducts({data:{products},text}) {
   )
 }
 
-function CollectionProduct({data,index}){
+
+interface iData{
+  data:{
+    compareAtPriceRange:{
+      maxVariantPrice:{
+        amount:string;
+        currencyCode:string;
+      }
+      minVariantPrice:{
+        amount:string;
+        currencyCode:string;
+      }
+    }
+    handle:string;
+    id:string;
+    media:{
+      nodes:ProductImage[];
+    }
+    options:Array<{name:string; values:Array<string>}>
+    orderWithin:{
+      type:string;
+      value:string;
+    }
+    priceRange:{
+      maxVariantPrice:{
+        amount:string;
+        currencyCode:string;
+      }
+    }
+    shortDesc:{
+      type:string;
+      value:string;
+    }
+    title:string;
+    variants:{
+      nodes:Array<{
+        id:string; 
+        quantityAvailable:number;
+        selectedOptions:Array<{
+          name:string;
+          value:string;
+        }>
+      }>
+    }
+    coupon?:{
+      type:string;
+      value:string;
+    }
+  }
+}
+
+function CollectionProduct({data}:iData){
   const {locale} = useContext(LocaleContext)
   const coupon = data?.coupon ? JSON.parse(data.coupon.value) : null
   return(
@@ -94,3 +201,5 @@ function CollectionProduct({data,index}){
     </div>
   )
 }
+
+export default HorizontalProducts

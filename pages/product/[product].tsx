@@ -14,18 +14,184 @@ import {db} from "../../firebase/app";
 import {collection, query, where, getDocs} from "firebase/firestore";
 import { viewCollectionProducts } from "../../graphql/queries/viewCollectionProducts";
 import { productMetaTags } from "../../graphql/queries/productMetaTags";
+import { GetServerSideProps, NextPage } from "next";
+
+
+// interface ProductProps{
+//   productData:;
+//   pageProps:;
+//   productRecommendations:;
+// }
+
+type ReviewsArr = {
+  country?: string;
+  createdAt: string;
+  edited: boolean;
+  id: string;
+  images: Array<string>;
+  product: string;
+  rating: number;
+  review: string;
+  reviewTitle:string;
+  reviewer:string;
+  reviwerId:string;
+  state?:string;
+}
+
+type QuestionsArr = {
+  answer?: string;
+  dateAnswered: Date;
+  dateAsked: Date;
+  id: string;
+  name: string;
+  product: string;
+  question: string;
+}
+
+interface iProductProps{
+  productData:any;
+  pageProps:any;
+  productRecommendations:any;
+}
+
+interface iProduct{
+  bannerImage?:any;
+  collections:{
+    nodes:Array<any>
+  }
+  compareAtPriceRange:{
+    maxVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+    minVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+  }
+  coupon?:{
+    type:string;
+    value:string;
+  }
+  crossSell?:{
+    type:string;
+    value:string;
+  }
+  deliveryBusinessDays?:{
+    type:string;
+    value:string;
+  }
+  descriptionHtml:string;
+  details?:{
+    type:string;
+    value:string;
+  }
+  faqs?:{
+    type:string;
+    value:string;
+  }
+  handle:string;
+  id:string;
+  learnmore?:{
+    type:string;
+    value:string;
+  }
+  media:{
+    nodes:Array<any>
+  }
+  mediaOne?:{
+    reference?:{
+      image:{
+        altText:string;
+        url:string;
+      }
+    }
+    type:string;
+    value:string;
+  }
+  mediaOneText?:{
+    type:string;
+    value:string;
+  }
+  mediaThree?:{
+    reference?:{
+      image:{
+        altText:string;
+        url:string;
+      }
+    }
+    type:string;
+    value:string;
+  }
+  mediaThreeText?:{
+    type:string;
+    value:string;
+  }
+  mediaTwo?:{
+    reference?:{
+      image:{
+        altText:string;
+        url:string;
+      }
+    }
+    type:string;
+    value:string;
+  }
+  mediaTwoText?:{
+    type:string;
+    value:string;
+  }
+  orderWithin?:{
+    type:string;
+    value:string;
+  }
+  priceRange:{
+    maxVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+    minVariantPrice:{
+      amount:string;
+      currencyCode:string;
+    }
+  }
+  seo:{
+    description:string;
+    title:string;
+  }
+  seoTags:{
+    value:string;
+    type:string;
+  }
+  shortDesc:{
+    value:string;
+    type:string;
+  }
+  sizeGuide:{
+    value:string;
+    type:string;
+  }
+  tags:Array<string>;
+  title:string;
+  totalInventory:number;
+  useCases:{
+    value:string;
+    type:string;
+  }
+}
 
 
 
 
-const Product = ({productData,pageProps,productRecommendations})=>{
+
+const Product:NextPage<iProductProps> = ({productData,pageProps,productRecommendations}:iProductProps)=>{
   const {setCurrentUser} = useContext(UserContext)
   setCurrentUser(pageProps?.userData?.customer)
   const [enableStickyCart, setEnableStickCart] = useState(false);
-  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter(product => product.title != productData.product.title)}})
-  const [crossSell, setCrossSell] = useState()
-  const [reviewsData, setReviewsData] = useState()
-  const [questionsData, setQuestionsData] = useState()
+  const [recommended,setRecommended] = useState({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter((product:iProduct) => product.title != productData.product.title)}})
+  const [crossSell, setCrossSell] = useState(null)
+  const [reviewsData, setReviewsData] = useState<ReviewsArr[]>([])
+  const [questionsData, setQuestionsData] = useState<QuestionsArr[]>([])
 
   const ref = useRef(null)
   const handleScroll = () => {
@@ -34,7 +200,7 @@ const Product = ({productData,pageProps,productRecommendations})=>{
   };
 
   useEffect(()=>{
-    setRecommended({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter(product => product.title != productData.product.title)}})
+    setRecommended({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter((product:iProduct) => product.title != productData.product.title)}})
   },[productData])
 
   useEffect(() => {
@@ -70,9 +236,9 @@ const Product = ({productData,pageProps,productRecommendations})=>{
     (async()=>{
       const q = query(collection(db, "questions"), where("product", "==",productData.product.id))
       const querySnapshot = await getDocs(q)
-      const questions = []
+      const questions:QuestionsArr[] = []
       querySnapshot.forEach(doc=>{
-        const data = doc.data()
+        const data = doc.data() as QuestionsArr
         data["id"] = doc.id
         questions.push(data)
       })
@@ -86,12 +252,30 @@ const Product = ({productData,pageProps,productRecommendations})=>{
       // Getting reviews from firebase.
       const q = query(collection(db, "reviews"), where("product", "==",productData?.product?.id))
       const querySnapshot = await getDocs(q)
-      const reviews = []
+
+      type ReviewsArr = {
+        country?: string;
+        createdAt: string;
+        edited: boolean;
+        id: string;
+        images: Array<string>;
+        product: string;
+        rating: number;
+        review: string;
+        reviewTitle:string;
+        reviewer:string;
+        reviwerId:string;
+        state?:string;
+      }
+
+      const reviews:ReviewsArr[] = []
       querySnapshot.forEach(doc=>{
-        const data = doc.data()
+        const data = doc.data() as ReviewsArr
         data["id"] = doc.id
         reviews.push(data)
       })
+
+    
       setReviewsData(reviews)
     })()
   },[productData])
@@ -155,11 +339,11 @@ const Product = ({productData,pageProps,productRecommendations})=>{
 }
 export default Product
 
-export async function getServerSideProps(context) {
+export const getServerSideProps:GetServerSideProps = async (context) => {
   try{
     // For layout
     const cookies = context?.req?.cookies?.userAccess
-    let pageProps = {}
+    let pageProps:Record<string,any> = {}
     const {data:headerData} = await storefront(viewMenu,{menuName:"main-menu"})
     const {data:footerData} = await storefront(viewMenu,{menuName:"footer"})
     const {data:userInformation} = await storefront(getCustomer,{token:cookies || "randomletters"})
@@ -170,7 +354,7 @@ export async function getServerSideProps(context) {
 
 
     // Fetching requested product
-    const { req, query:SSRQuery, res, asPath, pathname } = context;
+    const { query:SSRQuery } = context;
     const {data:product,errors} = await storefront(viewProductByHandle, {handle:SSRQuery.product})
 
     // Getting product recommendations
@@ -195,11 +379,10 @@ export async function getServerSideProps(context) {
       }
     }
   }catch(e){
-    console.log(e)
     return{
       redirect: {
         permanent: false,
-        destination: `/404?${e.code}`
+        destination: `/404?${e}`
       }
     }
   }
