@@ -312,7 +312,9 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
         <div 
           className={`
             grid grid-flow-col auto-cols-[100%] overflow-scroll snap-x snap-mandatory
-            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer w-full h-full `} 
+            lg:grid-flow-row  lg:grid-cols-2 lg:gap-8 scrollBar relative cursor-pointer w-full h-full 
+            select-none
+          `} 
           ref = {imageRef}
         >
           {imagesBasedOnSelected?.length === 0 || !imagesBasedOnSelected ? 
@@ -560,7 +562,7 @@ function CouponComponent({data,selectedOption}){
           <span>Coupon</span>
         </div>
         <div 
-          className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
+          className = {`w-4 h-4 border rounded-sm border-primaryVariant2 ${checked ? 'bg-primaryVariant2' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
           onClick = {()=>handleChecked()}
         >
           {checked && (
@@ -691,12 +693,12 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                     <p className = 
                     {`
                       ${option.name === "Color" 
-                      ? (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
+                      ? (`${soldOutItems?.includes(value) ? 'rounded-full cursor-default ' : `cursor-pointer h-6 w-6 rounded-full ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-onBackground ring-offset-[3px] ring-1' : 'ring-transparent'}`}`)
                       : (`${soldOutItems?.includes(value) 
-                        ? 'bg-gray-300 ring-black/60 cursor-default w-max' 
+                        ? 'bg-gray-300 ring-onBackground/60 cursor-default w-max' 
                         : `${selectedOption.filter(opt =>opt.value === value).length > 0 
-                          ? 'ring-primaryVariant bg-primary w-max' 
-                          : 'ring-neutral-400'}`} px-3 py-1 ring-2 cursor-pointer rounded-md w-max`)}
+                          ? 'ring-1 w-max ring-onBackground' 
+                          : 'ring-onBackground ring-opacity-20 ring-1'}`} px-3 py-1 cursor-pointer rounded-[4px] w-max`)}
                       text-sm mt-1 relative flex items-center justify-center
                     `}
                     style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}

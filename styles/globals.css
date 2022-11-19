@@ -49,7 +49,7 @@ a {
   display: inline-block;
   line-height: 16px;
   position: relative;
-  @apply select-none px-1 text-xs font-medium flex items-center justify-center rounded-bl-sm rounded-tl-sm bg-black text-onSecondary pr-2
+  @apply select-none px-1 text-xs font-medium flex items-center justify-center rounded-bl-sm rounded-tl-sm bg-primaryVariant2 text-white pr-2
 }
 
 .blockHead:after {

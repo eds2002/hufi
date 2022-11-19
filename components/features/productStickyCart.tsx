@@ -224,9 +224,7 @@ const ProductStickyCart:React.FC<iProductStickyCartProps> = ({data,display}) => 
         findId = arrayIndex
       }
     })
-
-    console.log(data.product.variants.nodes)
-    console.log(data.product.variants.nodes[findId])
+    
     return formatNumber(
       data.product.variants.nodes[findId].priceV2.amount, 
       data.product.variants.nodes[findId].priceV2.currencyCode, 
