@@ -21,16 +21,15 @@ const ProductReviews = ({data,reviews,questions}) => {
   const [displayReviews,setDisplayReviews] = useState(reviews ?? null)
   const [displayQuestions,setDisplayQuestions] = useState(questions ?? null)
   const [currentPagination,setCurrentPagination] = useState(1)
-  const [startFrom] = useState(1)
-  const [displayLimit] = useState(10)
   const [paginationArray,setPaginationArray] = useState(Array.from(Array(Math.ceil(displayReviews?.length || 1/ displayLimit || 1)).keys()))
   const [average,setAverage] = useState(0)
   const [expandImage,setExpandImage] = useState(false)
   const [selectedReview,setSelectedReview] = useState(null)
   const [currentTab,setCurrentTab] = useState("Reviews")
-  const {currentUser} = useContext(UserContext)
   const [reviewsFilter, setReviewsFilter] = useState(null)
   const [selectedMediaIndex,setSelectedMediaIndex] = useState(0)
+  const displayLimit = 10
+  const startFrom = 1
 
   // Sets the average of ratings & pagination amount for reviews
   useEffect(()=>{
@@ -69,23 +68,6 @@ const ProductReviews = ({data,reviews,questions}) => {
     setExpandImage(true)  
     setSelectedMediaIndex(mediaIndex)
   }
-  
-  const formatDate = (userDate,monthAdd) =>{
-    const num = monthAdd ?? 0
-  
-    const removeTime = new Date (new Date(userDate).toDateString())
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const month = new Date(removeTime).getMonth()
-    const day = new Date(removeTime).getDate()
-    const year = new Date(removeTime).getFullYear()
-    return {
-      month:months[month + num],
-      day:day,
-      year:year,
-    }
-  }
-
-
   
   return (
     <section className = "py-24 bg-background scroll-smooth" id = "reviews">
@@ -225,255 +207,24 @@ const ProductReviews = ({data,reviews,questions}) => {
 
         {/* Reviews */}
         {currentTab === "Reviews" && (
-          <>
-            {/* Review Button */}
-            {displayReviews?.length > 0 && (
-            <div className = "flex items-center justify-between">
-              {currentUser ? 
-                <Button 
-                  onClick = {()=>setOpenWriteReview(true)}
-                  text = 'Write a review' 
-                  CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
-                />
-              :
-              <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
-                <Button 
-                    onClick
-                    text = 'Write a review' 
-                    CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
-                  />
-              </Link>
-              }
-              <SortComponent setReviewsFilter = {setReviewsFilter}/>
-            </div>
-            )}
-            {displayReviews?.length > 0 ? 
-              <>
-                <div className = "divide-y">
-                  {displayReviews.map((review,index)=>(
-                    <React.Fragment key = {index}>
-                      {(index + 1 >= (startFrom + currentPagination * displayLimit - displayLimit) && (index+1 <= currentPagination * displayLimit))  && (
-                      <div className = "py-6">
-                        <div className = "flex justify-between">
-                          <div className = "relative flex gap-x-4">
-                            <div className = "relative bg-black rounded-full w-11 h-11">
-                              <div className = "inset-0 flex items-center justify-center h-full">
-                                <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
-                              </div>
-                              <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
-                                <CheckIcon className = "w-3 h-3 text-background"/>
-                              </div>
-                            </div>
-                            <p className = "flex flex-col items-start flex-1 w-full h-full gap-x-3">
-                              <span>{review.reviewer}</span>
-                              <StarsComponent starRating = {review.rating}/>
-                            </p>
-                          </div>
-                          <p className = "text-sm text-onBackground/25">{formatDate(review.createdAt).month} {formatDate(review.createdAt).day}, {formatDate(review.createdAt).year}</p>
-                        </div>
-                        <div className = "mt-4">
-                          <h3 className = "font-medium text-onSurface">{review.reviewTitle}</h3>
-                          <p className = "max-w-2xl mt-3 overflow-hidden text-onSurface/70 text-ellipsis">
-                            {review.review}
-                          </p>
-                          <div className = "mt-4">
-                            {review.images?.length > 0 && (
-                              <div className = "flex gap-x-3 ">
-                                {review.images.map((url,imageIndex)=>(
-                                  <React.Fragment key = {url}>
-                                  {url.includes(".mp4") ? 
-                                    <div className = "relative overflow-hidden rounded-md cursor-pointer pointer-events-none">
-                                      <div 
-                                        className = "absolute inset-0 z-10 flex items-center justify-center rounded-md pointer-events-none bg-black/25"
-                                      >
-                                        <div>
-                                          <PlayCircleIcon className = "text-white w-7 h-7"/>
-                                        </div>
-                                      </div>
-                                      <video 
-                                        className = "relative flex items-center justify-center object-cover rounded-md cursor-pointer pointer-events-auto w-14 h-14 bg-neutral-200"
-                                        onClick={()=>handleImageClick(index,imageIndex)}
-                                        preload = "metadata"
-                                      >
-                                        <source src = {`${url}#t=0.001`}/>
-                                      </video>
-                                    </div>
-                                  :
-                                    <div 
-                                      className = "relative overflow-hidden rounded-md cursor-pointer w-14 h-14" 
-                                      onClick={()=>handleImageClick(index,imageIndex)}
-                                    >
-                                      <Image src = {url} layout = 'fill'/>
-                                    </div>
-                                  }
-                                  </React.Fragment>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-
-                {/* Pagination */}
-                {displayReviews.length > displayLimit && (
-                  <div className = "flex items-center justify-center mt-12 gap-x-6">
-                    <p onClick = {()=>setCurrentPagination(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
-                      <ChevronLeftIcon className = "w-5 h-5 cursor-pointer"/>
-                    </p>
-                    <div className = "flex gap-x-1.5">
-                      {paginationArray.map((val)=>(
-                        <div className = "w-max" key = {val}>
-                          <p 
-                            className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
-                            onClick = {()=>setCurrentPagination(val+1)}
-                          >{val + 1}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <p onClick = {()=>setCurrentPagination(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
-                      <ChevronRightIcon className = "w-5 h-5 cursor-pointer"/>
-                    </p>
-                  </div>
-                )}
-              </>
-              :
-              <div className = "flex items-center justify-center py-40"> 
-                <div className = "">
-                  <p className = "max-w-sm text-2xl font-medium text-center">Hm, it&apos;s empty in here.</p>
-                  <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Be the first to review.</p>
-                  <div className = "flex items-center justify-center mx-auto w-max">          
-                  {currentUser ? 
-                    <Button 
-                      onClick = {()=>setOpenWriteReview(true)}
-                      text = 'Write a review' 
-                      CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                    />
-                  :
-                  <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
-                    <Button 
-                        onClick
-                        text = 'Write a review' 
-                        CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                      />
-                  </Link>
-                  }
-                  </div>
-                </div>
-              </div>
-            }
-          </>
+          <ReviewsTab
+            displayReviews = {displayReviews}
+            data = {data}
+            setReviewsFilter = {setReviewsFilter}
+            currentPagination = {currentPagination}
+            paginationArray = {paginationArray}
+            setCurrentPagination = {setCurrentPagination}
+            setOpenWriteReview={setOpenWriteReview}
+          />
         )}
 
 
         {/* Questions */}
         {currentTab === "Questions" && (
-          <>
-          {(displayQuestions?.length > 0 || displayQuestions.every(question => question.answer != "")) && (
-            <>
-              {currentUser ? 
-                <Button 
-                  onClick = {()=>setOpenWriteQuestion(true)}
-                  text = 'Ask a question' 
-                  CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
-                />
-              :
-              <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
-                <Button 
-                    onClick
-                    text = 'Ask a question' 
-                    CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
-                  />
-              </Link>
-              }
-            </>
-            )}
-
-          {displayQuestions?.length > 0 ? 
-            <>
-
-              {/* Display for admin accounts, allows admins to see quesitons that need answering. */}
-              <div>
-                {/* Checks if any questions are left unanswered for admin users. */}
-                {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
-
-                {displayQuestions?.map((question,index)=>(
-                  <React.Fragment key = {index}>
-                    {(question.answer === "" && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) &&
-                      <UnansweredQuestions question = {question}/>
-                    }
-                  </React.Fragment>
-                ))}
-              </div>
-
-              {/* For users that are not admins. */}
-              {/* If all questions have no answeres, display no questions */}
-              {/* Else display the questions that are answered. */}
-              {displayQuestions.every(question => question.answer === "") ? 
-              <div className = "flex items-center justify-center py-24"> 
-                <div className = "">
-                  <p className = "max-w-sm text-2xl font-medium text-center">Questions are currently being answered.</p>
-                  <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Ask another question?</p>
-                  <div className = "flex items-center justify-center mx-auto w-max">          
-                  {currentUser ? 
-                    <Button 
-                      onClick = {()=>setOpenWriteQuestion(true)}
-                      text = 'Ask a question' 
-                      CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                    />
-                  :
-                  <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
-                    <Button 
-                        onClick
-                        text = 'Ask a question' 
-                        CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                      />
-                  </Link>
-                  }
-                  </div>
-                </div>
-              </div>
-              :
-              <div className = "divide-y">
-                {displayQuestions?.map((question,key)=>(
-                  <React.Fragment key = {key}>
-                    {(question.answer != "" && (
-                      <AnsweredQuestions question = {question}/>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </div>
-              }
-            </>
-            :
-            <div className = "flex items-center justify-center py-40"> 
-              <div className = "">
-                  <p className = "max-w-sm text-2xl font-medium text-center">Curious about this product?</p>
-                  <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Be the first to ask away.</p>
-                <div className = "flex items-center justify-center mx-auto w-max">          
-                {currentUser ? 
-                  <Button 
-                    onClick = {()=>setOpenWriteQuestion(true)}
-                    text = 'Ask a question' 
-                    CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                  />
-                :
-                <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
-                  <Button 
-                      onClick
-                      text = 'Ask a question' 
-                      CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
-                    />
-                </Link>
-                }
-                </div>
-              </div>
-            </div>
-          }
-          </>
+          <QuestionsTab
+            displayQuestions={displayQuestions}
+            setOpenWriteQuestion={setOpenWriteQuestion}
+          />
         )}
 
       </div>
@@ -483,6 +234,287 @@ const ProductReviews = ({data,reviews,questions}) => {
     </section>
   )
 }
+
+
+function QuestionsTab({displayQuestions,setOpenWriteQuestion}){
+  const {currentUser} = useContext(UserContext)
+  return(
+    <>
+      {(displayQuestions?.length > 0 || displayQuestions.every(question => question.answer != "")) && (
+        <>
+          {currentUser ? 
+            <Button 
+              onClick = {()=>setOpenWriteQuestion(true)}
+              text = 'Ask a question' 
+              CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
+            />
+          :
+          <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
+            <Button 
+                onClick
+                text = 'Ask a question' 
+                CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
+              />
+          </Link>
+          }
+        </>
+        )}
+
+      {displayQuestions?.length > 0 ? 
+        <>
+
+          {/* Display for admin accounts, allows admins to see quesitons that need answering. */}
+          <div>
+            {/* Checks if any questions are left unanswered for admin users. */}
+            {(displayQuestions.some((question)=>question.answer === "") && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) && (<p className = "mt-10 text-2xl font-medium">Questions that require your attention.</p>)} 
+
+            {displayQuestions?.map((question,index)=>(
+              <React.Fragment key = {index}>
+                {(question.answer === "" && currentUser?.id === process.env.NEXT_PUBLIC_ADMIN_ID) &&
+                  <UnansweredQuestions question = {question}/>
+                }
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* For users that are not admins. */}
+          {/* If all questions have no answeres, display no questions */}
+          {/* Else display the questions that are answered. */}
+          {displayQuestions.every(question => question.answer === "") ? 
+          <div className = "flex items-center justify-center py-24"> 
+            <div className = "">
+              <p className = "max-w-sm text-2xl font-medium text-center">Questions are currently being answered.</p>
+              <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Ask another question?</p>
+              <div className = "flex items-center justify-center mx-auto w-max">          
+              {currentUser ? 
+                <Button 
+                  onClick = {()=>setOpenWriteQuestion(true)}
+                  text = 'Ask a question' 
+                  CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                />
+              :
+              <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
+                <Button 
+                    onClick
+                    text = 'Ask a question' 
+                    CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                  />
+              </Link>
+              }
+              </div>
+            </div>
+          </div>
+          :
+          <div className = "divide-y">
+            {displayQuestions?.map((question,key)=>(
+              <React.Fragment key = {key}>
+                {(question.answer != "" && (
+                  <AnsweredQuestions question = {question}/>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+          }
+        </>
+        :
+        <div className = "flex items-center justify-center py-40"> 
+          <div className = "">
+              <p className = "max-w-sm text-2xl font-medium text-center">Curious about this product?</p>
+              <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Be the first to ask away.</p>
+            <div className = "flex items-center justify-center mx-auto w-max">          
+            {currentUser ? 
+              <Button 
+                onClick = {()=>setOpenWriteQuestion(true)}
+                text = 'Ask a question' 
+                CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+              />
+            :
+            <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
+              <Button 
+                  onClick
+                  text = 'Ask a question' 
+                  CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                />
+            </Link>
+            }
+            </div>
+          </div>
+        </div>
+      }
+    </>
+  )
+}
+
+
+
+function ReviewsTab({displayReviews,data,setReviewsFilter,currentPagination,paginationArray,setCurrentPagination}){
+  const {currentUser} = useContext(UserContext)
+  const startFrom = 1
+  const displayLimit = 10
+  const formatDate = (userDate,monthAdd) =>{
+    const num = monthAdd ?? 0
+  
+    const removeTime = new Date (new Date(userDate).toDateString())
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const month = new Date(removeTime).getMonth()
+    const day = new Date(removeTime).getDate()
+    const year = new Date(removeTime).getFullYear()
+    return {
+      month:months[month + num],
+      day:day,
+      year:year,
+    }
+  }
+
+  useEffect(()=>{
+    document.getElementById("reviewsSection").scrollIntoView({behavior:'smooth',})
+  },[currentPagination])
+
+  return(
+    <div id = "reviewsSection">
+      {/* Review Button */}
+      {displayReviews?.length > 0 && (
+      <div className = "flex items-center justify-between">
+        {currentUser ? 
+          <Button 
+            onClick = {()=>setOpenWriteReview(true)}
+            text = 'Write a review' 
+            CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
+          />
+        :
+        <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
+          <Button 
+              onClick
+              text = 'Write a review' 
+              CSS = 'text-sm bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary py-2 w-max px-4 my-6' 
+            />
+        </Link>
+        }
+        <SortComponent setReviewsFilter = {setReviewsFilter}/>
+      </div>
+      )}
+      {displayReviews?.length > 0 ? 
+        <>
+          <div className = "divide-y">
+            {displayReviews.map((review,index)=>(
+              <React.Fragment key = {index}>
+                {(index + 1 >= (startFrom + currentPagination * displayLimit - displayLimit) && (index+1 <= currentPagination * displayLimit))  && (
+                <div className = "py-6">
+                  <div className = "flex justify-between">
+                    <div className = "relative flex gap-x-4">
+                      <div className = "relative bg-black rounded-full w-11 h-11">
+                        <div className = "inset-0 flex items-center justify-center h-full">
+                          <p className = "ml-1 text-2xl font-bold text-white">{review.reviewer.slice(0,1)}<span className = " text-primaryVariant">.</span></p>
+                        </div>
+                        <div className = "absolute flex items-center justify-center w-4 h-4 rounded-full -bottom-0.5 -right-0.5 bg-primaryVariant">
+                          <CheckIcon className = "w-3 h-3 text-background"/>
+                        </div>
+                      </div>
+                      <p className = "flex flex-col items-start flex-1 w-full h-full gap-x-3">
+                        <span>{review.reviewer}</span>
+                        <StarsComponent starRating = {review.rating}/>
+                      </p>
+                    </div>
+                    <p className = "text-sm text-onBackground/25">{formatDate(review.createdAt).month} {formatDate(review.createdAt).day}, {formatDate(review.createdAt).year}</p>
+                  </div>
+                  <div className = "mt-4">
+                    <h3 className = "font-medium text-onSurface">{review.reviewTitle}</h3>
+                    <p className = "max-w-2xl mt-3 overflow-hidden text-onSurface/70 text-ellipsis">
+                      {review.review}
+                    </p>
+                    <div className = "mt-4">
+                      {review.images?.length > 0 && (
+                        <div className = "flex gap-x-3 ">
+                          {review.images.map((url,imageIndex)=>(
+                            <React.Fragment key = {url}>
+                            {url.includes(".mp4") ? 
+                              <div className = "relative overflow-hidden rounded-md cursor-pointer pointer-events-none">
+                                <div 
+                                  className = "absolute inset-0 z-10 flex items-center justify-center rounded-md pointer-events-none bg-black/25"
+                                >
+                                  <div>
+                                    <PlayCircleIcon className = "text-white w-7 h-7"/>
+                                  </div>
+                                </div>
+                                <video 
+                                  className = "relative flex items-center justify-center object-cover rounded-md cursor-pointer pointer-events-auto w-14 h-14 bg-neutral-200"
+                                  onClick={()=>handleImageClick(index,imageIndex)}
+                                  preload = "metadata"
+                                >
+                                  <source src = {`${url}#t=0.001`}/>
+                                </video>
+                              </div>
+                            :
+                              <div 
+                                className = "relative overflow-hidden rounded-md cursor-pointer w-14 h-14" 
+                                onClick={()=>handleImageClick(index,imageIndex)}
+                              >
+                                <Image src = {url} layout = 'fill'/>
+                              </div>
+                            }
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {displayReviews.length > displayLimit && (
+            <div className = "flex items-center justify-center mt-12 gap-x-6">
+              <p onClick = {()=>setCurrentPagination(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
+                <ChevronLeftIcon className = "w-5 h-5 cursor-pointer"/>
+              </p>
+              <div className = "flex gap-x-1.5">
+                {paginationArray.map((val)=>(
+                  <div className = "w-max" key = {val}>
+                    <p 
+                      className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
+                      onClick = {()=>setCurrentPagination(val+1)}
+                    >{val + 1}</p>
+                  </div>
+                ))}
+              </div>
+              <p onClick = {()=>setCurrentPagination(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
+                <ChevronRightIcon className = "w-5 h-5 cursor-pointer"/>
+              </p>
+            </div>
+          )}
+        </>
+        :
+        <div className = "flex items-center justify-center py-40"> 
+          <div className = "">
+            <p className = "max-w-sm text-2xl font-medium text-center">Hm, it&apos;s empty in here.</p>
+            <p className = "max-w-sm mt-2 text-lg font-medium text-center mb-7 text-onBackground/60">Be the first to review.</p>
+            <div className = "flex items-center justify-center mx-auto w-max">          
+            {currentUser ? 
+              <Button 
+                onClick = {()=>setOpenWriteReview(true)}
+                text = 'Write a review' 
+                CSS = 'bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+              />
+            :
+            <Link href = {`/login?redirect=/product/${slugify(data.product.title)}`}>
+              <Button 
+                  onClick
+                  text = 'Write a review' 
+                  CSS = ' bg-secondaryVariant hover:bg-secondaryVariant text-onSecondary px-4 py-2' 
+                />
+            </Link>
+            }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  )
+}
+
 
 function SortComponent({setReviewsFilter}){
   const [open,setOpen] = useState(false)
@@ -605,6 +637,7 @@ function UnansweredQuestions({question}){
     </div>
   )
 }
+
 function AnsweredQuestions({question}){
   
   const formatDate = (userDate,monthAdd) =>{

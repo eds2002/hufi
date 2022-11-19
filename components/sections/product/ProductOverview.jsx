@@ -133,7 +133,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
           <div className="relative bg-background" id = "ProductOverview" ref = {compRef}>
             <div className="pb-24">
               <div className="max-w-2xl mx-auto sm:mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
-                <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
+                <div className="flex flex-col w-full h-full lg:grid lg:grid-cols-12">
                   <ImageCarousel 
                     data = {data} 
                     imageRef = {imageRef} 
@@ -243,6 +243,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
     // Filter the undefined values
     .filter((val)=>val != undefined)
     setImagesBasedOnSelected(imagesBasedOnSelectedVariant)
+    imageRef.current.scrollLeft = 0
     
   },[selectedOption])
 
@@ -268,6 +269,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
   useEffect(()=>{
     imageRef.current.scrollLeft = imagePos * imageRef.current.clientWidth
   },[imagePos])
+
 
 
   useEffect(()=>{
@@ -557,7 +559,7 @@ function CouponComponent({data,selectedOption}){
   return(
     <>
     {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
-      <div className = "flex items-center w-full px-4 mt-4 gap-x-3 ">
+      <div className = "flex items-center w-full px-4 mt-3 gap-x-3 ">
         <div className = "blockHead">
           <span>Coupon</span>
         </div>
@@ -661,7 +663,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
   const [sizeModal,setSizeModal] = useState(false)
   return(
     <>
-      <div className = "mt-4">
+      <div className = "mt-3">
         {data.product.options.map((option,index)=>(
           <div key = {index} className = "">
             {/* Options title */}
@@ -688,7 +690,7 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
             <div className = "flex flex-wrap items-center gap-3 px-4 overflow-x-scroll scrollBar">
               {/* TODO, avoid rendering products with no options / variants */}
               {option.name != "Title" && (
-                <div className = "flex items-center gap-3 px-1 mt-2 mb-4 md:flex-wrap">
+                <div className = "flex items-center gap-3 px-1 mb-4 md:flex-wrap">
                   {option.values.map((value,key)=>(
                     <p className = 
                     {`
