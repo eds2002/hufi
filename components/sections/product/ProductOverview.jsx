@@ -130,7 +130,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
     <>
       {data.product &&
         <section>
-          <div className="relative bg-background" ref = {compRef}>
+          <div className="relative bg-background" id = "ProductOverview" ref = {compRef}>
             <div className="pb-24">
               <div className="max-w-2xl mx-auto sm:mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
@@ -148,7 +148,7 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
                       <CouponComponent data = {data} selectedOption = {selectedOption}/>
                       <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
                       <GetItByComponent data = {data}/>
-                      <div className = "px-4 mt-4 mb-6" id = "buttonId">
+                      <div className = "px-4 mt-4 mb-6">
                         <Button 
                           className = "product-page-add-to-cart" 
                           text = {`Add to cart | ${formatNumber(price)}`}
