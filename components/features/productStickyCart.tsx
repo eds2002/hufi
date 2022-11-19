@@ -6,6 +6,7 @@ import CartContext from '../../context/cartContext'
 import LocaleContext from '../../context/localeContext'
 import {formatNumber} from '../../utils/formatNumber'
 import Image from 'next/image'
+import {CubeIcon} from '@heroicons/react/24/outline'
 
 interface iProduct{
   product:{
@@ -286,11 +287,11 @@ const ProductStickyCart:React.FC<iProductStickyCartProps> = ({data,display}) => 
           <p><span className = "text-sm text-onSurface/80">Buy for</span> <span className = "text-xl font-medium text-onBackground">{findPrice()}</span></p>
         </div>
         <div className = "flex items-center justify-between w-full gap-6 px-4 py-3 text-sm xl:text-base max-w-7xl">
-          <div className = "flex items-center flex-1 gap-3 overflow-scroll rounded-full scrollBar">
+          <div className = "flex items-center flex-1 gap-3 py-1 overflow-scroll rounded-full scrollBar">
             {benefits.map((benefit)=>(
               <div 
                 key = {benefit.title}
-                className = "px-4 py-0.5 bg-surface rounded-full  w-max gap-x-3 flex items-center pointer-events-none"
+                className = "flex items-center px-2 py-1 text-xs rounded-full pointer-events-none bg-surface w-max gap-x-3 sm:text-sm"
               >
                 <div className = "flex w-max">
                   <Image
@@ -299,7 +300,7 @@ const ProductStickyCart:React.FC<iProductStickyCartProps> = ({data,display}) => 
                     height={16}
                   />
                 </div>  
-                <p className = "text-sm whitespace-nowrap">{benefit.title}</p>
+                <p className = "whitespace-nowrap">{benefit.title}</p>
               </div>
             ))}
           </div>
