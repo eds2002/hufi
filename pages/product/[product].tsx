@@ -194,22 +194,21 @@ const Product:NextPage<iProductProps> = ({productData,pageProps,productRecommend
   const [questionsData, setQuestionsData] = useState<QuestionsArr[]>([])
 
   const ref = useRef(null)
-  const handleScroll = () => {
-      const position = window.pageYOffset;
-      setEnableStickCart(position > 1000);
-  };
-
+  
   useEffect(()=>{
     setRecommended({products:{nodes:productRecommendations?.collectionByHandle?.products?.nodes?.filter((product:iProduct) => product.title != productData.product.title)}})
   },[productData])
 
   useEffect(() => {
-      window.addEventListener('scroll', handleScroll, { passive: true });
+      const observer = new IntersectionObserver((entries:any) => {
+        entries.forEach((entry:IntersectionObserverEntry)=>{
+          setEnableStickCart(!entry.isIntersecting)
+        })
+      },{rootMargin:"0px",threshold:0})
 
-      return () => {
-          window.removeEventListener('scroll', handleScroll);
-      };
-  }, [productData.product]);
+      observer.observe(document.getElementById("productOverview")!)
+
+  },[productData.product]);
 
   // If meta tag cross sell contains values, query data for those values.
   useEffect(()=>{
@@ -290,7 +289,6 @@ const Product:NextPage<iProductProps> = ({productData,pageProps,productRecommend
       productData.product = {...productData.product, ...product.product}
     })()
   },[productData])
-
 
   return (
     <>

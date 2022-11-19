@@ -14,7 +14,6 @@ import Image from "next/image"
 import { storefront } from "../../../utils/storefront"
 import { viewCollectionProducts } from "../../../graphql/queries/viewCollectionProducts"
 import { deliveredDate } from "../../../utils/deliveredDate"
-import { slugify } from "../../../utils/slugify"
 import { addToShopifyCart } from "../../../utils/addToShopifyCart"
 import { useRouter } from "next/router"
 

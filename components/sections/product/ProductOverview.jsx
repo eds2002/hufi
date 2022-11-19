@@ -128,58 +128,64 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
 
   return (
     <>
-      {data.product ?  
-      <>
-        <div className="relative bg-background" ref = {compRef}>
-          <div className="pb-24">
-            <div className="max-w-2xl mx-auto sm:mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
-              <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
-                <ImageCarousel 
-                  data = {data} 
-                  imageRef = {imageRef} 
-                  currentVariant = {currentVariant}
-                  selectedOption = {selectedOption}
-                />
+      {data.product &&
+        <section id = "productOverview">
+          <div className="relative bg-background" ref = {compRef}>
+            <div className="pb-24">
+              <div className="max-w-2xl mx-auto sm:mt-8 sm:px-6 lg:max-w-7xl lg:px-8">
+                <div className="flex flex-col w-full h-full md:gap-10 lg:grid lg:grid-cols-12">
+                  <ImageCarousel 
+                    data = {data} 
+                    imageRef = {imageRef} 
+                    currentVariant = {currentVariant}
+                    selectedOption = {selectedOption}
+                  />
 
-                {/* RIGHT SIDE */}
-                <div className = "col-span-4 ">
-                  <div className = "sticky top-[104px]">
-                    <ProductHeading data = {data} price = {price}/>
-                    <CouponComponent data = {data} selectedOption = {selectedOption}/>
-                    <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
-                    <GetItByComponent data = {data}/>
-                    <div className = "px-4 mt-4 mb-6">
-                      <Button 
-                        className = "product-page-add-to-cart" 
-                        text = {`Add to cart | ${formatNumber(price)}`}
-                        onClick = {(e)=>addToCart(e)} 
-                        tag = {'product-page-add-to-cart'}
-                        CSS = {'py-4 bg-secondaryVariant hover:bg-secondary text-onSecondary'}
-                      />
-                    </div>
-                    <Description data = {data}/>
-                    <div className = "px-4">
-                      <ProductDetailsComponent data = {data.product.useCases}/>
-                      <DetailsComponent data = {data.product.details}/>
-                      <LearnMoreComponent data = {data.product.learnmore}/>
-                      <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
-                      <Perks setSecureTransactionModal = {setSecureTransactionModal}/>
-                      <CrossSellComponent data = {data} crossSell = {crossSell} selectedOption = {selectedOption}/>
+                  {/* RIGHT SIDE */}
+                  <div className = "col-span-4 ">
+                    <div className = "sticky top-[104px]">
+                      <ProductHeading data = {data} price = {price}/>
+                      <CouponComponent data = {data} selectedOption = {selectedOption}/>
+                      <ProductOptions data = {data} selectedOption = {selectedOption} setSelectedOption = {setSelectedOption} soldOutItems = {soldOutItems} handleVariantChange = {handleVariantChange}/>
+                      <GetItByComponent data = {data}/>
+                      <div className = "px-4 mt-4 mb-6">
+                        <Button 
+                          className = "product-page-add-to-cart" 
+                          text = {`Add to cart | ${formatNumber(price)}`}
+                          onClick = {(e)=>addToCart(e)} 
+                          tag = {'product-page-add-to-cart'}
+                          CSS = {'py-4 bg-secondaryVariant hover:bg-secondary text-onSecondary'}
+                        />
+                      </div>
+                      <Description data = {data}/>
+                      <div className = "px-4">
+                        <ProductDetailsComponent data = {data.product.useCases}/>
+                        <DetailsComponent data = {data.product.details}/>
+                        <LearnMoreComponent data = {data.product.learnmore}/>
+                        <ReviewsAccordian currentProduct = {data?.product?.title} data = {data} setOpenReviewsModal = {setOpenReviewsModal} reviews = {reviews}/>
+                        <Perks setSecureTransactionModal = {setSecureTransactionModal}/>
+                        <CrossSellComponent data = {data} crossSell = {crossSell} selectedOption = {selectedOption}/>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <SecureTransactions secureTransactionModal={secureTransactionModal} setSecureTransactionsModal = {setSecureTransactionModal}/>
-        <RefundsModal refundsModal={refundsModal} setRefundsModal = {setRefundsModal}/>
-        <ReviewsModal openReviewsModal = {openReviewsModal} setOpenReviewsModal = {setOpenReviewsModal} data = {data}/>
-      </>
-      :
-        <div>
-        
-        </div>
+          <SecureTransactions 
+            secureTransactionModal={secureTransactionModal} 
+            setSecureTransactionsModal={setSecureTransactionModal}
+          />
+          <RefundsModal 
+            refundsModal={refundsModal} 
+            setRefundsModal={setRefundsModal}
+          />  
+          <ReviewsModal 
+            openReviewsModal={openReviewsModal} 
+            setOpenReviewsModal={setOpenReviewsModal} 
+            data={data}
+          />
+        </section>
       }
     </>
   )
@@ -535,7 +541,6 @@ function CouponComponent({data,selectedOption}){
   const handleChecked = async () =>{
     if(checked) return
     
-
     // Avoids adding duplicate discount codes as well as adding a shipping discount if user is verifed 
     currentDiscountsArr.includes(couponCode.discountName) ? '' : currentDiscountsArr.push(couponCode.discountName)// Push non exisiting code into array, this avoids removing codes already set in the users cart
     currentUser ? currentDiscountsArr.includes('Members Rewards') ? '' : currentDiscountsArr.push('Members Rewards') : '' //If user is a customer, add the free shipping discount.
@@ -552,16 +557,17 @@ function CouponComponent({data,selectedOption}){
     {(couponCode && selectedOption[0].value == couponCode?.availableTo?.variant || couponCode?.availableTo?.variant == "") && (  
       <div className = "flex items-center w-full px-4 mt-4 gap-x-3 ">
         <div className = "blockHead">
-          <span className = "">Coupon</span>
+          <span>Coupon</span>
         </div>
-        <div className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
-        onClick = {()=>handleChecked()}
+        <div 
+          className = {`w-4 h-4 border rounded-sm border-secondaryVariant ${checked ? 'bg-secondary' : 'bg-transparent cursor-pointer'} transition flex items-center justify-center`}
+          onClick = {()=>handleChecked()}
         >
-        {checked && (
-          <CheckIcon className = "w-5 h-5 text-onSecondary"/>
-        )}
+          {checked && (
+            <CheckIcon className = "w-5 h-5 text-onSecondary"/>
+          )}
         </div>
-        <p className = "text-sm text-onBackground/70">
+        <p className = "text-sm text-onBackground/80">
           <span className = {`font-medium text-onBackground`}>{couponCode.discountAmount}%</span>{' '}
           {checked ? 
             <span>applied at checkout</span>
@@ -724,14 +730,14 @@ function ProductHeading({data,price}){
   return(
   <>
     <div className="flex flex-col items-start justify-between w-full px-4 mt-3 md:mt-0">
-      <div className="flex items-center justify-between w-full text-2xl text-onBackground">
+      <div className="flex items-center justify-between w-full text-2xl font-medium text-onBackground">
         <p id = {data?.product?.id}>{data?.product?.title}</p>
       </div>
       <p className="mt-1 text-base md:text-lg sm:text-base">
         {parseInt(data.product?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
-        <span className = "flex flex-col gap-x-1">
+        <span className = "flex flex-col text-lg gap-x-1">
           <span className = "font-medium text-onBackground">
-            <span className = 'font-light text-tertiaryVariant'>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
+            <span className = 'text-red-600 '>{calculatePercentage(data.product?.priceRange?.maxVariantPrice?.amount, data.product.compareAtPriceRange.maxVariantPrice.amount)}%</span>
               {'  '}
               {formatNumber(price,data.product.priceRange.maxVariantPrice.currencyCode,locale)}
             </span>
