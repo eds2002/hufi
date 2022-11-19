@@ -190,20 +190,46 @@ const ProductStickyCart:React.FC<iProductStickyCartProps> = ({data,display}) => 
 
 
   const findPrice = useCallback(()=>{
-    const selectedValues:Array<string> = []
+    let findId = 0;
 
-    selectedProduct?.forEach((selected:{value:string})=>{
-      selectedValues.push(selected.value)
-    })
-    let indexOfVaraint:number = 0
-    data.product.variants.nodes.forEach((variant:iVariant,index:number)=>{
-      if(selectedValues.every((value:string)=>variant.selectedOptions.some(selectedOpt => selectedOpt.value === value))) return index
-        indexOfVaraint = index
+    const query:Array<string> = []
+
+    // TODO, for each selected option the user has requested, store variable into query array
+    type tOption = {
+      name:string;
+      value:string;
+    }
+    
+    selectedProduct?.forEach((option:tOption)=>{
+      query.push(option.value)
     })
 
+    // TODO, find the id 
+    interface iNewArr{
+      id:string;
+      image:{
+        altText:string;
+        url:string;
+      }
+      priceV2:{
+        amount:string;
+        currencyCode:string;
+      }
+      quantityAvailable:number;
+      selectedOptions:tOption[];
+    }
+
+    data.product.variants.nodes.map((newArr:iNewArr, arrayIndex:number) =>{
+      if(query.every(object=>newArr.selectedOptions.some(obj=> obj.value === object))){
+        findId = arrayIndex
+      }
+    })
+
+    console.log(data.product.variants.nodes)
+    console.log(data.product.variants.nodes[findId])
     return formatNumber(
-      data.product.variants.nodes[indexOfVaraint].priceV2.amount, 
-      data.product.variants.nodes[indexOfVaraint].priceV2.currencyCode, 
+      data.product.variants.nodes[findId].priceV2.amount, 
+      data.product.variants.nodes[findId].priceV2.currencyCode, 
       locale
     )
   },[selectedProduct])
