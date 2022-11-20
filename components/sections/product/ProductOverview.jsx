@@ -670,13 +670,13 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                     <p className = 
                     {`
                       ${option.name === "Color" 
-                      ? (`${soldOutItems?.includes(value) ? 'rounded-full cursor-default ' : `cursor-pointer h-6 w-6 rounded-full ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-onBackground ring-offset-[3px] ring-1' : 'ring-transparent'}`}`)
+                      ? (`${soldOutItems?.includes(value) ? 'rounded-full cursor-default h-6 w-6 ' : `cursor-pointer h-6 w-6 rounded-full ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-onBackground ring-offset-[3px] ring-1' : 'ring-transparent'}`}`)
                       : (`${soldOutItems?.includes(value) 
                         ? 'bg-gray-300 ring-onBackground/60 cursor-default w-max' 
                         : `${selectedOption.filter(opt =>opt.value === value).length > 0 
                           ? 'ring-1 w-max ring-onBackground' 
                           : 'ring-onBackground ring-opacity-20 ring-1'}`} px-3 py-1 cursor-pointer rounded-[4px] w-max`)}
-                      text-sm mt-1 relative flex items-center justify-center
+                      text-sm mt-2 relative flex items-center justify-center
                     `}
                     style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
                     onClick = {(e)=>handleVariantChange(option.name,value)}
@@ -684,6 +684,11 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
                     id = {option.value}
                     >
                       {option.name === "Color" ? '' : value}
+                      {soldOutItems?.includes(value) && (
+                        <span className = "absolute inset-0 flex items-center justify-center overflow-hidden text-4xl font-light rounded-full rotate-[25deg] opacity-40">
+                          /
+                        </span>
+                      )}
                     </p>
                   ))}
                 </div>

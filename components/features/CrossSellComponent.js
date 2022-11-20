@@ -11,7 +11,8 @@ import { addToShopifyCart } from "../../utils/addToShopifyCart"
 import CartContext from "../../context/cartContext"
 import {CloseButton} from '../features'
 import ProductContext from "../../context/productContext"
-export default function CrossSellComponent({data,crossSell,selectedOption}){
+import Link from "next/link"
+export default function CrossSellComponent({data,crossSell}){
   const router = useRouter()
   const [expand,setExpand] = useState(false)
   const {cartData,setOpenCart, setCartData} = useContext(CartContext)
@@ -74,6 +75,7 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
   // TODO, runs when the crosssell data changes, this prevents displaying the same upsell when redirecting to another page.
   useEffect(()=>{
     setSelectedProducts(crossSell?.products)
+    setExpand(false)
   },[crossSell])
 
 
@@ -120,12 +122,16 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               {/* TOP PRODUCT || CURRENT PRODUCT */}
               <div className = "flex gap-3 p-4 rounded-md h-min bg-surface">
                 {/* Current product */}
-                <div className = "relative w-20 bg-gray-200 select-none aspect-square">
-                  <Image src = {currentVariant?.image?.url} layout = 'fill'/>
+                <div className = "relative w-20 overflow-hidden bg-gray-200 rounded-md select-none aspect-square">
+                  <Image 
+                    src = {currentVariant?.image?.url} 
+                    layout = 'fill'
+                    className = "rounded-md"
+                  />
                 </div>
                 <div className = "flex flex-col justify-between ">
                   <p className = "text-sm "><span className = "font-semibold">This item:</span> {data?.product?.title}</p>
-                  <p className = "text-sm text-secondaryVariant/60">{data?.product?.shortDesc?.value}</p>
+                  <p className = "text-sm text-secondaryVariant/60">{data?.product?.title}</p>
                   {parseInt(data?.product?.priceRange?.maxVariantPrice?.amount) < parseInt(data?.product?.compareAtPriceRange?.maxVariantPrice?.amount) ? 
                     <span className = "flex flex-col ">
                       <span className = " text-onBackground">
@@ -172,10 +178,14 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
               <div className = "flex items-center justify-evenly">
 
                 {/* CURRENT PRODUCT IMAGE */}
-                <div className = "relative w-24 bg-gray-200 rounded-sm cursor-pointer select-none aspect-square"
+                <div className = "relative w-24 overflow-hidden bg-gray-200 rounded-md cursor-pointer select-none aspect-square"
                   onClick = {()=>handleRedirect(`/product/${data.product.handle}`)}
                 >
-                  <Image src = {currentVariant?.image?.url} layout = 'fill'/>
+                  <Image 
+                    src = {currentVariant?.image?.url} 
+                    layout = 'fill'
+                    className = "rounded-md"
+                  />
                 </div>
 
                 {/* CROSSSELL PRODUCT IMAGES */}
@@ -183,10 +193,14 @@ export default function CrossSellComponent({data,crossSell,selectedOption}){
                   <>
                     <PlusIcon className = "w-4 h-4"/>
                       <div 
-                        className = "relative w-24 bg-gray-200 rounded-sm cursor-pointer aspect-square"
+                        className = "relative w-24 overflow-hidden bg-gray-200 rounded-md cursor-pointer aspect-square"
                         onClick = {()=>handleRedirect(`/product/${data?.product?.handle}`)}
                       >
-                        <Image src = {data?.product?.media?.nodes[0].image.url} layout = 'fill'/>
+                        <Image 
+                          src = {data?.product?.media?.nodes[0].image.url} 
+                          layout = 'fill'
+                          className = "rounded-md"
+                        />
                       </div>
                   </>
                 )}
@@ -299,10 +313,10 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
     <div className = "flex-1 w-full p-4 overflow-hidden rounded-md bg-surface">
       {/* IMAGE CONTAINER */}
       <div 
-        className = "relative w-full bg-gray-200 cursor-pointer select-none aspect-square"
+        className = "relative w-full overflow-hidden bg-gray-200 rounded-md cursor-pointer select-none aspect-square"
       >
         <div 
-          className = "absolute z-10 flex items-center justify-center w-5 h-5 rounded-full bg-secondary bottom-2 right-2"
+          className = "absolute z-10 flex items-center justify-center w-5 h-5 rounded-full shadow-2xl bg-primaryVariant2 bottom-2 right-2"
           onClick = {()=>setOptionsContainer(true)}
         >
           <EllipsisHorizontalIcon className = "w-5 h-5 text-onSecondary"/>
@@ -311,13 +325,16 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
           src = {variantImage || ""} 
           layout = 'fill'
           onClick = {()=>handleRedirect(`/product/${data?.product?.handle}`)}
+          className = "rounded-md"
         />
         <CheckBox handleChecked={handleChecked} selectedProducts = {selectedProducts} data = {data}/>
       </div>
 
       {/* PRODUCT INFORMATION */}
       <div className = "mt-4">
-        <p className = "overflow-hidden truncate text-ellipsis whitespace-nowrap">{data?.product?.title}</p>
+        <Link href = {data.product.handle}>
+          <p className = "overflow-hidden truncate cursor-pointer text-ellipsis whitespace-nowrap">{data?.product?.title}</p>
+        </Link>
         <p className = "overflow-hidden truncate whitespace-nowrap overflow-ellipsis text-onSurface/60">{data?.product?.shortDesc?.value}</p>
 
         {/* PRODUCT PRICING */}
@@ -341,7 +358,7 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
       
       {/* Displays the products options */}
       {optionsContainer && (
-        <div className = "absolute inset-0 z-20 flex items-center overflow-scroll bg-surface ">
+        <div className = "absolute inset-0 z-20 flex items-center overflow-scroll rounded-md bg-surface">
           <CloseButton padding = {2} onClick = {()=>setOptionsContainer(false)}/>
           <div className = "flex items-center w-full h-full gap-2">
             <div className = "relative flex-1 w-32 h-full overflow-hidden rounded-md bg-surface ">
@@ -349,7 +366,7 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
                 src = {variantImage || ""} 
                 layout = 'fill' 
                 objectFit="contain"  
-                className=""
+                className="rounded-md"
               />
             </div>
             <div className = "flex-1 h-full overflow-scroll scrollBar">
@@ -384,26 +401,27 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
               <div className = "flex flex-wrap items-center gap-3 px-2 mt-1 mb-4">
                 {option.values.map((value,key)=>(
                   <p className = 
-                  {`
-                    ${option.name === "Color" ? 
-                    (`${soldOutItems?.includes(value) ? 'h-7 w-7 rounded-full border cursor-default ' : `cursor-pointer h-7 w-7 rounded-full border ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-primaryVariant ring-offset-2 ring' : 'ring-neutral-400'}`}`)
-                    :
-                    (`${soldOutItems?.includes(value) ? 
-                        'bg-gray-300 ring-black/60 cursor-default w-max' 
-                      : 
-                        `${selectedOption.filter(opt =>opt.value === value).length > 0 ? 
-                            'ring-primaryVariant bg-primary w-max' 
-                          : 
-                            'ring-neutral-400'}`} px-2 py-1 ring-2 cursor-pointer rounded-full w-max`)
-                    }
-                    text-xs mt-1
-                  `}
-                  style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
-                  onClick = {(e)=>handleVariantChange(option.name,value)}
-                  key = {key}
-                  id = {option.value}
-                  >
-                    {option.name === "Color" ? '' : value}
+                    {`
+                      ${option.name === "Color" 
+                      ? (`${soldOutItems?.includes(value) ? 'rounded-full cursor-default h-6 w-6 ' : `cursor-pointer h-6 w-6 rounded-full ${selectedOption.filter(opt =>opt.value === value).length > 0 ? 'ring-onBackground ring-offset-[3px] ring-1' : 'ring-transparent'}`}`)
+                      : (`${soldOutItems?.includes(value) 
+                        ? 'bg-gray-300 ring-onBackground/60 cursor-default w-max' 
+                        : `${selectedOption.filter(opt =>opt.value === value).length > 0 
+                          ? 'ring-1 w-max ring-onBackground' 
+                          : 'ring-onBackground ring-opacity-20 ring-1'}`} px-3 py-1 cursor-pointer rounded-[4px] w-max`)}
+                      text-sm mt-1 relative flex items-center justify-center
+                    `}
+                    style={{backgroundColor:soldOutItems.includes(value) ? "lightgray" : option.name === "Color" && (value)}}
+                    onClick = {(e)=>handleVariantChange(option.name,value)}
+                    key = {key}
+                    id = {option.value}
+                    >
+                      {option.name === "Color" ? '' : value}
+                      {soldOutItems?.includes(value) && (
+                        <span className = "absolute inset-0 flex items-center justify-center overflow-hidden text-4xl font-light rounded-full rotate-[25deg] opacity-40">
+                          /
+                        </span>
+                      )}
                   </p>
                 ))}
               </div>
@@ -417,12 +435,14 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
 
 function CheckBox({handleChecked, selectedProducts, data}){
   return(
-    <div className = {`absolute -inset-0 z-10  ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent pointer-events-none' : 'bg-white/70 inset-0 pointer-events-auto'}`}>
+    <div className = {`absolute -inset-0 z-10  ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent pointer-events-none' : 'bg-black/40 inset-0 pointer-events-auto'}`}>
       <div 
-        className = {`w-5 h-5 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-secondaryVariant ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-secondary' : 'bg-surface'} flex items-center justify-center`}
+        className = {`w-5 h-5 mt-2 mr-2 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-primaryVariant2 ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-primaryVariant2' : ''} flex items-center justify-center shadow-2xl`}
         onClick = {()=>handleChecked(data.product.id)}
       >
-        {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && <CheckIcon className = "w-4 h-4 text-white"/>}
+        {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && 
+          <CheckIcon className = "w-4 h-4 text-white"/>
+        }
       </div>
     </div>
   )
