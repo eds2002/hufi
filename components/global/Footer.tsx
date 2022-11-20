@@ -27,7 +27,7 @@ interface iItems{
 
 export default function Footer({data}:iData) {
   return (
-    <footer className="bg-secondaryVariant">
+    <footer className=" bg-secondaryVariant">
       <div className="px-4 py-12 mx-auto overflow-hidden max-w-7xl sm:px-6 lg:px-8">
         <div className = 'pointer-events-none select-none'>
           <Image 

@@ -65,31 +65,6 @@ export default function ProductOverview({data,compRef,reviews,crossSell}) {
       })
     }
   }
-  
-  
-  // TODO, sets the current image to the variant selected image
-  useEffect(()=>{
-    let findId;
-    const query = []
-    
-    // TODO, for each selected option the user has requested, store variable into query array
-    selectedOption.forEach((option)=>{
-      query.push(option.value)
-    })
-    
-    // TODO, find the id 
-    data.product.variants.nodes.map((newArr, arrayIndex) =>{
-      if(query.every(object=>newArr.selectedOptions.some(obj=> obj.value === object))){
-        findId = arrayIndex
-      }
-    })
-
-    
-    imageRef.current.scrollLeft = 0
-    setCurrentVariant(data.product.variants.nodes[findId].image.url)
-    setPrice(data.product.variants.nodes[findId].priceV2.amount)
-  },[selectedOption])
-
 
   // FUNCTION TODO, add to cart
   const addToCart = async (e) =>{
@@ -224,9 +199,8 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
     const imagesBasedOnSelectedVariant = data.product.media.nodes.map((media)=>{
       if(media?.image){
         if(!media?.image?.altText) return
-  
-        
-        if(filterImagesByValues.includes(media.image.altText.split(":")[1])){
+
+        if(filterImagesByValues.includes(media.image.altText.split(":")[1]?.toLowerCase())){
           return media
         }
       }else{
@@ -234,12 +208,13 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
           if(!media.previewImage?.altText) return
   
           
-          if(filterImagesByValues.includes(media.previewImage?.altText.split(":")[1])){
+          if(filterImagesByValues.includes(media.previewImage?.altText.split(":")[1]?.toLowerCase())){
             return media
           }
         }
       }
     })
+    
     // Filter the undefined values
     .filter((val)=>val != undefined)
     setImagesBasedOnSelected(imagesBasedOnSelectedVariant)
@@ -265,7 +240,7 @@ function ImageCarousel({data, imageRef, currentVariant,selectedOption}){
   },[expandPos, containerRef.current])
 
 
-  // Scrolls back to the beginning when image is 
+  // Scrolls back to the beginning
   useEffect(()=>{
     imageRef.current.scrollLeft = imagePos * imageRef.current.clientWidth
   },[imagePos])

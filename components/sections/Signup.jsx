@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const Signup = () => {
   return (
-    <section className = "relative px-4 mx-auto overflow-hidden max-w-7xl rounded-xl">
+    <section className = "relative px-4 py-16 mx-auto overflow-hidden max-w-7xl rounded-xl">
       <div className = "w-full px-4 bg-black rounded-xl ">
         <div className = "flex flex-col items-start justify-center w-full h-full px-4 py-6 md:py-12">
           <h1 className = "mt-2 text-2xl font-semibold sm:text-3xl md:text-4xl text-onSecondary">Hufi Rewards Member</h1>
