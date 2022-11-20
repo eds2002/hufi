@@ -1,6 +1,6 @@
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { ExpandImage, StarsComponent, WriteQuestion, WriteReview } from '../../features'
 import { Button } from '../../elements'
 import { useState } from 'react'
@@ -366,9 +366,10 @@ function ReviewsTab({displayReviews,data,setReviewsFilter,currentPagination,pagi
     }
   }
 
-  useEffect(()=>{
+  const handlePaginationClick = (pagination) =>{
+    setCurrentPagination(pagination)
     document.getElementById("reviewsSection").scrollIntoView({behavior:'smooth',})
-  },[currentPagination])
+  }
 
   return(
     <div id = "reviewsSection">
@@ -467,7 +468,7 @@ function ReviewsTab({displayReviews,data,setReviewsFilter,currentPagination,pagi
           {/* Pagination */}
           {displayReviews.length > displayLimit && (
             <div className = "flex items-center justify-center mt-12 gap-x-6">
-              <p onClick = {()=>setCurrentPagination(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
+              <p onClick = {()=>handlePaginationClick(currentPagination == 1 ? currentPagination : currentPagination - 1)}>
                 <ChevronLeftIcon className = "w-5 h-5 cursor-pointer"/>
               </p>
               <div className = "flex gap-x-1.5">
@@ -475,12 +476,12 @@ function ReviewsTab({displayReviews,data,setReviewsFilter,currentPagination,pagi
                   <div className = "w-max" key = {val}>
                     <p 
                       className = {`${currentPagination === (val + 1) && ('bg-onBackground text-background ')} transition w-6 h-6 flex items-center justify-center rounded-full cursor-pointer select-none`}
-                      onClick = {()=>setCurrentPagination(val+1)}
+                      onClick = {()=>handlePaginationClick(val+1)}
                     >{val + 1}</p>
                   </div>
                 ))}
               </div>
-              <p onClick = {()=>setCurrentPagination(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
+              <p onClick = {()=>handlePaginationClick(currentPagination == paginationArray.length ? currentPagination : currentPagination + 1)}>
                 <ChevronRightIcon className = "w-5 h-5 cursor-pointer"/>
               </p>
             </div>
