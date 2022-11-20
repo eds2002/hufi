@@ -316,10 +316,16 @@ const CrossSellCards =({data,currencyCode,locale,selectedProducts, setSelectedPr
         className = "relative w-full overflow-hidden bg-gray-200 rounded-md cursor-pointer select-none aspect-square"
       >
         <div 
-          className = "absolute z-10 flex items-center justify-center w-5 h-5 rounded-full shadow-2xl bg-primaryVariant2 bottom-2 right-2"
-          onClick = {()=>setOptionsContainer(true)}
+          className = "absolute bottom-0 right-0 z-10 flex items-center justify-center rounded-full shadow-2xl"
         >
-          <EllipsisHorizontalIcon className = "w-5 h-5 text-onSecondary"/>
+          <div className = "p-2">
+            <div 
+              className = "w-5 h-5 rounded-full bg-primaryVariant2" 
+              onClick = {()=>setOptionsContainer(true)}
+            >
+              <EllipsisHorizontalIcon className = "w-5 h-5 text-onSecondary"/>
+            </div>
+          </div>
         </div>
         <Image 
           src = {variantImage || ""} 
@@ -436,13 +442,15 @@ function ProductOptions({data, selectedOption, soldOutItems, handleVariantChange
 function CheckBox({handleChecked, selectedProducts, data}){
   return(
     <div className = {`absolute -inset-0 z-10  ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-transparent pointer-events-none' : 'bg-black/40 inset-0 pointer-events-auto'}`}>
-      <div 
-        className = {`w-5 h-5 mt-2 mr-2 ml-auto border pointer-events-auto cursor-pointer rounded-sm border-primaryVariant2 ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-primaryVariant2' : ''} flex items-center justify-center shadow-2xl`}
-        onClick = {()=>handleChecked(data.product.id)}
-      >
-        {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && 
-          <CheckIcon className = "w-4 h-4 text-white"/>
-        }
+      <div className = "p-2 ml-auto pointer-events-auto w-max">
+        <div 
+          className = {` w-5 h-5  ml-auto border pointer-events-auto cursor-pointer rounded-sm border-primaryVariant2 ${selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 ? 'bg-primaryVariant2' : ''} flex items-center justify-center shadow-2xl`}
+          onClick = {()=>handleChecked(data.product.id)}
+        >
+          {selectedProducts?.filter(prod => prod.product.id === data.product.id).length > 0 && 
+            <CheckIcon className = "w-4 h-4 text-white"/>
+          }
+        </div>
       </div>
     </div>
   )
