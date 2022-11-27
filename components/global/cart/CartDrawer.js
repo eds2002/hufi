@@ -407,7 +407,7 @@ export default function CartDrawer({openCart, setOpenCart,Fragment}){
                       />
                     </Link>
                     {!currentUser && 
-                      <span className = "mt-2 text-xs text-neutral-400">Free shipping on orders over $75.</span>
+                      <span className = "mt-2 text-xs text-neutral-400">Free shipping on orders over $50.</span>
                     }  
                   </div>
                 </div>

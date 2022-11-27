@@ -165,7 +165,7 @@ interface iVariant{
 const benefits = [
   {
     icon:"https://cdn-icons-png.flaticon.com/512/411/411763.png",
-    title:'Free shipping on orders over $75+',
+    title:'Free shipping on orders over $50+',
     paragraph: 'Fast shipping is a always a standard when shopping with us.'
   },
   {

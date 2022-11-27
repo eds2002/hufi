@@ -28,7 +28,7 @@ export default function Header({data,user}) {
         <div className="relative z-40 bg-surface">
           <div className="flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <p className="absolute left-0 right-0 flex-1 text-sm font-medium text-center text-onSurface lg:flex-none">
-              Free worldwide shipping on orders over $75.
+              Free worldwide shipping on orders over $50.
             </p>
           </div>
           <div className = "absolute inset-0 flex items-center justify-end px-4 text-onSurface">

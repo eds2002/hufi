@@ -1,6 +1,14 @@
 import React from 'react'
 
-const Button = ({CSS, text,onClick,tag}) => {
+
+interface iButton{
+  CSS?:string;
+  text:string;
+  onClick?:(val:any)=>void;
+  tag?:string;
+}
+
+const Button:React.FC<iButton> = ({CSS, text,onClick,tag}) => {
   return (
     <button className = {`
     hover:shadow-md flex w-full items-center justify-center rounded-full  transition
